@@ -4,7 +4,7 @@
   "title": "PaymentSettled",
   "description": "Published to topic payments.settled by settlement-service once a payment has settled. Consumed by ledger-service.",
   "type": "object",
-  "required": ["paymentId", "merchantId", "currency", "amount", "settledAt"],
+  "required": ["paymentId", "merchantId", "currency", "amountMinor", "settledAt"],
   "properties": {
     "paymentId": {
       "type": "string",
@@ -23,7 +23,7 @@
     "amount": {
       "type": "number",
       "exclusiveMinimum": 0,
-      "description": "Settled amount in major units (pounds), e.g. 12.34. Being replaced by amountMinor."
+      "description": "Deprecated: read amountMinor. Settled amount in major units (pounds), still sent until it is removed."
     },
     "amountMinor": {
       "type": "integer",

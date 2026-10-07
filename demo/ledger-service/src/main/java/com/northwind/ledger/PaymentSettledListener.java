@@ -29,7 +29,7 @@ public class PaymentSettledListener {
             return;
         }
         LedgerEntry entry = entries.save(LedgerEntry.from(event, clock.instant()));
-        log.info("Booked {} {} {} for {}", entry.getPaymentId(), entry.getCurrency(), entry.getAmount(),
-                entry.getMerchantId());
+        log.info("Booked {} {} {} minor units for {}", entry.getPaymentId(), entry.getCurrency(),
+                entry.getAmountMinor(), entry.getMerchantId());
     }
 }
