@@ -147,5 +147,5 @@ reads and writes `amount`, so rolling back is safe.
 - Blast radius: reconciliation-batch moves to `amount_minor` in this PR. No other readers of `ledger_entries.amount`.
 - Not a door: `not-null` on `amount_minor` (the previous version writes it), and `event-field-made-optional` on `amount` (still sent).
 
-<sub>one-way-door · scan-migrations: 1 finding · schema-compat: 2 findings · checked split/2-migrate...split/3-contract</sub>
+<sub>one-way-door · scan-migrations: 1 finding · schema-compat: 1 finding · checked split/2-migrate...split/3-contract</sub>
 ```

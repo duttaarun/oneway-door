@@ -80,3 +80,22 @@ Newest phase at the bottom. Each entry: what's done, decisions, gotchas.
   in-place-conversion (V42:4). schema-compat: event-field-removed `amount`, event-required-field-added
   `amountMinor`, event-field-renamed, and missing-primitive-default ×2. All high.
 - Gotcha: on Node 22+, `node --test <dir>` no longer accepts a folder. Pass the files (a shell glob works on Node 20 too).
+
+## Phase 5: the split and the proof (done)
+
+- Branches from main: `split/1-expand` (V42 adds nullable `amount_minor`, the event gains optional `amountMinor`,
+  writers write both, the reader prefers the new one), `split/2-migrate` (V43 backfill plus a DO-block check that
+  fails if any row disagrees; reconciliation reports `mismatches=`), `split/3-contract` (V44: `amount_minor` NOT
+  NULL, `amount` nullable and filled by a BEFORE INSERT trigger; ledger drops `amount` and rejects events without
+  `amountMinor` to the DLT; reconciliation sums `amount_minor`), and `split/4-drop` (V45 drops the trigger, function
+  and column; settlement and the schema are taken byte-for-byte from PR #482).
+- `demo/scripts/rollback-test.sh <from> <to>` runs 5 stages covering every version combination (new consumer + old
+  producer, both new, old consumer + new producer, both old). It checks after every stage: health, rows = sent,
+  £0.00 rows, DLT, lag, reconciliation total = sent total, and column agreement.
+- `demo/scripts/rollback-matrix.sh` runs all 5 cases and writes `docs/rollback-results.md`.
+- Result: 4 PASS (main→1, 1→2, 2→3, 3→4) and 1 FAIL (main→PR #482), in about 4 minutes in total.
+- Finding: PR #482 fails **before any rollback**. At stage 2 (new ledger, old settlement) it books £0.00 for every v1
+  event, because the new consumer reads a missing `amountMinor` as 0. The door is one-way in both directions.
+- Decision: the step-3 trigger is what makes step 4 roll back cleanly to step 3 while step 3 still rolls back to
+  step 2, whose reconciliation reads `amount`.
+- Gotcha: `exp` is a built-in function in awk and can't be a variable name.
