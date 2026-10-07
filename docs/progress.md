@@ -99,3 +99,22 @@ Newest phase at the bottom. Each entry: what's done, decisions, gotchas.
 - Decision: the step-3 trigger is what makes step 4 roll back cleanly to step 3 while step 3 still rolls back to
   step 2, whose reconciliation reads `amount`.
 - Gotcha: `exp` is a built-in function in awk and can't be a variable name.
+
+## Phase 6: rule and hook (done)
+
+- `.github/instructions/migrations.instructions.md`: `applyTo` covers `**/db/migration/**`, `**/db/changelog/**`,
+  `**/migrations/**`, `**/Migrations/**`, `**/liquibase/**` and `contracts/events/**`. It sets the
+  expand → migrate → contract → drop rules and says to run the one-way-door skill before finishing.
+- `.github/hooks/one-way-door.json` (Copilot format, `version: 1`, `preToolUse`) calls
+  `.github/hooks/scripts/deny-applied-migration-edit.sh` or `.ps1`. The hook denies edits, creates, patches and
+  shell writes to Flyway `V__` files, SQL in `db/migration`/`migrations`, and EF Core migration classes **when the
+  file exists on the default branch** (origin/HEAD, then main or master; override with `ONE_WAY_DOOR_BASE`). The
+  denial suggests the next `V<n>__` name.
+- Decision: Liquibase changelogs aren't blocked, because appending changeSets to an existing file is normal.
+  scan-migrations checks changeSet edits instead. Repeatable `R__` and undo `U__` files are allowed.
+- Decision: the hook matches on paths, not tool names. It reads both payload shapes (and `toolArgs` sent as a
+  string), prints both deny shapes, and always exits 0. The JSON command falls back to `{}` if the script is missing.
+- Tests: `node --test .github/hooks/scripts/test/*.test.mjs` runs 11 bash cases plus wiring, all green on macOS
+  (bash 3.2). The PowerShell twin was verified in `mcr.microsoft.com/dotnet/sdk:9.0` (pwsh 7.5, bash 5): 26/26.
+  `tests/instructions.test.mjs` checks `applyTo` against real paths: 4/4.
+- Gotcha: `mcr.microsoft.com/powershell` has no arm64 images. The .NET SDK image has `pwsh` and git, and is arm64.

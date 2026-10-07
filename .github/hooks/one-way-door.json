@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "f=.github/hooks/scripts/deny-applied-migration-edit.sh; if [ -f \"$f\" ]; then bash \"$f\"; else cat >/dev/null; echo '{}'; fi",
+        "powershell": "$f = './.github/hooks/scripts/deny-applied-migration-edit.ps1'; if (Test-Path $f) { & $f } else { '{}' }",
+        "cwd": ".",
+        "timeoutSec": 10
+      }
+    ]
+  }
+}
