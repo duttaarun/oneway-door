@@ -156,3 +156,20 @@ Newest phase at the bottom. Each entry: what's done, decisions, gotchas.
   stack at v1 and books 10 settlements. Measured: **15s**.
 - After this phase, `pr-482-minor-units` and `split/*` were rebased onto the final main (`git rebase --update-refs`),
   so every branch carries the skill, rule and hook. Copilot needs them on the branch it reviews.
+
+## Final verification (after the rebase)
+
+- Node tests: 61 (60 pass, plus 1 PowerShell test skipped locally; it passed in the container). Unit tests green at
+  `pr-482-minor-units` and `split/4-drop`.
+- Scripts on `main...pr-482-minor-units`: scan-migrations finds 3 (rename V42:3, retype and in-place conversion V42:4).
+  schema-compat finds 5 (amount removed, amountMinor required, rename, missing-primitive-default ×2). All high.
+- `rollback-matrix.sh`: 4 PASS, 1 FAIL as expected, in 4m02s. `docs/rollback-results.md` is refreshed.
+- `incident.sh --no-pause`: reproduced (50 rows at £0.00, £12,342.34 missing, empty DLT, ledger-service UP).
+- `reset.sh`: 18s.
+
+## Next
+
+- Run `docs/copilot-test-checklist.md` by hand in VS Code and Copilot CLI. Tune the SKILL.md `description` if it
+  doesn't trigger.
+- Push to GitHub, open PR #482 from `pr-482-minor-units`, and try the cloud agent (checklist section C).
+- Record a backup video of `docs/demo-script.md`.
