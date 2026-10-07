@@ -33,3 +33,20 @@ Newest phase at the bottom. Each entry: what's done, decisions, gotchas.
   BuildKit cache mount for `~/.m2`.
 - Verified: `up.sh` → `traffic.sh 50` → `ledger.sh` gave 50 rows, £12903.26 sent = £12903.26 booked, 0 at £0.00, an
   empty DLT, both services UP, and a matching reconciliation total.
+
+## Phase 2: the bad PR and a real incident (done)
+
+- Branch `pr-482-minor-units`: V42 renames `amount` → `amount_minor` and retypes it to bigint `USING (amount_minor * 100)`.
+  The event becomes `long amountMinor` (`amount` removed). Both services, their tests and the schema are updated.
+  reconciliation-batch is **not** updated, which is deliberate: it is the blast radius the skill must find.
+- Scripts: `deploy.sh <service> <ref>`, `rollback.sh` (same mechanics), `hotfix-reverse-v42.sql` + `apply-hotfix.sh`,
+  `incident.sh [--no-pause]` (exits 0 only if the incident reproduces exactly), and `test.sh [ref]` (unit tests at any ref).
+- The incident order is: v1 baseline (10) → deploy ledger then settlement at PR #482 → 20 settlements → reconciliation
+  fails (`column "amount" does not exist`) → roll back ledger-service only → start-up fails with `Schema-validation:
+  missing column [amount]` → 50 settlements queue → hotfix → v1 drains → 50 rows at £0.00, empty DLT, UP.
+- Decision: the hotfix also deletes the V42 row from `flyway_schema_history`, so a later v2 redeploy would re-run it.
+- Gotcha: Flyway v1 ignores the applied-but-unknown V42 (`ignoreMigrationPatterns` defaults to `*:future`). The loud
+  failure comes from Hibernate `validate`, not from Flyway.
+- Gotcha: with `restart: on-failure` the crash is detected through `RestartCount` or the "APPLICATION FAILED TO START" log line.
+- Verified: `test.sh pr-482-minor-units` is green (settlement 4 tests, ledger 2). `incident.sh` passed 4 times out of 4
+  from a clean `down.sh`, about 50s each.

@@ -24,7 +24,7 @@ public final class Reconcile {
             System.out.printf("Reconciliation: %d ledger entries, total £%s%n", entries, total.toPlainString());
             System.out.printf("RECON entries=%d total=%s%n", entries, total.toPlainString());
         } catch (SQLException e) {
-            System.out.println("RECON error=" + e.getMessage().replace('\n', ' '));
+            System.out.println("RECON error=" + e.getMessage().lines().findFirst().orElse("unknown"));
             System.err.println("Reconciliation failed: " + e.getMessage());
             System.exit(1);
         }
