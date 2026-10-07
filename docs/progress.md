@@ -61,3 +61,22 @@ Newest phase at the bottom. Each entry: what's done, decisions, gotchas.
 - Decision: pattern ids are kebab-case (`column-rename`, `missing-primitive-default`, …). The scripts print the same ids.
 - Decision: the split for PR #482 uses a trigger in step 3 to keep `amount` filled. That is the only way step 4
   (drop) can roll back to step 3 while step 3 can still roll back to step 2, whose reconciliation reads `amount`.
+
+## Phase 4: deterministic scripts and tests (done)
+
+- `scripts/scan-migrations.mjs`: Flyway (`V/R__`, plain `migrations/` SQL), Liquibase (XML, YAML, JSON, formatted SQL;
+  changeSet-level edit detection) and EF Core (`Up()` only; Designer and snapshot files skipped). It flags
+  `column-rename`, `table-rename`, `column-drop`, `table-drop`, `column-retype`, `not-null`, `in-place-conversion`,
+  `backfill`, `row-delete` and `applied-migration-edited`. The SQL splitter honours quotes, dollar quotes, nested
+  comments and `GO`, and scans inside `DO $$ … $$` blocks.
+- `scripts/schema-compat.mjs`: JSON Schema diff in the old-reader direction, with `$ref`, nesting, arrays, enums,
+  formats and nullability. It also flags `missing-primitive-default` in both directions (old readers without the
+  field, and new readers on old events).
+- `scripts/lib/common.mjs`: git helpers. **Merge-base (three-dot) semantics.** `--worktree` includes uncommitted and
+  untracked files. Output is always JSON and the exit code is always 0.
+- Tests: `node --test .github/skills/one-way-door/scripts/test/*.test.mjs`. That is 31 tests across 5 suites, each
+  building throwaway git repos. All green.
+- Verified against `main...pr-482-minor-units`. scan-migrations: column-rename (V42:3), column-retype and
+  in-place-conversion (V42:4). schema-compat: event-field-removed `amount`, event-required-field-added
+  `amountMinor`, event-field-renamed, and missing-primitive-default ×2. All high.
+- Gotcha: on Node 22+, `node --test <dir>` no longer accepts a folder. Pass the files (a shell glob works on Node 20 too).
