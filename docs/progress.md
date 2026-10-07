@@ -143,3 +143,16 @@ Newest phase at the bottom. Each entry: what's done, decisions, gotchas.
   cloud agent), five fixed prompts (P1–P5), what a good result looks like, and a table of description tweaks if it
   doesn't trigger.
 - Not done here: the hand-run in VS Code and Copilot CLI (no Copilot CLI on this machine). That is the next step for a person.
+
+## Phase 8: stage-ready (done)
+
+- `README.md`: the one-liner, the problem, "The £0.00 Settlement", how it works (skill, scripts, patterns, format,
+  rule, hook, plugin), the rollback results table, how to use it in any repo (copy one folder, or install the
+  plugin), the demo commands, tests, layout and limits.
+- `docs/demo-script.md`: the 4-minute runbook in five acts (innocent PR, incident, run the skill, split, proof), with
+  exact commands, the Copilot prompt, lines to say and a fallback for each act. Trick: send the Copilot prompt
+  during act 1 so the answer is ready by act 3.
+- `demo/scripts/reset.sh`: switches to main (if clean), pre-builds images for all six demo refs, restarts the
+  stack at v1 and books 10 settlements. Measured: **15s**.
+- After this phase, `pr-482-minor-units` and `split/*` were rebased onto the final main (`git rebase --update-refs`),
+  so every branch carries the skill, rule and hook. Copilot needs them on the branch it reviews.
