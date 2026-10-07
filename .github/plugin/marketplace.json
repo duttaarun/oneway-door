@@ -1,0 +1,18 @@
+{
+  "name": "one-way-door",
+  "owner": {
+    "name": "The One-Way Door authors"
+  },
+  "metadata": {
+    "description": "Rollback-safety tooling for GitHub Copilot",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "one-way-door",
+      "description": "Rollback-safety review for pull requests: finds one-way doors (migrations, event schema changes, caches, webhooks) and proposes an expand/migrate/contract/drop split.",
+      "version": "1.0.0",
+      "source": "./plugins/one-way-door"
+    }
+  ]
+}

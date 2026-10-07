@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  skill-and-hooks:
+    name: Skill, hook and plugin tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+      # The runner has bash and pwsh, so the hook tests cover both scripts here.
+      - run: node --test .github/skills/one-way-door/scripts/test/*.test.mjs .github/hooks/scripts/test/*.test.mjs tests/*.test.mjs
+
+  services:
+    name: Unit tests (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [settlement-service, ledger-service, reconciliation-batch]
+    defaults:
+      run:
+        working-directory: demo/${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+          cache-dependency-path: demo/${{ matrix.service }}/pom.xml
+      - run: ./mvnw -B test

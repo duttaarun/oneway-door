@@ -1,0 +1,19 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "one-way-door",
+  "version": "1.0.0",
+  "description": "Rollback-safety review for pull requests: finds one-way doors (migrations, event schema changes, caches, webhooks) that the previous release can't survive, and proposes an expand/migrate/contract/drop split.",
+  "license": "MIT",
+  "keywords": [
+    "rollback",
+    "migrations",
+    "flyway",
+    "liquibase",
+    "ef-core",
+    "kafka",
+    "json-schema",
+    "pull-request",
+    "review",
+    "expand-contract"
+  ]
+}

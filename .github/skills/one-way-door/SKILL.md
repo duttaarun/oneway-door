@@ -87,7 +87,7 @@ For every touched table, column, topic, event and event field, search the **whol
 git grep -n -i -E '<table>|<column>|<topic>|<EventName>' <head> -- . ':!*.md'
 ```
 
-- Search snake_case and camelCase forms (`amount_minor`, `amountMinor`), quoted SQL, ORM mappings
+- Search snake_case and camelCase forms (`order_total`, `orderTotal`), quoted SQL, ORM mappings
   (`@Column`, `HasColumnName`), report and BI queries, other services, scripts and config.
 - Also search the base branch, because the readers that matter are the ones running **today**.
 - Mark every reader the PR doesn't change. These usually break first, with no rollback needed.
@@ -143,7 +143,7 @@ include the results.
   worse than a crash.
 - **Two-dot diffs lie.** `git diff main..branch` includes changes made on main since the branch was cut. Use three dots.
 - **Editing an applied migration is a door already closed.** The file in git no longer matches what production ran.
-- **Units hide in types.** `double amount` in pounds and `long amountMinor` in pence are both numbers. Read the
+- **Units hide in types.** `double price` in pounds and `long priceMinor` in pence are both numbers. Read the
   names and descriptions, not just the types.
 - **The cloud agent has limited network access.** The scripts are offline, so don't try to fetch remote refs from
   inside them. Fetch with git first.
@@ -161,7 +161,7 @@ include the results.
 ## References
 
 - `references/patterns.md`: the catalogue of one-way patterns, with how to spot each one, when the door closes,
-  what breaks, and the safe split. It ends with the PR #482 worked example.
+  what breaks, and the safe split. It ends with a worked example.
 - `references/output-format.md`: the exact PR comment format, with ONE-WAY and TWO-WAY examples.
 - `scripts/scan-migrations.mjs`: destructive or rollback-hostile DDL in Flyway, Liquibase and EF Core migrations.
 - `scripts/schema-compat.mjs`: JSON Schema event contracts compared base against head, in the old-reader direction.

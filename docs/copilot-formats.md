@@ -202,7 +202,15 @@ plugins/one-way-door/
 
 ---
 
-## 5. Decisions taken from this page
+## 5. Cloud agent environment
+
+- `.github/workflows/copilot-setup-steps.yml` with a job named exactly `copilot-setup-steps` runs before the cloud
+  agent starts. The job may only use `steps`, `permissions`, `runs-on`, `services`, `snapshot` and `timeout-minutes`.
+- The agent's own checkout ignores any `fetch-depth` you set, so fetch the default branch in a later step if you need
+  a merge base. The workflow only takes effect once it is on the default branch. If a step fails, the remaining
+  steps are skipped.
+
+## 6. Decisions taken from this page
 
 1. `.github/skills/one-way-door/` is the source of truth. `plugins/one-way-door/` is **generated** from it by `tools/build-plugin.mjs`, and a test fails if the two differ.
 2. Skill frontmatter carries only `name`, `description` and `license`, which every surface supports.
