@@ -1,0 +1,14 @@
+# Build output
+target/
+*.class
+node_modules/
+
+# Demo runtime state (git worktrees used by deploy.sh, logs)
+.demo/
+
+# Editors / OS
+.idea/
+.vscode/*
+!.vscode/settings.json
+*.iml
+.DS_Store
