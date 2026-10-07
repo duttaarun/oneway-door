@@ -50,3 +50,14 @@ Newest phase at the bottom. Each entry: what's done, decisions, gotchas.
 - Gotcha: with `restart: on-failure` the crash is detected through `RestartCount` or the "APPLICATION FAILED TO START" log line.
 - Verified: `test.sh pr-482-minor-units` is green (settlement 4 tests, ledger 2). `incident.sh` passed 4 times out of 4
   from a clean `down.sh`, about 50s each.
+
+## Phase 3: the skill (done)
+
+- `.github/skills/one-way-door/SKILL.md`: 168 lines. Frontmatter has `name` (equals the folder), `description`
+  (731 chars, names the triggers) and `license` only, which every surface supports. It sets an 8-step procedure.
+- `references/patterns.md`: 24 patterns across Data, Messages, State and External, each with spot it, door closes,
+  if rolled back, safe split and severity. It also has the general split table and the PR #482 worked example.
+- `references/output-format.md`: the exact comment template and rules, plus ONE-WAY (PR #482) and TWO-WAY (split 2→3) examples.
+- Decision: pattern ids are kebab-case (`column-rename`, `missing-primitive-default`, …). The scripts print the same ids.
+- Decision: the split for PR #482 uses a trigger in step 3 to keep `amount` filled. That is the only way step 4
+  (drop) can roll back to step 3 while step 3 can still roll back to step 2, whose reconciliation reads `amount`.
