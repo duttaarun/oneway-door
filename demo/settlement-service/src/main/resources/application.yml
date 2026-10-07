@@ -1,0 +1,20 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: settlement-service
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    producer:
+      acks: all
+
+northwind:
+  topics:
+    payments-settled: payments.settled
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

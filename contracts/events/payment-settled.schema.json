@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.northwind.example/events/payment-settled.schema.json",
+  "title": "PaymentSettled",
+  "description": "Published to topic payments.settled by settlement-service once a payment has settled. Consumed by ledger-service.",
+  "type": "object",
+  "required": ["paymentId", "merchantId", "currency", "amount", "settledAt"],
+  "properties": {
+    "paymentId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique payment id. Also the Kafka record key."
+    },
+    "merchantId": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "ISO 4217 code, e.g. GBP."
+    },
+    "amount": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "Settled amount in major units (pounds), e.g. 12.34."
+    },
+    "settledAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

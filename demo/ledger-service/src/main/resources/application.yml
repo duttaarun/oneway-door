@@ -1,0 +1,41 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: ledger-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/ledger}
+    username: ${DB_USER:northwind}
+    password: ${DB_PASSWORD:northwind}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # Fail fast if the schema doesn't match the entities.
+      ddl-auto: validate
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    consumer:
+      group-id: ledger-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        # Producers send no type header; every record binds to our own PaymentSettled by field name.
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: com.northwind.ledger.PaymentSettled
+        spring.json.trusted.packages: com.northwind.ledger
+
+northwind:
+  topics:
+    payments-settled: payments.settled
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
