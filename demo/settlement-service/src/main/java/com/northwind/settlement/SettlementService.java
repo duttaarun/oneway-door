@@ -45,7 +45,6 @@ public class SettlementService {
                 paymentId,
                 request.merchantId(),
                 request.currency(),
-                request.amount().doubleValue(),
                 request.amount().setScale(2, RoundingMode.HALF_UP).movePointRight(2).longValueExact(),
                 settledAt);
     }

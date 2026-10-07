@@ -20,11 +20,6 @@
       "pattern": "^[A-Z]{3}$",
       "description": "ISO 4217 code, e.g. GBP."
     },
-    "amount": {
-      "type": "number",
-      "exclusiveMinimum": 0,
-      "description": "Deprecated: read amountMinor. Settled amount in major units (pounds), still sent until it is removed."
-    },
     "amountMinor": {
       "type": "integer",
       "minimum": 1,
