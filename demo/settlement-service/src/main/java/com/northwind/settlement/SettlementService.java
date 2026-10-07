@@ -1,5 +1,6 @@
 package com.northwind.settlement;
 
+import java.math.RoundingMode;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.UUID;
@@ -45,6 +46,7 @@ public class SettlementService {
                 request.merchantId(),
                 request.currency(),
                 request.amount().doubleValue(),
+                request.amount().setScale(2, RoundingMode.HALF_UP).movePointRight(2).longValueExact(),
                 settledAt);
     }
 }

@@ -23,7 +23,12 @@
     "amount": {
       "type": "number",
       "exclusiveMinimum": 0,
-      "description": "Settled amount in major units (pounds), e.g. 12.34."
+      "description": "Settled amount in major units (pounds), e.g. 12.34. Being replaced by amountMinor."
+    },
+    "amountMinor": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Settled amount in minor units (pence), e.g. 1234 for £12.34."
     },
     "settledAt": {
       "type": "string",
