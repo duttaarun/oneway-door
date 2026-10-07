@@ -4,7 +4,7 @@
   "title": "PaymentSettled",
   "description": "Published to topic payments.settled by settlement-service once a payment has settled. Consumed by ledger-service.",
   "type": "object",
-  "required": ["paymentId", "merchantId", "currency", "amount", "settledAt"],
+  "required": ["paymentId", "merchantId", "currency", "amountMinor", "settledAt"],
   "properties": {
     "paymentId": {
       "type": "string",
@@ -20,10 +20,10 @@
       "pattern": "^[A-Z]{3}$",
       "description": "ISO 4217 code, e.g. GBP."
     },
-    "amount": {
-      "type": "number",
-      "exclusiveMinimum": 0,
-      "description": "Settled amount in major units (pounds), e.g. 12.34."
+    "amountMinor": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Settled amount in minor units (pence), e.g. 1234 for £12.34."
     },
     "settledAt": {
       "type": "string",

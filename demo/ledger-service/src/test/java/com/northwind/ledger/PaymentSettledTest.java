@@ -2,7 +2,6 @@ package com.northwind.ledger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Map;
@@ -19,23 +18,22 @@ class PaymentSettledTest {
     void deserialisesTheContractPayload() {
         PaymentSettled event = deserialise("""
                 {"paymentId":"7f1c1b8e-2a1d-4a52-9d4e-0c6a3f9b1e01","merchantId":"merchant-0042",
-                 "currency":"GBP","amount":12.34,"settledAt":"2026-10-03T16:40:00Z"}
+                 "currency":"GBP","amountMinor":1234,"settledAt":"2026-10-03T16:40:00Z"}
                 """);
 
         assertThat(event.paymentId()).isEqualTo(UUID.fromString("7f1c1b8e-2a1d-4a52-9d4e-0c6a3f9b1e01"));
         assertThat(event.merchantId()).isEqualTo("merchant-0042");
-        assertThat(event.amount()).isEqualTo(12.34);
+        assertThat(event.amountMinor()).isEqualTo(1234L);
         assertThat(event.settledAt()).isEqualTo(SETTLED);
     }
 
     @Test
-    void booksAmountInPoundsWithTwoDecimals() {
-        PaymentSettled event = new PaymentSettled(UUID.randomUUID(), "merchant-0042", "GBP", 12.34, SETTLED);
+    void booksAmountInMinorUnits() {
+        PaymentSettled event = new PaymentSettled(UUID.randomUUID(), "merchant-0042", "GBP", 1234L, SETTLED);
 
         LedgerEntry entry = LedgerEntry.from(event, SETTLED.plusSeconds(1));
 
-        assertThat(entry.getAmount()).isEqualByComparingTo(new BigDecimal("12.34"));
-        assertThat(entry.getAmount().scale()).isEqualTo(2);
+        assertThat(entry.getAmountMinor()).isEqualTo(1234L);
         assertThat(entry.getMerchantId()).isEqualTo("merchant-0042");
     }
 
