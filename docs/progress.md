@@ -134,3 +134,12 @@ Newest phase at the bottom. Each entry: what's done, decisions, gotchas.
 - `.github/workflows/ci.yml` runs all node tests (the runner has bash and pwsh) and each service's `./mvnw test`.
   `.github/workflows/copilot-setup-steps.yml` gives the cloud agent Node 20 and the default branch's history.
 - All node tests: 61 (60 pass, plus 1 PowerShell test skipped locally; it passed in the container).
+
+## Phase 7: Copilot test checklist (written; the manual runs are for you)
+
+- `docs/copilot-test-checklist.md` covers VS Code agent mode, Copilot CLI (including the plugin install) and the
+  cloud agent on a GitHub PR. For each: how to confirm the skill loaded (`/` menu or Chat: Open Customizations
+  in VS Code, plus References under the answer; `/skills list`/`info`/`reload` in the CLI; the session log for the
+  cloud agent), five fixed prompts (P1–P5), what a good result looks like, and a table of description tweaks if it
+  doesn't trigger.
+- Not done here: the hand-run in VS Code and Copilot CLI (no Copilot CLI on this machine). That is the next step for a person.
