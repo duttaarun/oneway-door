@@ -1,0 +1,35 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "docs/proposal/proposal.html"
+        ],
+        "createdAt": "2026-10-12T18:09:10.248Z",
+        "reason": "Claude triage: fixed-size A4 print pages with intentional full-bleed decorative shapes; leading/padding values misread next to pt/mm units"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "docs/proposal/proposal.html"
+        ],
+        "createdAt": "2026-10-12T18:09:10.268Z",
+        "reason": "Claude triage: fixed-size A4 print pages with intentional full-bleed decorative shapes; leading/padding values misread next to pt/mm units"
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "docs/proposal/proposal.html"
+        ],
+        "createdAt": "2026-10-12T18:09:10.287Z",
+        "reason": "Claude triage: fixed-size A4 print pages with intentional full-bleed decorative shapes; leading/padding values misread next to pt/mm units"
+      }
+    ]
+  }
+}
