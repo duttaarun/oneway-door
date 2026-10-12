@@ -1,187 +1,207 @@
-# Multi-repo demo: plan (draft for review)
+# Multi-repo demo: plan (draft v2 for review)
 
-Status: **plan only, nothing built yet.** Agreed so far: Kafka for queues, a change-data-capture (CDC) sync that we
-design, headline story B ("The Column Nobody Owned"), and local repos first, pushed to a GitHub org later.
+Status: **plan only, nothing built yet.**
+
+Agreed so far:
+- Kafka for queues.
+- SWIFT is the only payment engine.
+- Postgres holds **routing rules only**, local to the inbound orchestrator.
+- **Mixed ownership:** the rule table's schema lives in the orchestrator repo, and the rule data in a separate rules repo.
+- Outbound feeds Spanner and BigQuery through a queue and a data-ingestion service. There is no CDC.
+- Headline story: **B1, "The Rule Nobody Owned"**.
+- Local repos first, pushed to a GitHub org later.
 
 ## Goal
 
-Show One-Way Door working across **several repos**, the way a payments platform is really split, on a laptop:
+Show One-Way Door working across **several repos**, the way the payments platform is really split, on one laptop:
 
-- a PR in one repo (the SQL repo) is judged against code in **four other repos**;
-- the incident happens for real, across repos;
+- a PR in one repo (here, rule data) is judged against code in **another repo** that reads it;
+- the incident happens for real, across repos, and ends with something that can't be recalled;
 - the safe split spans repos, and a cross-repo rollback test proves it.
 
-Everything stays invented: **Northwind Payments**, made-up banks, made-up accounts and amounts.
+Everything is invented: **Northwind Payments**, made-up banks, accounts and amounts.
 
 ---
 
-## 1. Repos
+## 1. Architecture
 
-All seven live side by side in `~/projects/northwind/`, each its own git repo. They'll be pushed to a GitHub org later.
+```
+ SWIFT in ─► Kafka swift.inbound ─► inbound-orchestrator ◄── routing_rules (Postgres)
+                                          │                      ▲ schema: orchestrator repo
+                                          │                      └ rows:   routing-rules repo (loader job)
+                     HOLD (four-eyes) ◄───┤
+                                          ▼ Kafka payments.routed
+                                    swift-outbound ─► SWIFT engine (fake: records, can't recall)
+                                          │
+                                          ▼ Kafka payments.outcome
+                                    data-ingestion ─► Cloud Spanner (emulator)
+                                                   └► BigQuery (emulator)
+                                                          ▼
+                                                 payquery (Kubernetes / kind)
+```
+
+## 2. Repos
+
+All seven sit side by side in `~/projects/northwind/`, each its own git repo.
 
 | Repo | Owns | Mirrors |
 |---|---|---|
-| `northwind-contracts` | JSON Schemas for events (CDC payload, SWIFT-out record), simplified pacs.008 layout, inbound file layout | shared contracts |
-| `northwind-payments-db` | **PostgreSQL migrations only** (Flyway), plus a migration runner image | the separate SQL repo |
-| `northwind-gtx-gateway` | inbound: reads `swift.inbound` (Kafka) and files from bucket `northwind-inbound`, validates, inserts into `payments` | GTX gateway |
-| `northwind-swift-outbound` | outbound: consumes CDC events for payments ready to send, builds pacs.008 XML, writes to `swift.outbound` (Kafka) and bucket `northwind-swift-out` | outbound to SWIFT |
-| `northwind-data-sync` | consumes CDC events, upserts Spanner `Payments`, appends BigQuery `payments_history`, owns Spanner DDL and BigQuery schema | Datastream/Dataflow layer |
-| `northwind-payquery` | query API on Kubernetes: recent payments from Spanner, history from BigQuery | PayQuery on GKE |
-| `northwind-platform` | compose + kind setup, Debezium config, fake SWIFT sink, deploy/rollback/incident/rollback-test scripts, the VS Code multi-root workspace | infra repo |
+| `northwind-contracts` | JSON Schemas: inbound SWIFT payment (simplified pacs.008), `RoutedPayment`, `PaymentOutcome`, and the **rule file format** | shared contracts |
+| `northwind-inbound-orchestrator` | consumes `swift.inbound`, loads rules from Postgres, decides RELEASE or HOLD, publishes `payments.routed` or `payments.held`. **Owns the `routing_rules` schema** (Flyway). | inbound orchestrator |
+| `northwind-routing-rules` | **the rule data**: one JSON file per rule, plus a loader job that upserts them into `routing_rules`. Deployed on its own schedule. | the separately-managed rules |
+| `northwind-swift-outbound` | consumes `payments.routed`, sends to the SWIFT engine, publishes `payments.outcome` | outbound microservice |
+| `northwind-data-ingestion` | consumes `payments.outcome` (and `payments.held`), writes Spanner `Payments` and BigQuery `payments_history` | data-ingestion microservices |
+| `northwind-payquery` | REST API on Kubernetes: a payment's status from Spanner, history from BigQuery | PayQuery on GKE |
+| `northwind-platform` | compose + kind, the fake SWIFT engine, deploy/rollback/incident/rollback-test scripts, release manifests, VS Code multi-root workspace | infra repo |
 
 The current `one-way-door` repo stays the home of the skill. The Northwind repos get it **as a plugin** (one install
-covers all seven), which also shows off the "pluggable" route. The repos are pushed to GitHub before the cloud agent
-is tried. The cloud agent doesn't load plugins, so each repo then also gets a copy of `.github/skills`.
+covers all seven). When they move to GitHub, each repo also gets a copy of `.github/skills`, because the cloud agent
+doesn't load plugins.
 
-## 2. Runtime (one laptop)
+## 3. Runtime (one laptop)
 
 | Piece | Local stand-in | Runs in |
 |---|---|---|
-| Message queues | Kafka 4.1 (KRaft) | compose |
-| File store | `fake-gcs-server` (GCS API) | compose |
-| Transactional DB | PostgreSQL 16 with `wal_level=logical` | compose |
-| CDC | **Debezium 3.2** (Kafka Connect, Postgres connector) | compose |
-| Spanner | Google's Spanner emulator | compose |
+| Queues | Kafka 4.1 (KRaft) | compose |
+| Rules DB | PostgreSQL 16 | compose |
+| Cloud Spanner | Google's Spanner emulator | compose |
 | BigQuery | community `bigquery-emulator` | compose |
-| SWIFT network | `swift-sink` (a small service in `northwind-platform`: records every message "sent", never lets you take one back) | compose |
+| SWIFT | `swift-engine`: records every message, exposes what it received, has no recall | compose |
 | GKE | `kind` cluster running PayQuery (real rolling updates, `kubectl rollout undo`) | kind |
-| Services | gateway, outbound, data-sync, payquery (Java 21, Spring Boot 3.5) | compose (payquery: kind) |
+| Services | orchestrator, swift-outbound, data-ingestion, payquery (Java 21, Spring Boot 3.5); rules loader (job) | compose / kind |
 
-All of these images were checked: they run natively on Apple Silicon.
+All images were checked: they run natively on Apple Silicon. Without Debezium and with one outbound service, this
+fits in about 7 GB. **Raise Docker Desktop to 10 GB** (Settings → Resources) for headroom. kind is optional if memory
+is tight: PayQuery can run in compose instead.
 
-**Memory:** Docker Desktop has 8 GB today. Five JVMs, Kafka, Kafka Connect, three emulators and a kind node need
-about 7 to 9 GB. **Raise Docker Desktop to 12 GB** (Settings → Resources) before phase M2. If that isn't possible,
-PayQuery falls back to compose and kind becomes optional.
+## 4. v1: the happy path
 
-## 3. The v1 flow (happy path)
+**`routing_rules`**: schema in the orchestrator repo (`V1__routing_rules.sql`):
 
+| column | type |
+|---|---|
+| `rule_id` | varchar, primary key |
+| `rule_type` | varchar (`HIGH_VALUE_HOLD`, `SANCTIONED_COUNTRY_BLOCK`, …) |
+| `priority` | int |
+| `params` | **jsonb**: each rule type has its own parameters |
+| `enabled` | boolean |
+
+**Rule data**: rule files in the rules repo, for example `rules/high-value-hold-gbp.json`:
+
+```json
+{ "ruleId": "HV-GBP", "ruleType": "HIGH_VALUE_HOLD", "priority": 10,
+  "params": { "currency": "GBP", "holdAbove": 50000.00 } }
 ```
-external file / message ─► gtx-gateway ─► payments (Postgres)
-                                              │  Debezium CDC  (topic cdc.payments)
-                     ┌────────────────────────┼─────────────────────────┐
-                     ▼                        ▼                         ▼
-              swift-outbound             data-sync ──► Spanner       (anyone else
-                     │                        └──────► BigQuery       subscribed)
-                     ▼                                    │
-      swift.outbound + bucket ─► swift-sink          payquery (kind)
-```
 
-`payments` v1 (in `northwind-payments-db`, `V1__payments.sql`):
+The orchestrator holds any GBP payment above £50,000 for four-eyes review and releases the rest to SWIFT.
 
-| column | type | note |
-|---|---|---|
-| `payment_id` | uuid | primary key |
-| `uetr` | uuid | SWIFT end-to-end reference, unique |
-| `status` | varchar | RECEIVED → READY → SENT |
-| `amount`, `currency` | numeric(18,2), char(3) | |
-| `debtor_name`, `debtor_iban` | | |
-| `creditor_name`, `creditor_iban` | | |
-| **`creditor_address`** | text | unstructured address lines, as most payments carry them today |
-| `received_at`, `updated_at` | timestamptz | |
+**Done when:** `traffic.sh 50` sends 50 SWIFT payments, including a few above £50,000. The high-value ones show as
+**HELD** in PayQuery and never reach the SWIFT engine. The rest show as **SENT** in PayQuery, Spanner and BigQuery,
+and in the engine's log.
 
-Debezium publishes every row change as JSON with **every column as a field**. That's the hidden contract: the table's
-shape *is* the event's shape, so a column change in the SQL repo silently changes an event that three other repos read.
+## 5. Story B1: "The Rule Nobody Owned"
 
-**Done-when for v1:** `traffic.sh 50` sends 50 instructions (half as Kafka messages, half as files). 50 rows land
-in Postgres, 50 pacs.008 messages *with addresses* land in swift-sink, and PayQuery returns all 50 with addresses
-from Spanner and BigQuery.
-
-## 4. Story B: "The Column Nobody Owned"
-
-**The change.** ISO 20022 prefers structured postal addresses, so three teams raise three tidy PRs:
+**The change.** Money as decimals is a rounding risk, so two teams move rule thresholds to minor units:
 
 | Repo | PR | Change |
 |---|---|---|
-| `northwind-payments-db` | **#517** | `V31__structured_creditor_address.sql`: add `creditor_street`, `creditor_town`, `creditor_postcode`, `creditor_country`, **parse the old text into them in place** (some won't parse), then **drop `creditor_address`** |
-| `northwind-gtx-gateway` | #212 | writes the structured columns |
-| `northwind-swift-outbound` | #88 | builds `<PstlAdr>` with structured fields |
+| `northwind-routing-rules` | **#517** | rule params change from `"holdAbove": 50000.00` to `"holdAboveMinor": 5000000`: the **key is renamed and the unit changes** |
+| `northwind-inbound-orchestrator` | #212 | reads `holdAboveMinor` and compares it with the amount in pence |
 
-`northwind-data-sync` and `northwind-payquery` aren't touched. Nobody thought they read that column: they read the
-CDC events. All tests pass in all three repos.
+Both PRs are tidy and both repos' tests pass. Each team owns half of the meaning.
 
 **The incident** (`northwind-platform/scripts/incident.sh`):
 
-1. v1 everywhere. Payments flow; SWIFT messages carry addresses; PayQuery shows them.
-2. Deploy #517 (the migration runs), then #212 and #88.
-3. **First symptom:** PayQuery shows blank beneficiary addresses. data-sync maps `creditor_address` from the CDC
-   event, and the field has vanished. No errors.
-4. **Second symptom:** outbound #88's address formatting misbehaves (some towns didn't parse), and the
-   swift-sink validation rejects a few messages. On-call rolls back **swift-outbound only**.
-5. **The punchline:** outbound v1 reads the CDC events, finds no `creditor_address` (null, no exception), and sends
-   pacs.008 messages to SWIFT **with no beneficiary address at all**. swift-sink records them as delivered.
-   You can't recall a message from SWIFT.
-6. `status.sh`: N payments sent without an address, PayQuery showing blanks, the original address text **gone from
-   Postgres** (dropped after a lossy parse), and nothing in any dead-letter topic.
+1. v1 everywhere. High-value payments are held, and the rest go to SWIFT.
+2. The loader deploys #517 (new rule rows), then the orchestrator deploys #212. Holds still work.
+3. An unrelated problem in orchestrator #212 (for example, a slow new rule) makes on-call **roll back the
+   orchestrator only**. The rule data stays: it was deployed separately, from another repo.
+4. Old orchestrator code reads `params.holdAbove`, finds nothing, and treats the rule as **not applicable**. It
+   throws no error, logs no warning, and puts nothing in a dead-letter topic.
+5. **The punchline:** traffic includes payments of £60,000, £250,000 and so on. They are **released straight to
+   SWIFT without review**. The engine records them as sent. You can't recall a payment from SWIFT.
+6. `status.sh`: N payments worth £X bypassed four-eyes review, PayQuery shows them as SENT, and every dashboard is green.
 
-**Why it's one-way:** the original addresses are destroyed (lossy in-place conversion + drop), the CDC events changed
-shape for every subscriber, and what reached SWIFT can't be undone.
+**Why it's one-way:** the code rolled back, but the rule data (another repo, another deploy) didn't. What reached
+SWIFT can't be undone.
 
-**What the skill should say on PR #517** (run in `northwind-payments-db`): ONE-WAY, safe window *none*. The blast
-radius lists **swift-outbound, data-sync, payquery (via Spanner/BigQuery) and gateway, in four other repos**, found
-through the CDC topic and the column name. Coverage: "checked 5 of 5 related repos".
+**Why it's hard to catch:** the rules PR changes **data, not schema**. A migration scanner sees nothing. Only someone
+who reads the orchestrator's code in the other repo knows that `holdAbove` must still exist.
 
-## 5. The safe split, across repos
+**What the skill should say on PR #517** (run in `northwind-routing-rules`): ONE-WAY, safe window *none* (closes when
+the loader runs). Finding: rule parameter `holdAbove` removed and `holdAboveMinor` added, with a ×100 unit change.
+Blast radius: **`RuleEvaluator.java` in `northwind-inbound-orchestrator` reads `holdAbove`**, so the previous release
+silently skips the hold. Coverage: "checked 6 of 6 related repos".
 
-| Step | payments-db | gateway | outbound | data-sync | payquery |
-|---|---|---|---|---|---|
-| 1. Expand | add structured columns, nullable | writes both | (none) | maps new fields if present | (none) |
-| 2. Migrate | backfill structured; **unparseable rows flagged for repair, originals kept** | (none) | (none) | backfills Spanner/BigQuery | (none) |
-| 3. Contract | (none) | (none) | builds structured `<PstlAdr>`, falls back to lines | reads structured | shows structured |
-| 4. Drop | drop `creditor_address` once every consumer is on step 3 | stops writing old | (none) | (none) | (none) |
+## 6. The safe split, across repos
 
-Each step rolls back to the one before. A **release manifest** in `northwind-platform` says which version of each repo
-makes up "step N", and `rollback-test.sh` deploys and rolls back whole manifests. Expected result: 4 PASS, and
-PR #517 + #212 + #88 FAIL.
+| Step | routing-rules (data) | orchestrator (code) |
+|---|---|---|
+| 1. Expand | (none) | reads `holdAboveMinor` if present, otherwise `holdAbove`. **Fails closed**: if neither exists, holds the payment. |
+| 2. Migrate | rule files carry **both** keys. The loader checks they agree (`holdAboveMinor == holdAbove × 100`). | (none) |
+| 3. Contract | (none) | reads only `holdAboveMinor`. Still fails closed if it's missing. |
+| 4. Drop | remove `holdAbove` | (none) |
 
-## 6. Skill changes (in this repo)
+Each step rolls back to the one before, **in either repo**. That's the extra rule for split ownership: the data repo
+and the code repo can each be rolled back without the other. A **release manifest** in `northwind-platform` pins one
+version per repo for each step, and `rollback-test.sh` deploys, sends traffic and rolls back each repo in turn.
+Expected: 4 PASS, and #517 + #212 FAIL.
+
+Teaching point for the pitch: **controls must fail closed.** A hold rule that can't read its threshold should hold,
+not release.
+
+## 7. Skill changes (in this repo)
 
 1. **`.github/one-way-door.yml`** in each repo:
    ```yaml
-   related:                       # where else to look for readers and writers
-     - name: northwind-swift-outbound
-       path: ../northwind-swift-outbound      # local clone (VS Code workspace / CLI)
-       github: northwind/northwind-swift-outbound   # for GitHub code search (cloud agent)
+   related:
+     - name: northwind-inbound-orchestrator
+       path: ../northwind-inbound-orchestrator          # local clone (VS Code workspace / CLI)
+       github: northwind/northwind-inbound-orchestrator # GitHub code search (cloud agent)
    owns:
-     tables: [payments]
-     topics: [cdc.payments]
+     data: [routing_rules.params]       # what this repo writes
+     topics: []
    contracts: ../northwind-contracts
-   deployed_ref: main             # what "currently running" means in each related repo
+   deployed_ref: main
    ```
-2. **New script `find-readers.mjs`** (Node stdlib, JSON out, exit 0). Given identifiers (table, columns, topics, event
-   fields, with snake and camel variants), it searches each related repo **at its deployed ref** and reports matches
-   by repo, file and line. It also reports repos it couldn't reach. This makes the blast radius mechanical.
-3. **SKILL.md step 5:** run `find-readers`, then judge each hit. If a related repo can't be reached, say so and assume
-   it reads.
-4. **Verdict coverage:** `Blast radius: checked 5 of 5 related repos` (or "3 of 5; 2 unreachable").
-5. **New patterns:** `cdc-table-as-contract`, `external-network-message` (SWIFT and partners: can't recall),
-   `spanner-schema-change`, `bigquery-schema-change`, `rolling-update-mixed-versions`, `file-layout-change`.
-6. **scan-migrations:** Spanner DDL and BigQuery DDL folders.
+2. **New script `find-readers.mjs`** (Node stdlib, JSON out, exit 0). Given identifiers (keys, columns, topics, with
+   snake and camel variants), it searches each related repo **at its deployed ref** and reports hits by repo, file
+   and line, plus repos it couldn't reach.
+3. **New script mode `data-compat`** (an extension of `schema-compat`). It compares JSON/YAML data files between base
+   and head: keys removed or renamed, and **numbers at the same path scaled by 10, 100 or 1000** (a likely unit
+   change). This gives the rules PR a mechanical finding even though it has no schema change.
+4. **SKILL.md step 5:** run `find-readers`, judge each hit, and if a repo can't be reached, say so and assume it reads.
+5. **Verdict coverage:** `Blast radius: checked 6 of 6 related repos`.
+6. **New patterns:** `reference-data-semantics-change` (rule or config data changes meaning),
+   `split-ownership-rollback` (schema in one repo, data in another), `control-fails-open`,
+   `external-network-message` (SWIFT: can't recall), `spanner-schema-change`, `bigquery-schema-change`,
+   `rolling-update-mixed-versions`.
 
-## 7. Phases (each ends with a commit and a shown "Done when")
+## 8. Phases (each ends with a commit and a shown "Done when")
 
 | Phase | What | Done when |
 |---|---|---|
-| **M0** | Platform skeleton: compose with Postgres, Kafka, Debezium, fake-gcs, Spanner and BigQuery emulators, swift-sink. kind cluster. | Every piece healthy from one `up.sh`. Debezium emits a CDC event for a hand-inserted row. |
-| **M1** | Skill: config file, `find-readers.mjs` + tests, SKILL.md step 5, coverage line, new patterns, Spanner/BigQuery DDL | Tests green. `find-readers` on fixture repos finds readers across three repos. |
-| **M2** | The seven repos at v1, plus the happy path | The v1 done-when in section 3. |
-| **M3** | Story B: the three PR branches and the cross-repo `incident.sh` | The incident reproduces three times from clean, ending with messages in swift-sink with no address. |
-| **M4** | Skill run on #517, the split across repos, release manifests, cross-repo `rollback-test.sh` | The skill names all four other repos. The rollback matrix shows 4 PASS, 1 FAIL. |
+| **M0** | Platform skeleton: compose (Kafka, Postgres, Spanner and BigQuery emulators, swift-engine) and a kind cluster | Everything healthy from one `up.sh`. A test message reaches each piece. |
+| **M1** | Skill: config file, `find-readers.mjs`, `data-compat` + tests, SKILL.md step 5, coverage line, new patterns | Tests green. On fixture repos, a rules-data change is flagged and its reader found in another repo. |
+| **M2** | The seven repos at v1, plus the happy path | Section 4's done-when. |
+| **M3** | Story B1: the two PR branches and the cross-repo `incident.sh` | Reproduces three times from clean: high-value payments reach the SWIFT engine unreviewed, with no errors. |
+| **M4** | Skill run on #517, the split across both repos, release manifests, cross-repo `rollback-test.sh` | The skill names the orchestrator's `RuleEvaluator.java`. The matrix shows 4 PASS, 1 FAIL. |
 | **M5** | README, 4-minute demo script, `reset.sh`, multi-root VS Code workspace, Copilot checklist | Reset in under a minute. Rehearsed end to end. |
 
-M0 to M3 alone are already demo-able ("here's the incident across repos"). M4 is the proof.
+M0 to M3 alone are demo-able. M4 is the proof.
 
-## 8. Risks and how we handle them
+## 9. Risks
 
-- **BigQuery emulator fidelity:** it's a community project and not every DDL behaves like real BigQuery. We keep
-  BigQuery to simple tables and inserts, and note it in the README.
-- **Laptop memory:** see section 2. kind is the first thing to drop if needed.
-- **Demo length:** five services and a cross-repo story could overrun 4 minutes. The incident script compresses it
-  the same way as today, and the deep dive moves to a backup video.
-- **Message formats:** pacs.008 is simplified (only the elements the story needs). Real ISO 20022 validation is out
-  of scope.
+- **BigQuery emulator fidelity:** a community project. Keep to simple tables and inserts.
+- **Memory:** see section 3. kind is the first thing to drop.
+- **Demo length:** the incident script compresses time as today. The deep dive goes to the backup video.
+- **Message formats:** a simplified pacs.008 (only what the story needs). No real ISO 20022 validation.
+- **Story B2** ("The Field Nobody Owned": a message change that blanks Spanner, BigQuery and PayQuery) stays a
+  possible second scenario once B1 works. The same repos support it.
 
-## 9. Open questions (answers welcome, not blocking M0)
+## 10. Open questions (not blocking M0)
 
-1. Real pacs.008, or MT103 as well? (Plan: pacs.008 only.)
-2. Any real queue or topic naming conventions you'd like mirrored? (Plan: invented names.)
-3. Should PayQuery be REST or gRPC? (Plan: REST.)
+1. The rule file format: JSON (planned) or YAML?
+2. Should the four-eyes approval be visible in the demo (an "approve" call releasing a held payment), or just shown
+   as HELD? (Planned: shown as HELD, with an approve endpoint as a stretch goal.)
+3. PayQuery as REST (planned) or gRPC?
