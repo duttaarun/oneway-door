@@ -1,0 +1,5 @@
+*.woff2
+*.woff
+*.otf
+*.ttf
+!.gitkeep

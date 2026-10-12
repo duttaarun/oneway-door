@@ -7,192 +7,194 @@
 <style>
   @page { size: A4; margin: 0; }
   :root {
-    --ink: #16112F; --paper: #FBF7EF; --card: #FFFFFF; --line: #E8DFCE; --muted: #5A5470;
-    --indigo: #3B2BE0; --deep: #1E1570; --coral: #FF5B4A; --coral-d: #C8321F;
-    --mint: #22D8B5; --mint-d: #0B7F69; --sun: #FFC83A; --sun-d: #8A5A00; --lilac: #D9D2FF;
+    --text: #1F1F1F; --muted: #555555; --line: #D8D8D8; --grey: #F1F1F1; --white: #FFFFFF; --black: #000000;
+    --green-bright: #11B67A; --green: #006A4D; --green-mid: #00864F; --green-deep: #024731; --neon: #0BE248; --mint: #C7FFC6;
+    --lilac: #E4E3FF; --lilac-d: #4A47B8; --aqua: #D6F3F1; --aqua-d: #0E6B66; --orange: #FFE3CC; --orange-d: #8A4300;
+    --pink: #FCE3FB; --pink-d: #8E2A88; --red: #B00000;
+    --head: 'GT Ultra Median', 'Source Serif 4', Georgia, serif;
+    --body: 'GT Ultra Standard', 'Source Sans 3', Arial, sans-serif;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
   }
   * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  html, body { margin: 0; padding: 0; background: #ddd; }
-  body { font-family: 'Manrope', Arial, sans-serif; color: var(--ink); font-size: 9.4pt; line-height: 1.45; }
-  .page { width: 210mm; height: 297mm; position: relative; overflow: hidden; background: var(--paper); break-after: page; page-break-after: always; }
+  html, body { margin: 0; padding: 0; background: #CCCCCC; }
+  body { font-family: var(--body); color: var(--text); font-size: 9.6pt; line-height: 1.45; }
+  .page { width: 210mm; height: 297mm; position: relative; overflow: hidden; background: var(--white); break-after: page; page-break-after: always; }
   .page:last-child { break-after: auto; page-break-after: auto; }
-  h1, h2, h3, .display { font-family: 'Syne', Arial, sans-serif; margin: 0; }
-  p { margin: 0 0 2.2mm; }
-  .mono { font-family: 'JetBrains Mono', 'Courier New', monospace; }
+  h1, h2, h3 { font-family: var(--head); margin: 0; color: var(--black); font-weight: 600; }
+  p { margin: 0 0 2mm; }
   b { font-weight: 700; }
+  .mono { font-family: var(--mono); }
 
-  /* ---------- section band ---------- */
-  .band { height: 38mm; padding: 0 16mm; display: flex; align-items: center; gap: 7mm; position: relative; overflow: hidden; }
-  .band > div:nth-child(2) { max-width: 104mm; }
-  .band .num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 54pt; line-height: 1.05; -webkit-text-fill-color: transparent; -webkit-text-stroke: 1.6px currentColor; }
-  .band h2 { font-size: 20pt; font-weight: 700; letter-spacing: -0.01em; line-height: 1.12; }
-  .band .kicker { font-family: 'JetBrains Mono', monospace; font-size: 7.6pt; letter-spacing: 1.6pt; text-transform: uppercase; opacity: .85; margin-bottom: 1.5mm; }
-  .band .shape { position: absolute; right: 14mm; bottom: -6mm; width: 22mm; height: 34mm; border-radius: 30mm 30mm 0 0; }
-  .band .shape.two { display: none; }
-  .band.coral { background: var(--coral); color: #2A0B07; }
-  .band.indigo { background: var(--indigo); color: #FFFFFF; }
-  .band.mint { background: var(--mint); color: #072B24; }
-  .band.sun { background: var(--sun); color: #2E1F00; }
+  /* ---------- site-style header ---------- */
+  .topbar { height: 12mm; background: var(--green-bright); padding: 0 14mm; display: flex; align-items: center; justify-content: space-between; }
+  .wordmark { font-family: var(--head); font-weight: 700; font-size: 13pt; color: var(--black); display: flex; align-items: center; gap: 2.4mm; }
+  .wordmark i { display: inline-block; width: 3.6mm; height: 5.4mm; border: 0.9mm solid var(--black); border-bottom: 0; border-radius: 2.4mm 2.4mm 0 0; }
+  .topbar .meta-r { font-size: 8pt; font-weight: 600; color: var(--black); }
+  .navbar { height: 8.6mm; background: var(--black); padding: 0 14mm; display: flex; align-items: stretch; gap: 7mm; }
+  .navbar span { color: var(--white); font-size: 8.2pt; font-weight: 600; display: flex; align-items: center; border-bottom: 1mm solid transparent; padding-top: 1mm; }
+  .navbar span.on { border-bottom-color: var(--green-bright); }
+  .navbar span small { color: #9B9B9B; font-weight: 400; margin-right: 1.4mm; font-size: 7.4pt; }
 
-  .body { padding: 8mm 16mm 0; }
-  .lead { font-size: 11.2pt; line-height: 1.42; font-weight: 500; margin-bottom: 4mm; }
-  .label { font-family: 'JetBrains Mono', monospace; font-size: 7.2pt; letter-spacing: 1.4pt; text-transform: uppercase; color: var(--muted); margin-bottom: 1.6mm; }
+  /* ---------- section intro ---------- */
+  .intro { background: var(--grey); padding: 5.4mm 14mm 5mm; }
+  .intro .label { font-size: 8.4pt; font-weight: 700; color: var(--green); margin-bottom: 1mm; }
+  .intro h2 { font-size: 21pt; line-height: 1.15; }
+  .body { padding: 6mm 14mm 0; }
+  .label { font-size: 8.4pt; font-weight: 700; color: var(--green); margin-bottom: 1.6mm; }
+  .lead { font-size: 10.6pt; line-height: 1.45; margin-bottom: 4mm; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
   .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 4mm; padding: 3.6mm 4mm; }
-  .card h3 { font-size: 11pt; font-weight: 700; margin-bottom: 1.4mm; }
-  .card p { font-size: 8.8pt; line-height: 1.4; margin: 0; }
-  .chip { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 7.2pt; padding: 0.8mm 2.4mm; border-radius: 10mm; font-weight: 600; }
-  .footer { position: absolute; left: 16mm; right: 16mm; bottom: 8mm; display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 7pt; color: var(--muted); border-top: 1px solid var(--line); padding-top: 2.4mm; }
+  .card { background: var(--white); border: 1px solid var(--line); border-radius: 3.5mm; padding: 3.6mm 4mm; }
+  .card h3 { font-size: 11.4pt; margin-bottom: 1.2mm; }
+  .card p { font-size: 9pt; line-height: 1.4; margin: 0; }
+  .pill { display: inline-block; font-size: 7.6pt; font-weight: 700; padding: 0.7mm 2.6mm; border-radius: 10mm; margin-bottom: 2mm; }
+  .more { font-weight: 700; color: var(--black); text-decoration: underline; text-underline-offset: 0.6mm; font-size: 8.8pt; }
+  .footer { position: absolute; left: 14mm; right: 14mm; bottom: 7mm; display: flex; justify-content: space-between; font-size: 7.6pt; color: var(--muted); border-top: 1px solid var(--line); padding-top: 2.2mm; }
 
   /* ---------- cover ---------- */
-  .cover-top { height: 168mm; background: var(--deep); position: relative; overflow: hidden; color: #fff; padding: 18mm 16mm 0; }
-  .cover-top .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 8pt; letter-spacing: 2pt; text-transform: uppercase; color: var(--mint); }
-  .cover-top h1 { font-size: 54pt; font-weight: 800; line-height: .95; letter-spacing: -0.025em; margin-top: 7mm; }
-  .cover-top .sub { font-family: 'Syne', sans-serif; font-size: 15pt; font-weight: 600; line-height: 1.3; color: var(--sun); margin-top: 6mm; max-width: 112mm; }
-  .doors { position: absolute; left: 16mm; right: 16mm; bottom: 0; height: 68mm; }
-  .door { position: absolute; bottom: 0; width: 30mm; height: 56mm; border-radius: 16mm 16mm 0 0; }
-  .door .knob { position: absolute; right: 4mm; top: 32mm; width: 3mm; height: 3mm; border-radius: 50%; background: rgba(0,0,0,.35); }
-  .door.d1 { left: 0; background: var(--mint); }
-  .door.d2 { left: 36mm; background: var(--sun); }
-  .door.d3 { left: 72mm; background: var(--lilac); }
-  .door.open { left: 118mm; width: 30mm; background: transparent; border: 2.2mm solid var(--coral); border-bottom: 0; }
-  .door.open .leaf { position: absolute; left: -2.2mm; bottom: 0; width: 12mm; height: 58mm; background: var(--coral); transform: skewY(-14deg); transform-origin: left bottom; border-radius: 6mm 0 0 0; }
-  .door.open .light { position: absolute; left: 0; right: 0; bottom: 0; top: 0; background: linear-gradient(180deg, #FFE7A0 0%, #FFC83A 100%); opacity: .9; border-radius: 14mm 14mm 0 0; }
-  .arrow { position: absolute; left: 152mm; bottom: 24mm; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 30pt; color: var(--coral); }
-  .arrow-label { position: absolute; left: 152mm; bottom: 15mm; font-family: 'JetBrains Mono', monospace; font-size: 7pt; letter-spacing: 1.2pt; text-transform: uppercase; color: #FFB3AA; }
-  .ring { position: absolute; right: -42mm; top: -42mm; width: 84mm; height: 84mm; border-radius: 50%; border: 10mm solid var(--indigo); opacity: .8; }
-  .dot { position: absolute; right: 22mm; top: 56mm; width: 9mm; height: 9mm; border-radius: 50%; background: var(--coral); }
-
-  .cover-bottom { padding: 9mm 16mm 0; display: grid; grid-template-columns: 1.55fr 1fr; gap: 9mm; }
-  .meta { display: grid; grid-template-columns: auto 1fr; gap: 1.2mm 4mm; font-size: 8.6pt; margin-top: 4mm; }
-  .meta dt { font-family: 'JetBrains Mono', monospace; font-size: 7pt; letter-spacing: 1pt; text-transform: uppercase; color: var(--muted); padding-top: .5mm; }
+  .hero { background: var(--green-deep); height: 140mm; position: relative; overflow: hidden; padding: 16mm 14mm 0; color: var(--white); }
+  .hero .tag { display: inline-block; background: var(--white); color: var(--black); font-size: 8.4pt; font-weight: 700; padding: 1.4mm 4mm; border-radius: 10mm; }
+  .hero h1 { color: var(--white); font-size: 44pt; line-height: 1.02; margin-top: 7mm; font-weight: 600; }
+  .hero .sub { font-size: 14pt; line-height: 1.35; margin-top: 5mm; max-width: 98mm; color: #E6F5EE; }
+  .hero .cta { display: inline-block; margin-top: 7mm; background: var(--white); color: var(--black); font-weight: 700; font-size: 9.4pt; padding: 2.4mm 6mm; border-radius: 10mm; }
+  .doors { position: absolute; right: 14mm; bottom: 0; width: 82mm; height: 96mm; }
+  .door { position: absolute; bottom: 0; width: 17mm; height: 46mm; border-radius: 8.5mm 8.5mm 0 0; }
+  .door .knob { position: absolute; right: 2.4mm; top: 25mm; width: 2.2mm; height: 2.2mm; border-radius: 50%; background: rgba(0,0,0,.35); }
+  .door.a { left: 0; background: var(--green-bright); }
+  .door.b { left: 21mm; background: var(--green-mid); }
+  .door.c { left: 42mm; background: var(--mint); }
+  .door.open { left: 63mm; width: 19mm; height: 62mm; border-radius: 9.5mm 9.5mm 0 0; border: 1.6mm solid var(--neon); border-bottom: 0; overflow: hidden; }
+  .door.open .glow { position: absolute; inset: 0; background: linear-gradient(180deg, #F2FFF1 0%, var(--mint) 100%); }
+  .door.open .leaf { position: absolute; left: 0; bottom: 0; width: 7mm; height: 64mm; background: var(--neon); transform: skewY(-16deg); transform-origin: left bottom; }
+  .ring { position: absolute; right: -30mm; top: -34mm; width: 92mm; height: 92mm; border-radius: 50%; border: 9mm solid var(--green-mid); opacity: .55; }
+  .oneway { position: absolute; right: 14mm; bottom: 66mm; font-size: 8pt; font-weight: 700; color: var(--neon); letter-spacing: .02em; }
+  .cover-main { padding: 7mm 14mm 0; display: grid; grid-template-columns: 1.5fr 1fr; gap: 8mm; }
+  .meta { display: grid; grid-template-columns: auto 1fr; gap: 1.2mm 4mm; font-size: 8.8pt; margin-top: 3mm; }
+  .meta dt { color: var(--muted); }
   .meta dd { margin: 0; font-weight: 600; }
-  .stat { border-radius: 4mm; padding: 3.2mm 4mm; margin-bottom: 3mm; }
-  .stat .n { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 17pt; line-height: 1.1; letter-spacing: -0.01em; }
-  .stat .t { font-size: 8.2pt; line-height: 1.3; margin-top: 1mm; }
-  .toc { margin-top: 5mm; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4mm; }
-  .toc div { border-top: 1px solid var(--ink); padding-top: 1.6mm; font-size: 8pt; font-weight: 700; }
-  .toc span { display: block; font-family: 'JetBrains Mono', monospace; font-size: 7pt; color: var(--muted); font-weight: 400; }
+  .stat { background: var(--grey); border-radius: 3.5mm; padding: 3mm 4mm; margin-bottom: 2.6mm; }
+  .stat .n { font-family: var(--head); font-weight: 700; font-size: 17pt; line-height: 1.1; color: var(--green); }
+  .stat .t { font-size: 8.4pt; line-height: 1.3; margin-top: .6mm; }
+  .toc { padding: 3mm 14mm 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+  .toc div { background: var(--grey); border-radius: 3.5mm; padding: 3mm 3.6mm; }
+  .toc small { display: block; color: var(--green); font-weight: 700; font-size: 7.8pt; }
+  .toc b { display: block; font-family: var(--head); font-size: 10.6pt; margin: .6mm 0 1.4mm; }
 
-  /* ---------- problem page ---------- */
-  .statement { background: var(--ink); color: #fff; border-radius: 5mm; padding: 4.4mm 6mm; position: relative; margin-bottom: 4.4mm; }
-  .statement .label { color: var(--sun); }
-  .statement p { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 11.4pt; line-height: 1.36; margin: 0; }
-  .statement:after { content: ""; position: absolute; right: 6mm; top: -4mm; width: 12mm; height: 12mm; border-radius: 50%; background: var(--coral); }
-  .hide .card { background: var(--t); border-color: transparent; position: relative; }
-  .hide .card:before { content: ""; position: absolute; right: 3mm; top: 3mm; width: 5mm; height: 7mm; border-radius: 3mm 3mm 0 0; background: var(--c); }
-  .hide .card h3 { color: var(--cd); }
-  .two-col { display: grid; grid-template-columns: 1.15fr 1fr; gap: 6mm; margin-top: 4.4mm; }
-  .stakes { background: var(--lilac); border-radius: 5mm; padding: 4.4mm 5mm; }
-  .stakes h3 { font-size: 12pt; font-weight: 700; margin-bottom: 2mm; color: var(--deep); }
+  /* ---------- problem ---------- */
+  .statement { background: var(--green-deep); color: var(--white); border-radius: 3.5mm; padding: 4.6mm 6mm; margin-bottom: 4.4mm; }
+  .statement .label { color: var(--mint); }
+  .statement p { font-family: var(--head); font-size: 12pt; line-height: 1.4; margin: 0; }
+  .two-col { display: grid; grid-template-columns: 1.12fr 1fr; gap: 6mm; margin-top: 4.4mm; }
+  .miss .row { display: grid; grid-template-columns: 8mm 1fr; gap: 3mm; align-items: start; margin-bottom: 2.4mm; }
+  .miss .k { width: 7mm; height: 7mm; border-radius: 50%; background: var(--green); color: var(--white); font-weight: 700; font-size: 9.4pt; display: flex; align-items: center; justify-content: center; }
+  .miss b { display: block; font-size: 9.6pt; }
+  .miss span { font-size: 9pt; color: var(--muted); }
+  .stakes { background: var(--mint); border-radius: 3.5mm; padding: 4.2mm 5mm; }
+  .stakes h3 { font-size: 12pt; color: var(--green-deep); margin-bottom: 1.6mm; }
   .stakes ul { margin: 0; padding-left: 4mm; }
-  .stakes li { margin-bottom: 1.4mm; font-size: 8.6pt; line-height: 1.38; }
-  .miss { counter-reset: m; }
-  .miss .row { display: grid; grid-template-columns: 9mm 1fr; gap: 3mm; align-items: start; margin-bottom: 2.2mm; }
-  .miss .row .k { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 16pt; color: var(--coral-d); line-height: 1.1; }
-  .miss .row b { display: block; font-size: 9.6pt; }
-  .miss .row span { font-size: 8.8pt; color: var(--muted); }
+  .stakes li { margin-bottom: 1.4mm; font-size: 8.8pt; line-height: 1.38; }
+  .cost { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .cost div { background: var(--black); color: #EDEDED; border-radius: 3.5mm; padding: 3.4mm 4mm; font-size: 8.8pt; line-height: 1.4; }
+  .cost b { display: block; font-family: var(--head); font-size: 11.2pt; margin-bottom: .8mm; color: var(--green-bright); }
 
-  .cost { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin-top: 5mm; }
-  .cost div { background: var(--ink); color: #EDEAFF; border-radius: 4mm; padding: 3.4mm 4mm; font-size: 8.6pt; line-height: 1.4; }
-  .cost b { display: block; font-family: 'Syne', sans-serif; font-size: 11pt; margin-bottom: 1mm; }
-  .surfaces { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
-  .surfaces div { background: var(--card); border: 1px solid var(--line); border-radius: 4mm; padding: 3.4mm 4mm; font-size: 8.5pt; line-height: 1.4; }
-  .surfaces b { display: block; font-family: 'Syne', sans-serif; font-size: 10.6pt; margin-bottom: 1mm; }
-  .surfaces .how { font-family: 'JetBrains Mono', monospace; font-size: 7.2pt; color: var(--indigo); margin-top: 1.6mm; display: block; }
-
-  /* ---------- stories page ---------- */
-  .scenario { background: var(--card); border: 1px solid var(--line); border-radius: 5mm; padding: 4.4mm 5mm; margin-bottom: 6mm; }
-  .flowstrip { display: flex; align-items: center; gap: 1.8mm; margin: 2.4mm 0 3mm; }
-  .flowstrip .n { flex: 1; border-radius: 3mm; padding: 2mm 2.4mm; font-size: 7.8pt; font-weight: 700; text-align: center; line-height: 1.2; }
-  .flowstrip .n small { display: block; font-weight: 500; font-size: 6.8pt; opacity: .85; }
-  .flowstrip .a { font-weight: 800; color: var(--muted); }
-  .persona { background: var(--card); border: 1px solid var(--line); border-radius: 4mm; padding: 3.6mm 4mm; display: grid; grid-template-columns: 11mm 1fr; gap: 3mm; }
-  .avatar { width: 11mm; height: 11mm; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 12pt; }
-  .persona h3 { font-size: 10.4pt; font-weight: 700; margin-bottom: .3mm; }
-  .persona .role { font-family: 'JetBrains Mono', monospace; font-size: 7pt; color: var(--muted); margin-bottom: 1.4mm; }
+  /* ---------- stories ---------- */
+  .scenario { background: var(--grey); border-radius: 3.5mm; padding: 4mm 5mm; margin-bottom: 5mm; }
+  .scenario h3 { font-size: 12pt; margin-bottom: 1mm; }
+  .scenario h3 span { font-family: var(--body); font-weight: 400; font-size: 8.8pt; color: var(--muted); }
+  .flowstrip { display: flex; align-items: center; gap: 1.6mm; margin: 2.4mm 0 3mm; }
+  .flowstrip .n { flex: 1; border-radius: 2.4mm; padding: 1.8mm 2mm; font-size: 8pt; font-weight: 700; text-align: center; line-height: 1.2; background: var(--white); border: 1px solid var(--line); }
+  .flowstrip .n small { display: block; font-weight: 400; font-size: 7pt; color: var(--muted); }
+  .flowstrip .n.g { background: var(--green); color: var(--white); border-color: var(--green); }
+  .flowstrip .n.g small { color: #D7F0E5; }
+  .flowstrip .n.x { background: var(--black); color: var(--white); border-color: var(--black); }
+  .flowstrip .n.x small { color: #BDBDBD; }
+  .flowstrip .a { font-weight: 700; color: var(--muted); }
+  .persona { background: var(--white); border: 1px solid var(--line); border-radius: 3.5mm; padding: 3.6mm 4mm; display: grid; grid-template-columns: 10mm 1fr; gap: 3mm; }
+  .avatar { width: 10mm; height: 10mm; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--head); font-weight: 700; font-size: 12pt; color: var(--black); }
+  .persona h3 { font-size: 11pt; }
+  .persona .role { font-size: 7.8pt; color: var(--muted); margin-bottom: 1.2mm; }
   .persona p { font-size: 9.2pt; line-height: 1.45; margin: 0; }
-  .persona p em { font-style: normal; font-weight: 700; color: var(--deep); }
-  .ac { margin-top: 6mm; display: grid; grid-template-columns: 1.1fr 1fr; gap: 5mm; }
+  .persona em { font-style: normal; font-weight: 700; color: var(--green); }
+  .ac { margin-top: 5mm; display: grid; grid-template-columns: 1.1fr 1fr; gap: 5mm; }
   .ac ol { margin: 0; padding-left: 5mm; }
-  .ac li { font-size: 9pt; line-height: 1.45; margin-bottom: 2.2mm; }
-  .ac li b { color: var(--indigo); }
+  .ac li { font-size: 9pt; line-height: 1.45; margin-bottom: 2mm; }
+  .ac li b { color: var(--green); }
   table.journey { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 8.7pt; }
-  table.journey th { text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 6.8pt; letter-spacing: 1pt; text-transform: uppercase; padding: 1.6mm 2mm; color: #fff; background: var(--ink); }
-  table.journey th:first-child { border-radius: 2.4mm 0 0 0; } table.journey th:last-child { border-radius: 0 2.4mm 0 0; }
-  table.journey td { padding: 1.8mm 2mm; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.3; background: var(--card); }
-  table.journey td.bad { color: var(--coral-d); }
-  table.journey td.good { color: var(--mint-d); font-weight: 600; }
+  table.journey th { text-align: left; font-size: 7.8pt; padding: 1.8mm 2mm; color: var(--white); background: var(--black); font-weight: 700; }
+  table.journey th:first-child { border-radius: 2mm 0 0 0; } table.journey th:last-child { border-radius: 0 2mm 0 0; }
+  table.journey td { padding: 1.8mm 2mm; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.3; }
+  table.journey td.bad { color: var(--red); }
+  table.journey td.good { color: var(--green); font-weight: 700; }
   table.journey td.stage { font-weight: 700; }
 
-  /* ---------- solution page ---------- */
-  .tree { background: var(--ink); color: #E9E6FF; border-radius: 4mm; padding: 4mm 4.4mm; font-family: 'JetBrains Mono', monospace; font-size: 7.3pt; line-height: 1.62; }
-  .tree .f { color: var(--sun); }
-  .tree .c { color: #A79FD8; }
-  .tree .k { color: var(--mint); }
-  .steps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2mm; margin: 2mm 0 4.5mm; }
-  .step { border-radius: 3mm; padding: 2.6mm 2.4mm; min-height: 23mm; }
-  .step .i { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 15pt; line-height: 1.1; }
-  .step .t { font-size: 7.8pt; line-height: 1.3; font-weight: 600; margin-top: 1.4mm; }
-  .verdict { background: #0F0B26; border-radius: 4mm; padding: 4mm 4.6mm; color: #EAE7FF; font-family: 'JetBrains Mono', monospace; font-size: 7.3pt; line-height: 1.55; }
-  .verdict .v { display: inline-block; background: var(--coral); color: #2A0B07; font-weight: 600; padding: .3mm 2mm; border-radius: 1.6mm; }
-  .verdict .y { color: var(--sun); } .verdict .m { color: var(--mint); } .verdict .l { color: #B9B0F5; }
-  .split { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.2mm; margin-top: 2mm; }
-  .split div { background: #E3FBF5; border: 1px solid #A9EADB; border-radius: 3mm; padding: 2.4mm 2.8mm; font-size: 8pt; line-height: 1.35; }
-  .split b { display: block; font-family: 'Syne', sans-serif; font-size: 9.6pt; margin-bottom: .6mm; }
-  .principles { display: grid; grid-template-columns: 1fr 1fr; gap: 2mm 4mm; font-size: 8.4pt; line-height: 1.35; }
-  .principles div:before { content: "■ "; color: var(--indigo); }
-  .ext { background: #E3FBF5; border: 1px solid #A9EADB; border-radius: 4mm; padding: 3.4mm 4mm; margin-top: 4mm; }
-  .ext h3 { font-size: 10.4pt; color: var(--mint-d); margin-bottom: 1.4mm; }
-  .ext p { font-size: 8.5pt; margin: 0; }
+  /* ---------- solution ---------- */
+  .code { background: var(--black); color: #E8E8E8; border-radius: 3.5mm; padding: 4mm 4.4mm; font-family: var(--mono); font-size: 7.3pt; line-height: 1.62; }
+  .code .f { color: var(--green-bright); } .code .c { color: #9B9B9B; } .code .k { color: var(--mint); } .code .y { color: #FFB16A; }
+  .code .v { display: inline-block; background: #F54269; color: var(--black); font-weight: 600; padding: .2mm 2mm; border-radius: 1.4mm; }
+  .steps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2mm; margin: 0 0 4.4mm; }
+  .step { border-radius: 3mm; padding: 2.6mm 2.6mm; min-height: 22mm; }
+  .step .i { font-family: var(--head); font-weight: 700; font-size: 15pt; line-height: 1; color: var(--green); }
+  .step .t { font-size: 8pt; line-height: 1.3; font-weight: 600; margin-top: 1.4mm; }
+  .split { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.2mm; }
+  .split div { background: var(--grey); border-radius: 3mm; padding: 2.6mm 3mm; font-size: 8.3pt; line-height: 1.35; }
+  .split b { display: block; font-family: var(--head); font-size: 10pt; margin-bottom: .6mm; }
+  .principles { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8mm 4mm; font-size: 8.8pt; line-height: 1.35; }
+  .principles div:before { content: "› "; color: var(--green); font-weight: 700; }
+  .ext { background: var(--green-deep); color: var(--white); border-radius: 3.5mm; padding: 3.6mm 4.4mm; }
+  .ext h3 { color: var(--mint); font-size: 11pt; margin-bottom: 1.2mm; }
+  .ext p { font-size: 8.8pt; margin: 0; color: #E6F5EE; }
+  .surfaces { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .surfaces div { background: var(--white); border: 1px solid var(--line); border-radius: 3.5mm; padding: 3.4mm 4mm; font-size: 8.8pt; line-height: 1.4; }
+  .surfaces b { display: block; font-family: var(--head); font-size: 11pt; margin-bottom: .8mm; }
+  .surfaces .how { font-family: var(--mono); font-size: 7.2pt; color: var(--green); margin-top: 1.6mm; display: block; }
 
-  /* ---------- evidence page ---------- */
-  table.proof { width: 100%; border-collapse: collapse; font-size: 8.6pt; }
-  table.proof th { text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 6.8pt; letter-spacing: 1pt; text-transform: uppercase; color: var(--muted); padding: 1.2mm 2mm; border-bottom: 2px solid var(--ink); }
-  table.proof td { padding: 1.7mm 2mm; border-bottom: 1px solid var(--line); }
-  table.proof td.pass { color: var(--mint-d); font-weight: 800; }
-  table.proof td.fail { color: var(--coral-d); font-weight: 800; }
+  /* ---------- evidence ---------- */
+  table.proof { width: 100%; border-collapse: collapse; font-size: 9pt; }
+  table.proof th { text-align: left; font-size: 7.8pt; color: var(--muted); padding: 1.2mm 2mm; border-bottom: 2px solid var(--black); }
+  table.proof td { padding: 1.6mm 2mm; border-bottom: 1px solid var(--line); }
+  table.proof td.pass { color: var(--green); font-weight: 700; }
+  table.proof td.fail { color: var(--red); font-weight: 700; }
   .bigstats { display: grid; grid-template-columns: 1fr 1fr; gap: 2.6mm; }
-  .bigstats div { border-radius: 3.4mm; padding: 2.8mm 3.4mm; }
-  .bigstats .n { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 19pt; line-height: 1.1; }
-  .bigstats .t { font-size: 7.8pt; line-height: 1.3; margin-top: .8mm; }
-  .road { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
-  .road div { border-radius: 4mm; padding: 3.4mm 4mm; }
-  .road h3 { font-size: 10.6pt; font-weight: 700; margin-bottom: 1.4mm; }
-  .road ul { margin: 0; padding-left: 4mm; font-size: 8.3pt; line-height: 1.38; }
-  .road li { margin-bottom: .8mm; }
-  .ask { margin-top: 5mm; background: var(--deep); color: #fff; border-radius: 5mm; padding: 5mm 6mm; display: grid; grid-template-columns: 1fr auto; gap: 6mm; align-items: center; position: relative; overflow: hidden; }
-  .ask h3 { font-size: 15pt; font-weight: 800; color: var(--sun); margin-bottom: 1.4mm; }
-  .ask p { font-size: 9pt; margin: 0; color: #E3DFFF; }
-  .ask .mini-doors { display: flex; gap: 2mm; align-items: flex-end; }
-  .ask .mini-doors span { width: 8mm; height: 14mm; border-radius: 4mm 4mm 0 0; display: block; }
-  .list-tight { margin: 0; padding-left: 4mm; font-size: 8.5pt; line-height: 1.38; }
+  .bigstats div { background: var(--grey); border-radius: 3.5mm; padding: 2.8mm 3.4mm; }
+  .bigstats .n { font-family: var(--head); font-weight: 700; font-size: 18pt; line-height: 1.1; color: var(--green); }
+  .bigstats .t { font-size: 8.2pt; line-height: 1.3; margin-top: .6mm; }
+  .list-tight { margin: 0; padding-left: 4mm; font-size: 8.8pt; line-height: 1.4; }
   .list-tight li { margin-bottom: 1.2mm; }
+  .road { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .road div { border-radius: 3.5mm; padding: 3.4mm 4mm; }
+  .road h3 { font-size: 11pt; margin-bottom: 1.2mm; }
+  .road ul { margin: 0; padding-left: 4mm; font-size: 8.6pt; line-height: 1.38; }
+  .road li { margin-bottom: .8mm; }
+  .ask { margin-top: 4.6mm; background: var(--green-deep); color: var(--white); border-radius: 3.5mm; padding: 5mm 6mm; display: grid; grid-template-columns: 1fr auto; gap: 6mm; align-items: center; }
+  .ask h3 { font-size: 15pt; color: var(--white); margin-bottom: 1.2mm; }
+  .ask p { font-size: 9.2pt; margin: 0; color: #E6F5EE; }
+  .ask .cta { background: var(--white); color: var(--black); font-weight: 700; font-size: 9pt; padding: 2.4mm 5mm; border-radius: 10mm; white-space: nowrap; }
 </style>
 </head>
 <body>
 
 <!-- ======================= PAGE 1: COVER ======================= -->
 <section class="page">
-  <div class="cover-top">
-    <div class="ring"></div><div class="dot"></div>
-    <div class="eyebrow">Hackathon 2026 · Proposal</div>
-    <h1>One-Way<br>Door</h1>
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Hackathon 2026 · Proposal</div></div>
+  <div class="navbar"><span><small>01</small>The problem</span><span><small>02</small>User stories</span><span><small>03</small>Proposed solution</span><span><small>04</small>Evidence and plan</span></div>
+  <div class="hero">
+    <div class="ring"></div>
+    <div class="tag">GitHub Copilot skill · Payments</div>
+    <h1>One-Way Door</h1>
     <div class="sub">A GitHub Copilot skill that checks every change for a way back, before it is merged.</div>
+    <div class="cta">Know before you merge ›</div>
+    <div class="oneway">One way only ›</div>
     <div class="doors">
-      <div class="door d1"><span class="knob"></span></div>
-      <div class="door d2"><span class="knob"></span></div>
-      <div class="door d3"><span class="knob"></span></div>
-      <div class="door open"><div class="light"></div><div class="leaf"></div></div>
-      <div class="arrow">→</div>
-      <div class="arrow-label">one way only</div>
+      <div class="door a"><span class="knob"></span></div>
+      <div class="door b"><span class="knob"></span></div>
+      <div class="door c"><span class="knob"></span></div>
+      <div class="door open"><div class="glow"></div><div class="leaf"></div></div>
     </div>
   </div>
-  <div class="cover-bottom">
+  <div class="cover-main">
     <div>
       <div class="label">In one paragraph</div>
-      <p style="font-size:10.4pt;line-height:1.5;font-weight:500">Rollback is the safety net for every release, yet nothing checks that it works. A change is a <b>one-way door</b> when it leaves behind state the previous release can't handle: a migrated table, new-format messages, rule data in another repo, a payment already sent to SWIFT. <b>One-Way Door</b> is a GitHub Copilot skill that reviews each pull request for exactly this. It says whether rollback is safe and for how long, finds who else is affected, and proposes a safe sequence of smaller changes.</p>
+      <p style="font-size:10.4pt;line-height:1.5">Rollback is the safety net for every release, yet nothing checks that it works. A change is a <b>one-way door</b> when it leaves behind state the previous release can't handle: a migrated table, new-format messages, rule data in another repo, a payment already sent to SWIFT. <b>One-Way Door</b> is a GitHub Copilot skill that reviews each pull request for exactly this. It says whether rollback is safe and for how long, finds who else is affected, and proposes a safe sequence of smaller changes.</p>
       <dl class="meta">
         <dt>Team</dt><dd>[Team name]</dd>
         <dt>Domain</dt><dd>Payments: SWIFT, GTX gateway, payment hub</dd>
@@ -202,41 +204,36 @@
     </div>
     <div>
       <div class="label">At a glance (measured)</div>
-      <div class="stat" style="background:var(--mint)"><div class="n">4 pass · 1 fail</div><div class="t">rollback tests, exactly as the skill predicted</div></div>
-      <div class="stat" style="background:var(--sun)"><div class="n">61</div><div class="t">automated tests across scripts, hook and plugin</div></div>
-      <div class="stat" style="background:var(--lilac)"><div class="n">0 fakes</div><div class="t">every rollback rebuilds the old code from git</div></div>
+      <div class="stat"><div class="n">4 pass · 1 fail</div><div class="t">rollback tests, exactly as the skill predicted</div></div>
+      <div class="stat"><div class="n">61</div><div class="t">automated tests across scripts, hook and plugin</div></div>
+      <div class="stat"><div class="n">0 fakes</div><div class="t">every rollback rebuilds the old code from git</div></div>
     </div>
   </div>
-  <div class="body" style="padding-top:2mm">
-    <div class="toc">
-      <div><span>01</span>The problem</div>
-      <div><span>02</span>User stories</div>
-      <div><span>03</span>Proposed solution</div>
-      <div><span>04</span>Evidence and plan</div>
-    </div>
+  <div class="toc">
+    <div><small>01</small><b>The problem</b><span class="more">Read ›</span></div>
+    <div><small>02</small><b>User stories</b><span class="more">Read ›</span></div>
+    <div><small>03</small><b>Proposed solution</b><span class="more">Read ›</span></div>
+    <div><small>04</small><b>Evidence and plan</b><span class="more">Read ›</span></div>
   </div>
   <div class="footer"><span>One-Way Door · Hackathon proposal</span><span>Northwind Payments and all names are invented</span><span>1 / 5</span></div>
 </section>
 
 <!-- ======================= PAGE 2: PROBLEM ======================= -->
 <section class="page">
-  <div class="band coral">
-    <div class="num">01</div>
-    <div><div class="kicker">The problem</div><h2>Rollback is the safety net nobody tests</h2></div>
-    <div class="shape" style="background:var(--sun)"></div><div class="shape two" style="background:var(--deep)"></div>
-  </div>
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Hackathon 2026 · Proposal</div></div>
+  <div class="navbar"><span class="on"><small>01</small>The problem</span><span><small>02</small>User stories</span><span><small>03</small>Proposed solution</span><span><small>04</small>Evidence and plan</span></div>
+  <div class="intro"><div class="label">01 · The problem</div><h2>Rollback is the safety net nobody tests</h2></div>
   <div class="body">
-    <p class="lead" style="font-size:10.6pt">Every pipeline asks whether the new code works. None asks whether the old code still works with what the new code leaves behind. That is exactly the situation the moment someone presses rollback.</p>
     <div class="statement">
       <div class="label">Problem statement</div>
       <p>Engineers changing payment services can't tell, before merge, whether the previous release can run safely against the state the new release creates. When it can't, a routine rollback turns an incident into a bigger one: payments are processed wrongly without any error, and some reach SWIFT, where they can't be taken back.</p>
     </div>
     <div class="label">Where one-way doors hide</div>
-    <div class="grid4 hide">
-      <div class="card" style="--c:var(--indigo);--cd:var(--indigo);--t:#E8E5FF"><h3>Data</h3><p>Columns renamed, dropped or converted in place. Migrations edited after they ran.</p></div>
-      <div class="card" style="--c:var(--mint);--cd:var(--mint-d);--t:#DDF8F1"><h3>Messages</h3><p>Fields removed, renamed or retyped. Consumers that read a missing number as zero.</p></div>
-      <div class="card" style="--c:var(--sun);--cd:var(--sun-d);--t:#FFF1CC"><h3>Rule data</h3><p>Keys or units change in one repo while the code that reads them lives in another.</p></div>
-      <div class="card" style="--c:var(--coral);--cd:var(--coral-d);--t:#FFE3DF"><h3>External</h3><p>Payments sent to SWIFT, partner webhooks, deleted queues. Redeploying can't recall them.</p></div>
+    <div class="grid4">
+      <div class="card"><span class="pill" style="background:var(--lilac);color:var(--lilac-d)">Data</span><p>Columns renamed, dropped or converted in place. Migrations edited after they ran.</p></div>
+      <div class="card"><span class="pill" style="background:var(--aqua);color:var(--aqua-d)">Messages</span><p>Fields removed, renamed or retyped. Consumers that read a missing number as zero.</p></div>
+      <div class="card"><span class="pill" style="background:var(--orange);color:var(--orange-d)">Rule data</span><p>Keys or units change in one repo while the code that reads them lives in another.</p></div>
+      <div class="card"><span class="pill" style="background:var(--pink);color:var(--pink-d)">External</span><p>Payments sent to SWIFT, partner webhooks, deleted queues. Redeploying can't recall them.</p></div>
     </div>
     <div class="two-col">
       <div>
@@ -257,11 +254,11 @@
         </ul>
       </div>
     </div>
-    <div class="label" style="margin-top:4mm">What a one-way door costs</div>
-    <div class="cost" style="margin-top:0">
-      <div><b style="color:var(--sun)">Silent</b>No exception, nothing in the dead-letter queue, every dashboard green. Someone has to notice.</div>
-      <div><b style="color:var(--coral)">Irreversible</b>Payments at SWIFT can only be requested back. Converted or dropped data needs a restore.</div>
-      <div><b style="color:var(--mint)">Slow to unwind</b>Hand-written hotfixes, recall requests, incident reviews and explanations to risk and compliance.</div>
+    <div class="label" style="margin-top:4.4mm">What a one-way door costs</div>
+    <div class="cost">
+      <div><b>Silent</b>No exception, nothing in the dead-letter queue, every dashboard green. Someone has to notice.</div>
+      <div><b>Irreversible</b>Payments at SWIFT can only be requested back. Converted or dropped data needs a restore.</div>
+      <div><b>Slow to unwind</b>Hand-written hotfixes, recall requests, incident reviews and explanations to risk and compliance.</div>
     </div>
   </div>
   <div class="footer"><span>01 · The problem</span><span>One-Way Door</span><span>2 / 5</span></div>
@@ -269,30 +266,28 @@
 
 <!-- ======================= PAGE 3: USER STORIES ======================= -->
 <section class="page">
-  <div class="band indigo">
-    <div class="num">02</div>
-    <div><div class="kicker">User stories</div><h2>Four people, one Friday afternoon</h2></div>
-    <div class="shape" style="background:var(--coral)"></div><div class="shape two" style="background:var(--mint)"></div>
-  </div>
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Hackathon 2026 · Proposal</div></div>
+  <div class="navbar"><span><small>01</small>The problem</span><span class="on"><small>02</small>User stories</span><span><small>03</small>Proposed solution</span><span><small>04</small>Evidence and plan</span></div>
+  <div class="intro"><div class="label">02 · User stories</div><h2>Four people, one Friday afternoon</h2></div>
   <div class="body">
     <div class="scenario">
       <div class="label">Scenario</div>
-      <h3 style="font-size:12pt;font-weight:700;margin-bottom:1mm">The rule nobody owned <span style="font-family:'Manrope',sans-serif;font-weight:500;font-size:8.6pt;color:var(--muted)">Northwind Payments, an invented intermediary bank</span></h3>
+      <h3>The rule nobody owned <span>Northwind Payments, an invented intermediary bank</span></h3>
       <div class="flowstrip">
-        <div class="n" style="background:#ECE8DD">SWIFT in<small>pacs.008</small></div><span class="a">→</span>
-        <div class="n" style="background:var(--lilac)">GTX gateway<small>validate, log</small></div><span class="a">→</span>
-        <div class="n" style="background:var(--mint)">Orchestrator<small>hold over £50,000</small></div><span class="a">→</span>
-        <div class="n" style="background:var(--mint)">SWIFT outbound<small>next bank</small></div><span class="a">→</span>
-        <div class="n" style="background:var(--coral);color:#2A0B07">SWIFT out<small>no undo</small></div>
+        <div class="n">SWIFT in<small>pacs.008</small></div><span class="a">›</span>
+        <div class="n">GTX gateway<small>validate, log</small></div><span class="a">›</span>
+        <div class="n g">Orchestrator<small>hold over £50,000</small></div><span class="a">›</span>
+        <div class="n g">SWIFT outbound<small>next bank</small></div><span class="a">›</span>
+        <div class="n x">SWIFT out<small>no undo</small></div>
       </div>
-      <p style="font-size:8.8pt;margin:0">Two teams move a hold threshold to pence. The rules repo renames <span class="mono">holdAbove</span> to <span class="mono">holdAboveMinor</span> and multiplies it by 100, and the orchestrator reads the new name. Both pull requests pass. Later, the orchestrator alone is rolled back. The old code can't find <span class="mono">holdAbove</span>, skips the hold without an error, and large payments go to SWIFT unreviewed.</p>
+      <p style="font-size:9pt;margin:0">Two teams move a hold threshold to pence. The rules repo renames <span class="mono">holdAbove</span> to <span class="mono">holdAboveMinor</span> and multiplies it by 100, and the orchestrator reads the new name. Both pull requests pass. Later, the orchestrator alone is rolled back. The old code can't find <span class="mono">holdAbove</span>, skips the hold without an error, and large payments go to SWIFT unreviewed.</p>
     </div>
     <div class="label">User stories</div>
     <div class="grid2">
-      <div class="persona"><div class="avatar" style="background:var(--mint)">P</div><div><h3>Priya</h3><div class="role">Payments engineer · orchestrator</div><p>As a payments engineer, I want to <em>know before I merge whether my change can be rolled back</em>, so that a rollback never makes an incident worse.</p></div></div>
-      <div class="persona"><div class="avatar" style="background:var(--sun)">T</div><div><h3>Tom</h3><div class="role">Rules owner · reference data</div><p>As the owner of the routing rules, I want to <em>see which code in other repos reads my rule data</em>, so that a data change never silently switches off someone else's control.</p></div></div>
-      <div class="persona"><div class="avatar" style="background:var(--coral)">A</div><div><h3>Aisha</h3><div class="role">On-call engineer · reliability</div><p>As on-call, I want <em>a safe rollback window for every release</em>, so that I know whether pressing rollback will help or hurt.</p></div></div>
-      <div class="persona"><div class="avatar" style="background:var(--lilac)">G</div><div><h3>Grace</h3><div class="role">Head of payments operations</div><p>As head of payments operations, I want <em>controls like the four-eyes hold to fail closed</em>, so that no large payment reaches SWIFT without review.</p></div></div>
+      <div class="persona"><div class="avatar" style="background:var(--green-bright)">P</div><div><h3>Priya</h3><div class="role">Payments engineer · orchestrator</div><p>As a payments engineer, I want to <em>know before I merge whether my change can be rolled back</em>, so that a rollback never makes an incident worse.</p></div></div>
+      <div class="persona"><div class="avatar" style="background:#FFB16A">T</div><div><h3>Tom</h3><div class="role">Rules owner · reference data</div><p>As the owner of the routing rules, I want to <em>see which code in other repos reads my rule data</em>, so that a data change never silently switches off someone else's control.</p></div></div>
+      <div class="persona"><div class="avatar" style="background:#F5B2F2">A</div><div><h3>Aisha</h3><div class="role">On-call engineer · reliability</div><p>As on-call, I want <em>a safe rollback window for every release</em>, so that I know whether pressing rollback will help or hurt.</p></div></div>
+      <div class="persona"><div class="avatar" style="background:#A19FFF">G</div><div><h3>Grace</h3><div class="role">Head of payments operations</div><p>As head of payments operations, I want <em>controls like the four-eyes hold to fail closed</em>, so that no large payment reaches SWIFT without review.</p></div></div>
     </div>
     <div class="ac">
       <div>
@@ -321,17 +316,15 @@
 
 <!-- ======================= PAGE 4: SOLUTION ======================= -->
 <section class="page">
-  <div class="band mint">
-    <div class="num">03</div>
-    <div><div class="kicker">Proposed solution</div><h2>A GitHub Copilot skill for the way back</h2></div>
-    <div class="shape" style="background:var(--indigo)"></div><div class="shape two" style="background:var(--sun)"></div>
-  </div>
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Hackathon 2026 · Proposal</div></div>
+  <div class="navbar"><span><small>01</small>The problem</span><span><small>02</small>User stories</span><span class="on"><small>03</small>Proposed solution</span><span><small>04</small>Evidence and plan</span></div>
+  <div class="intro"><div class="label">03 · Proposed solution</div><h2>A GitHub Copilot skill for the way back</h2></div>
   <div class="body">
-    <p class="lead" style="font-size:10.4pt">One-Way Door is a <b>GitHub Copilot agent skill</b>: a folder of instructions, reference material and small scripts. Copilot loads it when someone asks to review a change, check release readiness, or asks "can we roll back?". It answers with one review comment, before merge.</p>
+    <p class="lead">One-Way Door is a <b>GitHub Copilot agent skill</b>: a folder of instructions, reference material and small scripts. Copilot loads it when someone asks to review a change, check release readiness, or asks "can we roll back?". It answers with one review comment, before merge.</p>
     <div class="grid2" style="grid-template-columns:1.05fr 1fr;gap:5mm">
       <div>
         <div class="label">What's in the box</div>
-        <div class="tree">
+        <div class="code">
 <span class="f">.github/skills/one-way-door/</span><br>
 &nbsp; <span class="k">SKILL.md</span> <span class="c">· the procedure Copilot follows</span><br>
 &nbsp; <span class="k">references/patterns.md</span> <span class="c">· 24 one-way patterns</span><br>
@@ -345,28 +338,28 @@
       </div>
       <div>
         <div class="label">Sample review on PR #517</div>
-        <div class="verdict">
+        <div class="code">
 <span class="v">ONE-WAY</span> <span class="y">Safe rollback window: none</span><br>
-<span class="l">closes when the rules loader runs</span><br>
+<span class="c">closes when the rules loader runs</span><br>
 1. Rule parameter renamed and rescaled<br>
-&nbsp;&nbsp; <span class="m">holdAbove → holdAboveMinor (×100)</span><br>
+&nbsp;&nbsp; <span class="k">holdAbove → holdAboveMinor (×100)</span><br>
 &nbsp;&nbsp; If rolled back: the old orchestrator<br>
 &nbsp;&nbsp; skips the hold, silently.<br>
 <span class="y">Blast radius:</span> RuleEvaluator.java in<br>
 &nbsp;&nbsp; northwind-inbound-orchestrator<br>
-&nbsp;&nbsp; <span class="l">not in this PR · 6 of 6 repos checked</span><br>
-<span class="m">Reply "generate the split".</span>
+&nbsp;&nbsp; <span class="c">not in this PR · 6 of 6 repos checked</span><br>
+<span class="f">Reply "generate the split".</span>
         </div>
       </div>
     </div>
-    <div class="label" style="margin-top:4.5mm">How a review runs</div>
+    <div class="label" style="margin-top:4.4mm">How a review runs</div>
     <div class="steps">
-      <div class="step" style="background:var(--lilac)"><div class="i">1</div><div class="t">Diff from the merge base</div></div>
-      <div class="step" style="background:var(--lilac)"><div class="i">2</div><div class="t">Sort files: data, messages, state, external</div></div>
-      <div class="step" style="background:var(--sun)"><div class="i">3</div><div class="t">Run the scripts: offline, JSON out</div></div>
-      <div class="step" style="background:var(--sun)"><div class="i">4</div><div class="t">Find readers, here and in related repos</div></div>
-      <div class="step" style="background:var(--mint)"><div class="i">5</div><div class="t">Judge old code against new state</div></div>
-      <div class="step" style="background:var(--mint)"><div class="i">6</div><div class="t">Write the verdict, offer the split</div></div>
+      <div class="step" style="background:var(--grey)"><div class="i">1</div><div class="t">Diff from the merge base</div></div>
+      <div class="step" style="background:var(--grey)"><div class="i">2</div><div class="t">Sort files: data, messages, state, external</div></div>
+      <div class="step" style="background:var(--mint)"><div class="i">3</div><div class="t">Run the scripts: offline, JSON out</div></div>
+      <div class="step" style="background:var(--mint)"><div class="i">4</div><div class="t">Find readers, here and in related repos</div></div>
+      <div class="step" style="background:var(--green-deep);color:var(--white)"><div class="i" style="color:var(--mint)">5</div><div class="t">Judge old code against new state</div></div>
+      <div class="step" style="background:var(--green-deep);color:var(--white)"><div class="i" style="color:var(--mint)">6</div><div class="t">Write the verdict, offer the split</div></div>
     </div>
     <div class="label">The safe split</div>
     <div class="split">
@@ -375,7 +368,7 @@
       <div><b>3 Contract</b>Code reads only the new key, and still fails closed.</div>
       <div><b>4 Drop</b>Remove the old key once nothing reads it.</div>
     </div>
-    <div class="grid2" style="margin-top:4.5mm;gap:5mm">
+    <div class="grid2" style="margin-top:4.4mm;gap:5mm">
       <div>
         <div class="label">Design principles</div>
         <div class="principles">
@@ -387,14 +380,14 @@
           <div>Copilot's own formats</div>
         </div>
       </div>
-      <div class="ext" style="margin-top:0">
+      <div class="ext">
         <h3>Hackathon build: across repos</h3>
         <p>A per-repo list of related repos, <span class="mono">find-readers</span> to search them, and data checks for renamed keys and values scaled ×10, ×100 or ×1000.</p>
       </div>
     </div>
-    <div class="label" style="margin-top:5mm">Where it runs</div>
+    <div class="label" style="margin-top:4.4mm">Where it runs</div>
     <div class="surfaces">
-      <div><b>VS Code agent mode</b>Loads the skill when you ask to review or release. Path rule guides edits to migrations and contracts.<span class="how">/one-way-door · plugin or folder</span></div>
+      <div><b>VS Code agent mode</b>Loads the skill when you ask to review or release. The path rule guides edits to migrations and contracts.<span class="how">/one-way-door · plugin or folder</span></div>
       <div><b>Copilot CLI</b>Same skill in the terminal, with the hook blocking edits to migrations already on main.<span class="how">copilot plugin install …</span></div>
       <div><b>Copilot cloud agent</b>Reviews pull requests on GitHub and posts the verdict as a comment.<span class="how">copy .github/skills/one-way-door</span></div>
     </div>
@@ -404,36 +397,34 @@
 
 <!-- ======================= PAGE 5: EVIDENCE AND PLAN ======================= -->
 <section class="page">
-  <div class="band sun">
-    <div class="num">04</div>
-    <div><div class="kicker">Evidence and plan</div><h2>Proven on a real stack, ready to extend</h2></div>
-    <div class="shape" style="background:var(--coral)"></div><div class="shape two" style="background:var(--indigo)"></div>
-  </div>
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Hackathon 2026 · Proposal</div></div>
+  <div class="navbar"><span><small>01</small>The problem</span><span><small>02</small>User stories</span><span><small>03</small>Proposed solution</span><span class="on"><small>04</small>Evidence and plan</span></div>
+  <div class="intro"><div class="label">04 · Evidence and plan</div><h2>Proven on a real stack, ready to extend</h2></div>
   <div class="body">
     <div class="grid2" style="grid-template-columns:1.25fr 1fr;gap:6mm">
       <div>
         <div class="label">Rollback tests, prototype</div>
         <table class="proof">
-          <tr><th>From → to</th><th>Result</th></tr>
-          <tr><td>main → step 1 (expand)</td><td class="pass">PASS</td></tr>
-          <tr><td>step 1 → step 2 (migrate)</td><td class="pass">PASS</td></tr>
-          <tr><td>step 2 → step 3 (contract)</td><td class="pass">PASS</td></tr>
-          <tr><td>step 3 → step 4 (drop)</td><td class="pass">PASS</td></tr>
-          <tr><td>main → the bad PR</td><td class="fail">FAIL: £0.00 rows</td></tr>
+          <tr><th>From › to</th><th>Result</th></tr>
+          <tr><td>main › step 1 (expand)</td><td class="pass">PASS</td></tr>
+          <tr><td>step 1 › step 2 (migrate)</td><td class="pass">PASS</td></tr>
+          <tr><td>step 2 › step 3 (contract)</td><td class="pass">PASS</td></tr>
+          <tr><td>step 3 › step 4 (drop)</td><td class="pass">PASS</td></tr>
+          <tr><td>main › the bad PR</td><td class="fail">FAIL: £0.00 rows</td></tr>
         </table>
-        <p style="font-size:8pt;color:var(--muted);margin-top:2mm">Each test deploys for real, sends traffic, rolls back each service in turn, and checks health, row counts, £0.00 rows, the dead-letter topic and the reconciliation total. Scenario: "The £0.00 Settlement" (Spring Boot, Kafka, Postgres).</p>
+        <p style="font-size:8.2pt;color:var(--muted);margin-top:2mm">Each test deploys for real, sends traffic, rolls back each service in turn, and checks health, row counts, £0.00 rows, the dead-letter topic and the reconciliation total. Scenario: "The £0.00 Settlement" (Spring Boot, Kafka, Postgres).</p>
       </div>
       <div>
         <div class="label">Measured</div>
         <div class="bigstats">
-          <div style="background:var(--mint)"><div class="n">5 / 5</div><div class="t">incident runs reproduced from clean</div></div>
-          <div style="background:var(--lilac)"><div class="n">61</div><div class="t">automated tests</div></div>
-          <div style="background:var(--sun)"><div class="n">18 s</div><div class="t">to reset the demo stack</div></div>
-          <div style="background:#FFD6D1"><div class="n">24</div><div class="t">patterns in the catalogue</div></div>
+          <div><div class="n">5 / 5</div><div class="t">incident runs reproduced from clean</div></div>
+          <div><div class="n">61</div><div class="t">automated tests</div></div>
+          <div><div class="n">18 s</div><div class="t">to reset the demo stack</div></div>
+          <div><div class="n">24</div><div class="t">patterns in the catalogue</div></div>
         </div>
       </div>
     </div>
-    <div class="grid2" style="margin-top:5mm;gap:6mm">
+    <div class="grid2" style="margin-top:4.6mm;gap:6mm">
       <div>
         <div class="label">Hackathon scope</div>
         <ul class="list-tight">
@@ -457,28 +448,28 @@
         </ul>
       </div>
     </div>
-    <div class="label" style="margin-top:5mm">Roadmap</div>
+    <div class="label" style="margin-top:4.6mm">Roadmap</div>
     <div class="road">
-      <div style="background:#D7F7EF"><h3 style="color:var(--mint-d)">Now: built</h3><ul><li>Skill, catalogue, two scripts</li><li>Path rule and pre-edit hook</li><li>Copilot plugin, rollback proof</li></ul></div>
-      <div style="background:#FFF0C8"><h3 style="color:var(--sun-d)">Next: this hackathon</h3><ul><li>Readers across repos</li><li>Rule-data checks</li><li>Northwind SWIFT and GTX demo</li></ul></div>
-      <div style="background:var(--lilac)"><h3 style="color:var(--deep)">Later</h3><ul><li>Every PR via Copilot code review</li><li>Spanner and BigQuery checks</li><li>CHAPS and Faster Payments</li></ul></div>
+      <div style="background:var(--mint)"><h3 style="color:var(--green-deep)">Now: built</h3><ul><li>Skill, catalogue, two scripts</li><li>Path rule and pre-edit hook</li><li>Copilot plugin, rollback proof</li></ul></div>
+      <div style="background:var(--aqua)"><h3 style="color:var(--aqua-d)">Next: this hackathon</h3><ul><li>Readers across repos</li><li>Rule-data checks</li><li>Northwind SWIFT and GTX demo</li></ul></div>
+      <div style="background:var(--lilac)"><h3 style="color:var(--lilac-d)">Later</h3><ul><li>Every PR via Copilot code review</li><li>Spanner and BigQuery checks</li><li>CHAPS and Faster Payments</li></ul></div>
     </div>
     <div class="ask">
       <div><h3>The ask</h3><p>Try it on the repos that hold migrations, message contracts or rule data, and tell us where it missed a door. Contact: [Team name] · [Contact].</p></div>
-      <div class="mini-doors"><span style="background:var(--mint)"></span><span style="background:var(--sun)"></span><span style="background:var(--lilac)"></span><span style="background:var(--coral);height:18mm"></span></div>
+      <div class="cta">Try it on your repos ›</div>
     </div>
   </div>
   <div class="footer"><span>04 · Evidence and plan</span><span>Sources: SWIFT, Clearstream, J.P. Morgan CBPR+ guidance</span><span>5 / 5</span></div>
 </section>
 
 <script>
-  // Flags any page whose content runs past its bottom edge (read by the build step).
+  // Flags any block whose bottom runs into the footer zone (read by build.py).
   window.addEventListener('load', function () {
     document.fonts.ready.then(function () {
       var bad = [];
       document.querySelectorAll('.page').forEach(function (p, i) {
-        var limit = p.getBoundingClientRect().bottom - 18 * 3.78; // keep clear of the footer (18 mm)
-        p.querySelectorAll('.body > *, .cover-bottom > *').forEach(function (el) {
+        var limit = p.getBoundingClientRect().bottom - 16 * 3.78;
+        p.querySelectorAll('.body > *, .cover-main > *, .toc').forEach(function (el) {
           if (el.getBoundingClientRect().bottom > limit) bad.push((i + 1) + ':' + (el.className || el.tagName));
         });
       });
