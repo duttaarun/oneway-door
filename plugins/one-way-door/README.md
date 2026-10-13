@@ -37,3 +37,6 @@ optionally `.github/hooks`) into the repository instead.
 
 Ask: *"Review this PR for rollback safety"*, *"Can we roll back main...my-branch?"*, or *"/one-way-door"*.
 Node.js 20+ runs the scripts. Without it, the skill falls back to reading the diff.
+
+The full setup guide (tech stack, plans and policies, VS Code, Copilot CLI, the cloud agent and code review) is
+`docs/setup.md` in the source repository.

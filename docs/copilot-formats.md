@@ -217,3 +217,26 @@ plugins/one-way-door/
 3. The hook reads both payload shapes and prints both output shapes. It fails open (exit 0 with `{}`) on any internal error.
 4. Skill scripts are run as `node <skill dir>/scripts/<name>.mjs`. SKILL.md names the in-repo path and says to resolve it next to SKILL.md when the skill was installed from a plugin.
 5. Things to confirm by hand in Phase 7: path instructions in the CLI, VS Code reading the hook's deny output, and the CLI expanding `${PLUGIN_ROOT}` in plugin hooks.
+
+---
+
+## 7. Update, 13 October 2026
+
+Rechecked for `docs/setup.md`. Changes and new facts since 7 October:
+
+- **Copilot CLI applies path instructions** (`.github/instructions/**`) when `applyTo` matches a file it is working
+  on. This settles the "Unclear" note in section 2.
+- **VS Code has several session targets.** On the Copilot target, hooks follow the GitHub hooks reference (as in the
+  CLI). On the Local target, they follow VS Code's own rules: a Copilot-format file is "mapped", but the docs don't
+  list how, and a Local hook that exits with anything other than 0 or 2 only warns. It doesn't block.
+- **Agent skills are generally available in VS Code from 1.109,** on by default, with no setting. (In 1.108 they were
+  experimental, behind `chat.useAgentSkills`.) The hooks setting `chat.hooks.enabled` from the 1.109 notes is now
+  `chat.useHooks`. The plugins setting `chat.plugins.paths` from 1.110 is now `chat.pluginLocations`.
+- **Copilot code review** reads `.github/skills` "when relevant", and instructions from the PR's **head branch**. It
+  runs in an Actions environment set up by `copilot-setup-steps.yml` (or `copilot-code-review.yml`). Whether it runs a
+  skill's scripts or fires `.github/hooks` is **not documented**.
+- **Cloud agent runners** may be Ubuntu x64 or Windows 64-bit, says the environment page. The hooks page still says
+  Linux only and that `powershell` is ignored. We use `ubuntu-latest`, so it doesn't matter here.
+- **Copilot CLI install:** npm needs Node 22+. WinGet (`GitHub.Copilot`) and Homebrew (`copilot-cli`) are
+  alternatives. Windows needs PowerShell 6+.
+

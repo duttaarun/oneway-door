@@ -102,17 +102,23 @@ in both directions. Regenerate the table with **Run all** in act 5 of the Contro
 
 ## Use it in your repo
 
-**Option 1: copy one folder.** This works in VS Code, Copilot CLI and the cloud agent.
+The full guide, with the tech stack, plan and policy requirements and troubleshooting for VS Code, Copilot CLI, the
+cloud agent and Copilot code review, is [`docs/setup.md`](docs/setup.md). The short version:
+
+**Option 1: copy one folder.** This works in VS Code, Copilot CLI, the cloud agent and Copilot code review.
 
 ```bash
 cp -R path/to/one-way-door/.github/skills/one-way-door  your-repo/.github/skills/
 ```
 
-Optionally, copy the rule and the hook too. Adjust `applyTo` to your migration paths.
+Optionally, copy the rule and the hook too. Adjust `applyTo` to your migration paths. For the cloud agent and code
+review, also copy the agent environment (Node 20, plus the default branch's history) and merge it to the default
+branch.
 
 ```bash
 cp path/to/one-way-door/.github/instructions/migrations.instructions.md your-repo/.github/instructions/
 cp -R path/to/one-way-door/.github/hooks your-repo/.github/
+cp path/to/one-way-door/.github/workflows/copilot-setup-steps.yml your-repo/.github/workflows/
 ```
 
 **Option 2: install the plugin.** This works in VS Code, Copilot CLI and the Copilot app, for every repo you open.
@@ -126,7 +132,9 @@ The cloud agent doesn't load plugins. Use option 1 there.
 
 Then ask Copilot: *"Review this PR for rollback safety"*, *"Can we roll back main...my-branch?"*, or `/one-way-door`.
 
-**Requirements:** git, and Node.js 20+ for the scripts. Without Node, the skill reads the diff against the catalogue instead.
+**Requirements:** git, and Node.js 20+ for the scripts. Without Node, the skill reads the diff against the catalogue
+instead. Copilot needs agent mode (VS Code 1.109+), Copilot CLI, the cloud agent or code review, depending on where you
+use it. See [`docs/setup.md`](docs/setup.md).
 
 ---
 
@@ -207,7 +215,7 @@ demo/scripts/test.sh main        # Java unit tests (in a JDK 21 container)
 plugins/one-way-door/      generated plugin package (node tools/build-plugin.mjs)
 contracts/events/          PaymentSettled JSON Schema
 demo/                      three services; control-centre/ (Java + React console, no Docker); docker-compose + scripts
-docs/                      copilot-formats.md, demo-script.md, copilot-test-checklist.md, rollback-results.md, progress.md
+docs/                      setup.md, copilot-formats.md, demo-script.md, copilot-test-checklist.md, rollback-results.md, progress.md
 tests/                     repo-level consistency tests
 ```
 

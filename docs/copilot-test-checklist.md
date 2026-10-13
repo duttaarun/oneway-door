@@ -4,7 +4,8 @@ Claude Code built the deliverable. These manual tests check that **GitHub Copilo
 order: VS Code agent mode, then Copilot CLI, then the cloud agent. Tick each box and note anything odd in
 `docs/progress.md`.
 
-Formats and setting names come from `docs/copilot-formats.md`, checked against the live docs on 7 October 2026.
+Formats and setting names come from `docs/copilot-formats.md`, checked against the live docs on 7 October 2026. For
+installing and enabling Copilot itself (plans, org policies, VS Code and CLI versions), see `docs/setup.md`.
 
 ## Before you start
 
