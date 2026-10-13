@@ -337,7 +337,7 @@ The four-minute script is [docs/demo-script.md](docs/demo-script.md).
 | System check: branches missing | Run `sh demo/restore-branches.sh` or `demo\restore-branches.cmd` (section 3). |
 | Restore says `branches.bundle` is missing | The zip left out `demo/branches.bundle`. Copy it from the original project. |
 | "Port … already in use" | Close whatever uses it, or move the Control Centre's ports with `OWD_PORT`, `OWD_PG_PORT` or `OWD_KAFKA_PORT`. 8081 and 8082 must be free. |
-| Map says "Postgres or Kafka did not start" | The laptop may block the Postgres binaries unpacked under `.demo/cc/pg-bin/`. Ask IT, or present with **Replay**: it needs nothing else. |
+| Map says "Postgres or Kafka did not start" | Start again with `--logging.level.io.zonky=INFO` added to see Postgres's own messages. The laptop may block the Postgres binaries unpacked under `.demo/cc/pg-bin/`: ask IT, or present with **Replay**, which needs nothing else. |
 | A service shows "failed to start" outside the incident | Open `.demo/cc/logs/<service>.log`. |
 | `£` shows as `Â£` in a Windows terminal | Only affects headless output. `start.cmd` already switches the console to UTF-8. The browser is unaffected. |
 | The UI looks out of date after a change | Rebuild with `npm run build`, then restart the Control Centre. On Windows, delete `demo\control-centre\target` first. |

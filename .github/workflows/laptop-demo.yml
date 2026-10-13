@@ -52,13 +52,14 @@ jobs:
           java-version: 21
           cache: maven
           cache-dependency-path: 'demo/**/pom.xml'
+      # io.zonky=INFO prints initdb's and Postgres's own output, so a start-up failure shows its real cause.
       - name: Incident (Windows)
         if: runner.os == 'Windows'
         shell: cmd
         run: demo\start.cmd --owd.run=incident --owd.open-browser=false --logging.level.io.zonky=INFO
       - name: Incident (macOS)
         if: runner.os != 'Windows'
-        run: demo/start.sh --owd.run=incident --owd.open-browser=false
+        run: demo/start.sh --owd.run=incident --owd.open-browser=false --logging.level.io.zonky=INFO
       - name: Rollback matrix (Windows)
         if: runner.os == 'Windows'
         shell: cmd

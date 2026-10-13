@@ -1,9 +1,20 @@
 package onewaydoor.controlcentre.infra;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.AclEntry;
+import java.nio.file.attribute.AclEntryFlag;
+import java.nio.file.attribute.AclEntryPermission;
+import java.nio.file.attribute.AclEntryType;
+import java.nio.file.attribute.AclFileAttributeView;
+import java.nio.file.attribute.UserPrincipal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -68,6 +79,7 @@ public class EmbeddedInfra {
         try {
             stopOrphanPostgres();
             long t0 = System.nanoTime();
+            prepareDataDirectory(workspace.state("pgdata"));
             postgres = EmbeddedPostgres.builder()
                     .setPort(pgPort)
                     .setDataDirectory(workspace.state("pgdata"))
@@ -109,6 +121,50 @@ public class EmbeddedInfra {
             log.error("Infrastructure failed to start: {}", failure, e);
             ready.completeExceptionally(e);
         }
+    }
+
+    /**
+     * On Windows, initdb gives up administrator rights before it runs. If this JVM runs as an administrator, a data
+     * directory it creates belongs to the Administrators group, and initdb then fails with "could not change
+     * permissions of directory ... Permission denied". zonky always creates the directory itself, just before
+     * initdb, so we create it first and give the current user full control of it. initdb keeps the user's
+     * identity when it drops administrator rights, so that entry still lets it in.
+     */
+    private static void prepareDataDirectory(Path dir) throws IOException {
+        if (!Workspace.WINDOWS) {
+            return;
+        }
+        Files.createDirectories(dir);
+        AclFileAttributeView view = Files.getFileAttributeView(dir, AclFileAttributeView.class);
+        UserPrincipal me = currentWindowsUser(dir);
+        if (view == null || me == null) {
+            return;
+        }
+        AclEntry fullControl = AclEntry.newBuilder()
+                .setType(AclEntryType.ALLOW)
+                .setPrincipal(me)
+                .setPermissions(EnumSet.allOf(AclEntryPermission.class))
+                .setFlags(AclEntryFlag.FILE_INHERIT, AclEntryFlag.DIRECTORY_INHERIT)
+                .build();
+        List<AclEntry> acl = new ArrayList<>(view.getAcl());
+        acl.add(0, fullControl);
+        view.setAcl(acl);
+    }
+
+    /** The signed-in Windows user: DOMAIN\name first (a domain or the computer), then the bare name. */
+    private static UserPrincipal currentWindowsUser(Path anyPath) {
+        var lookup = anyPath.getFileSystem().getUserPrincipalLookupService();
+        String name = System.getProperty("user.name");
+        String domain = System.getenv("USERDOMAIN");
+        for (String candidate : domain == null ? List.of(name) : List.of(domain + "\\" + name, name)) {
+            try {
+                return lookup.lookupPrincipalByName(candidate);
+            } catch (IOException e) {
+                log.debug("no Windows account named {}: {}", candidate, e.getMessage());
+            }
+        }
+        log.warn("Couldn't find the Windows account {}; initdb may be refused the data directory", name);
+        return null;
     }
 
     /**
