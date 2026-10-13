@@ -6,7 +6,7 @@ import type { LogLine, Observed, RollbackResult, Snapshot, StepEvent, TestResult
 // recording in replay mode. The views can't tell the difference, which is the point of replay.
 
 export const EVENT_TYPES = ['state', 'log', 'svc', 'clear', 'step', 'incident', 'observed', 'busy', 'stage',
-  'rollbackTest', 'matrix', 'tests', 'recon', 'build'] as const;
+  'rollbackTest', 'rtStage', 'rtStep', 'matrix', 'tests', 'recon', 'build'] as const;
 
 export interface Store {
   state: Snapshot | null;
@@ -74,7 +74,20 @@ function reduce(s: Store, a: Action): Store {
     }
     case 'rollbackTest': {
       const key = `${data.from}→${data.to}`;
-      return { ...s, rollback: { ...s.rollback, [key]: data }, lastRollbackKey: key };
+      return { ...s, rollback: { ...s.rollback, [key]: { ...data, current: null } }, lastRollbackKey: key };
+    }
+    case 'rtStage': {
+      const key = `${data.from}→${data.to}`;
+      const prev = s.rollback[key] ?? { from: data.from, to: data.to, result: 'running', firstProblem: null, reasons: [], stages: [] };
+      const current = { index: data.index, stage: data.stage, ledgerRef: data.ledgerRef, settlementRef: data.settlementRef, action: data.action, steps: [] };
+      return { ...s, rollback: { ...s.rollback, [key]: { ...prev, current } }, lastRollbackKey: key };
+    }
+    case 'rtStep': {
+      const key = `${data.from}→${data.to}`;
+      const prev = s.rollback[key];
+      if (!prev?.current || prev.current.index !== data.index) return s;
+      const steps = prev.current.steps.filter((x) => x.id !== data.id).concat([{ id: data.id, text: data.text, status: data.status }]);
+      return { ...s, rollback: { ...s.rollback, [key]: { ...prev, current: { ...prev.current, steps } } } };
     }
     case 'matrix':
       return { ...s, matrixStamp: Date.now() };

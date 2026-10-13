@@ -66,7 +66,7 @@ function useScale(ref: React.RefObject<HTMLDivElement>) {
   return scale;
 }
 
-export default function SystemMap() {
+export default function SystemMap({ children }: { children?: React.ReactNode }) {
   const { store, mode } = useStore();
   const s = store.state;
   const wrap = useRef<HTMLDivElement>(null);
@@ -248,6 +248,7 @@ export default function SystemMap() {
           )}
         </div>
       </div>
+      {children}
     </section>
   );
 }

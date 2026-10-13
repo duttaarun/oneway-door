@@ -52,8 +52,10 @@ runs at the PR's commit come back green while you speak.
 
 ## Act 2: The incident (0:35–1:45)
 
-**Click** tab **2 The incident**, then **Start** and `→` for each step. Each takes 2–10 seconds of real work. Point
-at the map while it runs: orange dots are v2 events, the backlog fills the pipe, and the ledger turns red.
+**Click** tab **2 The incident**. The controls sit right under the map: the seven steps, **Start**, and the live numbers
+(sent, booked, missing, £0.00 rows, backlog, dead letters). Press **Start**, then `→` for each step. Each takes 2–10
+seconds of real work. Point at the map while it runs: orange dots are v2 events, the backlog fills the pipe, and the
+ledger turns red. After step 7 the red verdict replaces the caption, in the same place.
 
 | Step | The map shows | Say |
 |---|---|---|
@@ -118,7 +120,10 @@ why it rolls back. The green box confirms the same end state as PR #482.
 
 ## Act 5: The proof (3:20–4:00)
 
-**Show** tab **5 The proof**: the rollback matrix, five rows by five stages.
+**Show** tab **5 The proof**. Under the map is the rollback-test panel: five stage cards showing which version of each
+service runs, whether the database already has the new migration, what the stage is doing right now (deploying,
+sending 20 settlements, waiting for the ledger, running reconciliation), and, once done, the six checks with their real
+numbers. The full matrix is below it; click a row to show it in the panel.
 
 **Say:**
 > "Each row deploys for real, sends traffic, rolls back, and sends traffic again, through every mix of old and new
@@ -128,8 +133,9 @@ why it rolls back. The green box confirms the same end state as PR #482.
 > "One-Way Door: it tells you before you merge whether you'll be able to roll back. Copy one folder into your
 > repo, or install it as a Copilot plugin."
 
-**If you have 30 spare seconds:** select `split/2-migrate → split/3-contract` and press **Run this row live**. The
-cells fill in as each stage passes.
+**If you have 30 spare seconds:** pick `split 2 → split 3` in the panel and press **Run this row**. Talk over the stage
+cards as they fill in: "new ledger, old events… both new… now the old ledger on the new database". For the failure,
+run `main → PR #482`: stage 2 goes red with 20 rows at £0.00 while the map shows it happening.
 
 **Fallback:** the matrix is a file (`demo/control-centre/recordings/matrix.json`). It shows without running anything.
 

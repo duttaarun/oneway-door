@@ -3,6 +3,7 @@ import { StoreProvider, useStore } from './store';
 import SystemMap from './components/SystemMap';
 import { LogConsole, Metrics } from './components/Rail';
 import { ControlRoom, SystemCheck } from './components/Drawers';
+import { IncidentDock, ProofDock } from './components/Docks';
 import Act1 from './acts/Act1';
 import Act2 from './acts/Act2';
 import Act3 from './acts/Act3';
@@ -10,11 +11,11 @@ import Act4 from './acts/Act4';
 import Act5 from './acts/Act5';
 
 const ACTS = [
-  { n: 1, name: 'The PR', el: <Act1 /> },
-  { n: 2, name: 'The incident', el: <Act2 /> },
-  { n: 3, name: 'The review', el: <Act3 /> },
-  { n: 4, name: 'The split', el: <Act4 /> },
-  { n: 5, name: 'The proof', el: <Act5 /> },
+  { n: 1, name: 'The PR' },
+  { n: 2, name: 'The incident' },
+  { n: 3, name: 'The review' },
+  { n: 4, name: 'The split' },
+  { n: 5, name: 'The proof' },
 ];
 
 function readAct(): number {
@@ -28,6 +29,8 @@ function Shell() {
   const [act, setAct] = useState(readAct);
   const [drawer, setDrawer] = useState<'control' | 'check' | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  // The matrix row shown in act 5's panel; shared by the panel and the table.
+  const [proofKey, setProofKey] = useState('split/2-migrate→split/3-contract');
   const infra = store.state?.infra.status;
 
   useEffect(() => {
@@ -107,12 +110,21 @@ function Shell() {
         </div>
       )}
 
-      <SystemMap />
+      <SystemMap>
+        {act === 2 && <IncidentDock />}
+        {act === 5 && <ProofDock selected={proofKey} setSelected={setProofKey} />}
+      </SystemMap>
 
       <main className="workspace">
-        <div>{ACTS[act - 1].el}</div>
+        <div>
+          {act === 1 && <Act1 />}
+          {act === 2 && <Act2 />}
+          {act === 3 && <Act3 />}
+          {act === 4 && <Act4 />}
+          {act === 5 && <Act5 selected={proofKey} setSelected={setProofKey} />}
+        </div>
         <aside className="rail">
-          <Metrics />
+          {act !== 2 && <Metrics />}
           <LogConsole />
         </aside>
       </main>

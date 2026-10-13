@@ -51,35 +51,50 @@ public class RollbackTest {
         e.caption("Rollback test: " + from + " → " + to + " → back to " + from + "  (" + trafficPerStage + " settlements per stage)");
         e.info("  clean start at " + from + "…");
         publish(from, to, "running", null, stages, reasons);
+        begin(from, to, 0, at, "Clean start: fresh database and topics, all three services at " + from);
+        step(from, to, 0, "deploy", "Wiping the ledger and the topics, starting all three services at " + from + "…", "running");
         ops.down();
         if (!ops.up(from)) {
+            step(from, to, 0, "deploy", "The baseline at " + from + " did not start", "fail");
             reasons.add("baseline at " + from + " did not start");
             return finish(from, to, stages, reasons);
         }
+        step(from, to, 0, "deploy", "All three services at " + from + " are UP", "ok");
         stages.add(stage(from, to, 0, at, reasons));
 
-        move(ServiceRunner.LEDGER, to, STAGES.get(1), reasons);
         at[0] = to;
+        move(from, to, 1, ServiceRunner.LEDGER, to, "Deploy ledger-service at " + to + ". settlement-service stays at " + from
+                + ": a new reader, old events.", at, reasons);
         stages.add(stage(from, to, 1, at, reasons));
 
-        move(ServiceRunner.SETTLEMENT, to, STAGES.get(2), reasons);
         at[1] = to;
+        move(from, to, 2, ServiceRunner.SETTLEMENT, to, "Deploy settlement-service at " + to + ": both services new.", at, reasons);
         stages.add(stage(from, to, 2, at, reasons));
 
-        move(ServiceRunner.LEDGER, from, STAGES.get(3), reasons);
         at[0] = from;
+        move(from, to, 3, ServiceRunner.LEDGER, from, "Roll ledger-service back to " + from + ". The database keeps " + to
+                + "'s migration: an old reader, new data.", at, reasons);
         stages.add(stage(from, to, 3, at, reasons));
 
-        move(ServiceRunner.SETTLEMENT, from, STAGES.get(4), reasons);
         at[1] = from;
+        move(from, to, 4, ServiceRunner.SETTLEMENT, from, "Roll settlement-service back to " + from
+                + ". Both old, on the new database.", at, reasons);
         stages.add(stage(from, to, 4, at, reasons));
 
         return finish(from, to, stages, reasons);
     }
 
-    private void move(String service, String ref, String stageName, Set<String> reasons) {
-        if (!ops.runner.deploy(service, ref)) {
-            reasons.add(stageName + ": " + service + " @ " + ref + " did not start: " + ops.runner.deployed(service).failure());
+    private void move(String from, String to, int index, String service, String ref, String action, String[] at,
+            Set<String> reasons) {
+        String stageName = STAGES.get(index);
+        begin(from, to, index, at, action);
+        step(from, to, index, "deploy", "Building " + service + " at " + ref + " from git and starting it…", "running");
+        if (ops.runner.deploy(service, ref)) {
+            step(from, to, index, "deploy", service + " at " + ref + " is UP", "ok");
+        } else {
+            String why = ops.runner.deployed(service).failure();
+            step(from, to, index, "deploy", service + " at " + ref + " did not start: " + why, "fail");
+            reasons.add(stageName + ": " + service + " @ " + ref + " did not start: " + why);
         }
         if (ServiceRunner.LEDGER.equals(service)) {
             try {
@@ -90,21 +105,57 @@ public class RollbackTest {
         }
     }
 
+    /** A stage begins: which versions run, and what the stage does. The UI shows it live. */
+    private void begin(String from, String to, int index, String[] at, String action) {
+        Map<String, Object> m = new LinkedHashMap<>();
+        m.put("from", from);
+        m.put("to", to);
+        m.put("index", index);
+        m.put("stage", STAGES.get(index));
+        m.put("ledgerRef", at[0]);
+        m.put("settlementRef", at[1]);
+        m.put("action", action);
+        ops.events.publish("rtStage", m);
+    }
+
+    /** One step inside a stage (deploy, traffic, drain, reconciliation), with status running, ok or fail. */
+    private void step(String from, String to, int index, String id, String text, String status) {
+        Map<String, Object> m = new LinkedHashMap<>();
+        m.put("from", from);
+        m.put("to", to);
+        m.put("index", index);
+        m.put("id", id);
+        m.put("text", text);
+        m.put("status", status);
+        ops.events.publish("rtStep", m);
+    }
+
     private Map<String, Object> stage(String from, String to, int index, String[] at, Set<String> reasons) {
         String name = STAGES.get(index);
         List<String> mine = new ArrayList<>();
+        step(from, to, index, "traffic", "Sending " + trafficPerStage + " settlements to settlement-service…", "running");
         try {
-            if (ops.traffic.send(trafficPerStage).accepted() != trafficPerStage) {
+            var sent = ops.traffic.send(trafficPerStage);
+            if (sent.accepted() != trafficPerStage) {
                 mine.add(name + ": settlement-service did not accept all traffic");
+                step(from, to, index, "traffic", "Only " + sent.accepted() + " of " + trafficPerStage + " settlements accepted", "fail");
+            } else {
+                step(from, to, index, "traffic", trafficPerStage + " settlements sent to Kafka (£" + sent.total().toPlainString() + ")", "ok");
             }
         } catch (RuntimeException ex) {
             mine.add(name + ": settlement-service did not accept all traffic");
+            step(from, to, index, "traffic", "settlement-service did not accept the settlements", "fail");
         }
         if ("UP".equals(ops.runner.health(ServiceRunner.LEDGER))) {
-            ops.kafka.waitForDrain(60);
+            step(from, to, index, "drain", "Waiting for ledger-service to book them…", "running");
+            boolean drained = ops.kafka.waitForDrain(60);
+            step(from, to, index, "drain", drained ? "ledger-service consumed every event" : ops.kafka.lag() + " events still waiting on Kafka",
+                    drained ? "ok" : "fail");
         } else {
+            step(from, to, index, "drain", "ledger-service is down: the events wait on Kafka", "fail");
             sleep(3000);
         }
+        step(from, to, index, "recon", "Running reconciliation-batch…", "running");
         String lh = ops.runner.health(ServiceRunner.LEDGER);
         String sh = ops.runner.health(ServiceRunner.SETTLEMENT);
         long rows = safe(ops.ledger::rowCount);
@@ -114,6 +165,8 @@ public class RollbackTest {
         Recon recon = ops.recon();
         int expectedRows = ops.traffic.sentCount();
         BigDecimal expectedTotal = ops.traffic.sentTotal();
+        step(from, to, index, "recon", recon.total() == null ? "Reconciliation failed: " + recon.error()
+                : "Reconciliation total £" + recon.total().toPlainString(), recon.total() == null ? "fail" : "ok");
 
         if (!"UP".equals(lh)) {
             mine.add(name + ": ledger-service is " + lh);
@@ -162,6 +215,12 @@ public class RollbackTest {
         row.put("dlt", dlt);
         row.put("lag", lag);
         row.put("recon", reconCell);
+        row.put("reconTotal", recon.total());
+        row.put("reconError", recon.error());
+        row.put("mismatches", recon.mismatches());
+        row.put("expectedTotal", expectedTotal);
+        row.put("ledgerHealth", lh);
+        row.put("settlementHealth", sh);
         row.put("ok", mine.isEmpty());
         row.put("problems", mine);
         ops.events.publish("stage", row);

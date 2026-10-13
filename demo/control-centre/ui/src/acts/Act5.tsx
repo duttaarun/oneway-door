@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { useFetch, useStore } from '../store';
+import { shortRef } from '../components/Docks';
 import type { Refs, RollbackResult, StageRow } from '../types';
 
 const STAGE_LABELS = ['Baseline', 'Deploy ledger', 'Deploy settlement', 'Roll back ledger', 'Roll back settlement'];
@@ -13,18 +13,20 @@ function cellNote(st: StageRow): string {
   return 'problem';
 }
 
-export default function Act5() {
-  const { store, post, mode } = useStore();
+export default function Act5({ selected, setSelected }: { selected: string; setSelected: (k: string) => void }) {
+  const { store } = useStore();
   const { data: refs } = useFetch<Refs>('/api/refs');
   const { data: saved } = useFetch<{ generated?: string; results: RollbackResult[] }>('/api/matrix', [store.matrixStamp]);
   const cases = refs?.cases ?? [];
-  const [selected, setSelected] = useState('split/2-migrate→split/3-contract');
-  const busy = !!store.busy;
-
+  const busyKey = /^Rollback test (.+) → (.+)$/.exec(store.busy ?? '');
+  const runningKey = busyKey ? `${busyKey[1]}→${busyKey[2]}` : store.busy?.startsWith('Rollback') ? store.lastRollbackKey : null;
   const resultFor = (key: string): RollbackResult | undefined =>
     store.rollback[key] ?? saved?.results.find((r) => `${r.from}→${r.to}` === key);
-  const sel = resultFor(selected);
-  const [from, to] = selected.split('→');
+
+  const pick = (key: string) => {
+    setSelected(key);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <>
@@ -32,9 +34,9 @@ export default function Act5() {
         <div className="eyebrow">Act 5 · The proof</div>
         <h1>Each row deploys for real, rolls back, and checks the money</h1>
         <p className="lede">
-          Clean start at <i>from</i>. Deploy ledger-service, then settlement-service, at <i>to</i>. Roll ledger-service back,
-          then settlement-service. After every step: 20 settlements, then check both services are healthy, every settlement
-          is booked once, nothing is at £0.00, the DLT is empty and reconciliation matches.
+          Pick a row and press <b>Run this row</b> in the panel under the map. It starts clean at the old version, deploys
+          ledger-service then settlement-service at the new one, then rolls each back. The database keeps the new
+          migration throughout. After every stage it sends 20 settlements and checks six things, live.
         </p>
       </div>
 
@@ -44,17 +46,12 @@ export default function Act5() {
             <div className="eyebrow">Rollback matrix</div>
             <h2>Four passes, one fail</h2>
           </div>
-          <div className="row">
-            <button className="btn btn-black" disabled={busy || mode === 'replay'} onClick={() => post('/rollback-test', { from, to })}>
-              Run this row live
-            </button>
-            <button className="btn btn-ghost" disabled={busy || mode === 'replay'} onClick={() => post('/matrix')}>Run all (about 2 min)</button>
-          </div>
+          <span className="small muted">Click a row to show it in the panel above.</span>
         </div>
         <table className="matrix" style={{ marginTop: 10 }}>
           <thead>
             <tr>
-              <th>From → to</th>
+              <th>Old → new</th>
               {STAGE_LABELS.map((s, i) => <th key={s}>{i + 1}. {s}</th>)}
               <th>Result</th>
             </tr>
@@ -65,8 +62,8 @@ export default function Act5() {
               const r = resultFor(key);
               const running = r?.result === 'running';
               return (
-                <tr key={key} className={key === selected ? 'selected' : ''} onClick={() => setSelected(key)} style={{ cursor: 'pointer' }}>
-                  <td className="case">{key === selected ? '▸ ' : ''}{c.from} → {c.to}</td>
+                <tr key={key} className={key === (runningKey ?? selected) ? 'selected' : ''} onClick={() => pick(key)} style={{ cursor: 'pointer' }}>
+                  <td className="case">{key === (runningKey ?? selected) ? '▸ ' : ''}{shortRef(c.from)} → {shortRef(c.to)}</td>
                   {STAGE_LABELS.map((_, i) => {
                     const st = r?.stages.find((x) => x.index === i);
                     const isNext = running && !st && (r?.stages.length ?? 0) === i;
@@ -85,19 +82,9 @@ export default function Act5() {
             })}
           </tbody>
         </table>
-        {sel?.firstProblem && (
-          <div className="problem">
-            <b>{sel.from} → {sel.to}:</b> {sel.reasons.slice(0, 4).join(' · ')}
-          </div>
-        )}
-        {sel && !sel.firstProblem && sel.result === 'PASS' && (
-          <p className="small" style={{ marginTop: 12, color: 'var(--green)' }}>
-            <b>{sel.from} → {sel.to}:</b> deploys and rolls back with no errors, no £0.00 rows, an empty DLT and correct totals.
-          </p>
-        )}
         <p className="small muted" style={{ marginTop: 10 }}>
-          {saved?.generated ? `Last full run: ${saved.generated}. ` : ''}PR #482 fails <i>before</i> anyone presses rollback:
-          a new consumer reading old events books zero too.
+          {saved?.generated ? `Last full run: ${saved.generated}. ` : ''}PR #482 fails at stage 2, <i>before</i> anyone presses
+          rollback: a new consumer reading old events books zero too.
         </p>
       </div>
 

@@ -103,8 +103,29 @@ export interface StageRow {
   dlt: number;
   lag: number;
   recon: string;
+  reconTotal?: number | null;
+  reconError?: string | null;
+  mismatches?: number | null;
+  expectedTotal?: number;
+  ledgerHealth?: string;
+  settlementHealth?: string;
   ok: boolean;
   problems: string[];
+}
+
+export interface StageStep {
+  id: string;
+  text: string;
+  status: 'running' | 'ok' | 'fail';
+}
+
+export interface LiveStage {
+  index: number;
+  stage: string;
+  ledgerRef: string;
+  settlementRef: string;
+  action: string;
+  steps: StageStep[];
 }
 
 export interface RollbackResult {
@@ -114,6 +135,7 @@ export interface RollbackResult {
   firstProblem: string | null;
   reasons: string[];
   stages: StageRow[];
+  current?: LiveStage | null;
 }
 
 export interface TestResult {

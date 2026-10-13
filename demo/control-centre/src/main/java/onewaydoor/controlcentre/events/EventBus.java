@@ -63,7 +63,7 @@ public class EventBus {
 
     public void publish(String type, Object data) {
         Event event = new Event(System.currentTimeMillis(), type, data);
-        if ("log".equals(type) || "step".equals(type)) {
+        if ("log".equals(type) || "step".equals(type) || type.startsWith("rt") || "stage".equals(type) || "rollbackTest".equals(type)) {
             synchronized (recentLogs) {
                 recentLogs.addLast(event);
                 while (recentLogs.size() > BACKLOG) {
