@@ -27,6 +27,9 @@ import javax.sql.DataSource;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.admin.OffsetSpec;
+import org.apache.kafka.clients.admin.RecordsToDelete;
+import org.apache.kafka.common.TopicPartition;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -218,6 +221,10 @@ public class EmbeddedInfra {
         }
         Set<String> existing = admin.listTopics().names().get(10, TimeUnit.SECONDS);
         List<String> ours = existing.stream().filter(t -> t.equals(TOPIC) || t.equals(DLT)).toList();
+        if (Workspace.WINDOWS && ours.size() == 2) {
+            emptyTopics();
+            return;
+        }
         if (!ours.isEmpty()) {
             admin.deleteTopics(ours).all().get(30, TimeUnit.SECONDS);
             long deadline = System.currentTimeMillis() + 30_000;
@@ -227,6 +234,20 @@ public class EmbeddedInfra {
             }
         }
         createTopics();
+    }
+
+    /**
+     * Windows can't delete a Kafka topic: the broker renames the partition's folder while its files are open, the
+     * rename fails with AccessDeniedException, and the broker takes the whole log directory offline. So on Windows a
+     * reset empties the topics in place instead: their start moves to their end, and no file is renamed.
+     */
+    private void emptyTopics() throws Exception {
+        Map<TopicPartition, OffsetSpec> latest = Map.of(
+                new TopicPartition(TOPIC, 0), OffsetSpec.latest(), new TopicPartition(DLT, 0), OffsetSpec.latest());
+        Map<TopicPartition, RecordsToDelete> before = new java.util.HashMap<>();
+        admin.listOffsets(latest).all().get(10, TimeUnit.SECONDS)
+                .forEach((tp, info) -> before.put(tp, RecordsToDelete.beforeOffset(info.offset())));
+        admin.deleteRecords(before).all().get(30, TimeUnit.SECONDS);
     }
 
     private void createLedgerDatabase() throws SQLException {

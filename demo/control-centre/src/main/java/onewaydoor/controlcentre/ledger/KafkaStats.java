@@ -26,9 +26,9 @@ public class KafkaStats {
         this.infra = infra;
     }
 
-    public long endOffset(TopicPartition tp) {
+    private long offset(TopicPartition tp, OffsetSpec spec) {
         try {
-            Map<TopicPartition, ListOffsetsResultInfo> r = infra.admin().listOffsets(Map.of(tp, OffsetSpec.latest()))
+            Map<TopicPartition, ListOffsetsResultInfo> r = infra.admin().listOffsets(Map.of(tp, spec))
                     .all().get(5, TimeUnit.SECONDS);
             return r.get(tp).offset();
         } catch (Exception e) {
@@ -36,26 +36,32 @@ public class KafkaStats {
         }
     }
 
+    /** Records on a partition now. On Windows a reset empties a topic by moving its start, so this isn't the end offset. */
+    private long count(TopicPartition tp) {
+        return Math.max(0, offset(tp, OffsetSpec.latest()) - offset(tp, OffsetSpec.earliest()));
+    }
+
     public long published() {
-        return endOffset(SETTLED);
+        return count(SETTLED);
     }
 
     public long dlt() {
-        return endOffset(DLT);
+        return count(DLT);
     }
 
     /** Events on payments.settled that ledger-service hasn't consumed yet. */
     public long lag() {
-        long end = published();
+        long end = offset(SETTLED, OffsetSpec.latest());
+        long start = offset(SETTLED, OffsetSpec.earliest());
         try {
             Admin admin = infra.admin();
             Map<TopicPartition, OffsetAndMetadata> committed = admin
                     .listConsumerGroupOffsets(EmbeddedInfra.LEDGER_GROUP).partitionsToOffsetAndMetadata()
                     .get(5, TimeUnit.SECONDS);
             OffsetAndMetadata c = committed == null ? null : committed.get(SETTLED);
-            return Math.max(0, end - (c == null ? 0 : c.offset()));
+            return Math.max(0, end - (c == null ? start : Math.max(start, c.offset())));
         } catch (Exception e) {
-            return end;
+            return Math.max(0, end - start);
         }
     }
 
