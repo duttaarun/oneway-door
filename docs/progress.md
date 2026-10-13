@@ -249,3 +249,23 @@ Verified:
 - Node tests: 60 pass, 1 skipped (PowerShell). Headless incident reproduced and was re-recorded (Flyway: "3 - amount
   minor units", 0.005 s; sent £22,405.89, booked £9,026.02, missing £13,379.87). Rollback matrix: 4 PASS, 1 FAIL,
   as expected.
+
+## Technical design document (PDF), with Lucidchart diagrams and live screens
+
+Done:
+- `docs/One-Way-Door-TDD.pdf` (21 pages), from `docs/proposal/tdd.html` in the proposal's format. Ten sections as
+  asked, a numbered contents page, and the repository link marked TBD.
+- Section 6 now has two architecture pages, both drawn in Lucidchart: the Northwind demo system (6.2) and the demo
+  runtime on one laptop (6.3). Each card has logo badges: Java, Spring, Hibernate, Kafka, PostgreSQL, React, Vite, git
+  and Maven.
+- Three pages of Control Centre screens (6.5 to 6.7), from a live run on 14 October 2026: act 1, act 2 at 17:00 and
+  17:26, act 3, a live rollback test (split 2 → split 3, PASS) and the matrix.
+- `build.py` takes a page and an output path, and inlines `images/` as data URIs (the page prints from a temp copy).
+
+Gotchas:
+- Lucid's import doesn't render SVG images, by URL or inline. PNG works both ways. The logos are github/explore topic
+  PNGs on jsDelivr, pinned to a commit. Kafka and Hibernate aren't in that set, so they go inline as 72 px PNGs.
+- Lucid puts a container's title outside the box, where it collides with arrows. Use a plain rectangle and a text shape.
+- In the TDD stylesheet, `table.t tr.sub td` outranks `.contents tr.sub td`. Contents spacing needs `table.t.contents`.
+- The screens' amounts differ from the recorded run's (£12,671.84 missing here, £12,708.11 in the recording). The pages
+  say amounts are random each run.

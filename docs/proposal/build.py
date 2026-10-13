@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Builds docs/One-Way-Door-proposal.pdf from proposal.html.
+"""Builds an A4 PDF from one of the HTML documents in this folder (same theme, fonts and checks).
 
-Chrome won't load fonts over file://, so the local woff2 files are inlined as data URIs
-into a temporary copy, which headless Chrome then prints to an A4 PDF.
+Chrome won't load fonts over file://, so the local woff2 files (and any images/ the page
+uses) are inlined as data URIs into a temporary copy, which headless Chrome then prints to an A4 PDF.
 
-Usage: python3 docs/proposal/build.py
+Usage: python3 docs/proposal/build.py                     # proposal.html -> docs/One-Way-Door-proposal.pdf
+       python3 docs/proposal/build.py tdd.html docs/One-Way-Door-TDD.pdf
 """
 import base64
 import pathlib
@@ -23,6 +24,15 @@ def inline_fonts(css: str) -> str:
         data = base64.b64encode((HERE / m.group(1)).read_bytes()).decode()
         return f"url(data:font/woff2;base64,{data})"
     return re.sub(r"url\((fonts/[^)]+\.woff2)\)", repl, css)
+
+
+def inline_images(html: str) -> str:
+    """The page is printed from a temporary copy, so relative images/ paths become data URIs."""
+    def repl(m):
+        f = HERE / m.group(1)
+        mime = "image/png" if f.suffix == ".png" else "image/jpeg"
+        return f'src="data:{mime};base64,{base64.b64encode(f.read_bytes()).decode()}"'
+    return re.sub(r'src="(images/[^"]+\.(?:png|jpe?g))"', repl, html)
 
 
 LICENSED = {  # base file name -> (family the stylesheet asks for, weight)
@@ -50,13 +60,16 @@ def licensed_fonts() -> str:
 
 
 def main() -> int:
-    html = (HERE / "proposal.html").read_text()
+    src = HERE / (sys.argv[1] if len(sys.argv) > 1 else "proposal.html")
+    out = pathlib.Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else OUT
+    html = src.read_text()
     brand = licensed_fonts()
     print("brand fonts:", f"{brand.count('@font-face')} licensed GT Ultra faces" if brand else "none (using open stand-ins)")
     css = brand + "\n" + inline_fonts((HERE / "fonts" / "fonts.css").read_text())
     html = html.replace('<link href="fonts/fonts.css" rel="stylesheet">', f"<style>\n{css}</style>")
+    html = inline_images(html)
     with tempfile.TemporaryDirectory() as tmp:
-        page = pathlib.Path(tmp) / "proposal.html"
+        page = pathlib.Path(tmp) / src.name
         page.write_text(html)
         common = [CHROME, "--headless=new", "--disable-gpu", "--virtual-time-budget=15000",
                   "--run-all-compositor-stages-before-draw"]
@@ -64,9 +77,9 @@ def main() -> int:
                              capture_output=True, text=True).stdout
         overflow = re.search(r'data-overflow="([^"]*)"', dom)
         print("overflow check:", overflow.group(1) if overflow else "not run")
-        subprocess.run(common + ["--no-pdf-header-footer", f"--print-to-pdf={OUT}", page.as_uri()],
+        subprocess.run(common + ["--no-pdf-header-footer", f"--print-to-pdf={out}", page.as_uri()],
                        capture_output=True, check=True)
-    print("wrote", OUT)
+    print("wrote", out)
     return 0 if overflow and overflow.group(1) == "none" else 1
 
 

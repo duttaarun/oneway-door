@@ -1,0 +1,1185 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>One-Way Door: technical design document</title>
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --text: #1F1F1F; --muted: #555555; --line: #D8D8D8; --grey: #F1F1F1; --white: #FFFFFF; --black: #000000;
+    --green-bright: #11B67A; --green: #006A4D; --green-mid: #00864F; --green-deep: #024731; --neon: #0BE248; --mint: #C7FFC6;
+    --lilac: #E4E3FF; --lilac-d: #4A47B8; --aqua: #D6F3F1; --aqua-d: #0E6B66; --orange: #FFE3CC; --orange-d: #8A4300;
+    --pink: #FCE3FB; --pink-d: #8A1C4A; --red: #B00000;
+    --head: 'GT Ultra Median', 'Source Serif 4', Georgia, serif;
+    --body: 'GT Ultra Standard', 'Source Sans 3', Arial, sans-serif;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { margin: 0; padding: 0; background: #CCCCCC; }
+  body { font-family: var(--body); color: var(--text); font-size: 9.6pt; line-height: 1.45; }
+  .page { width: 210mm; height: 297mm; position: relative; overflow: hidden; background: var(--white); break-after: page; page-break-after: always; }
+  .page:last-child { break-after: auto; page-break-after: auto; }
+  h1, h2, h3 { font-family: var(--head); margin: 0; color: var(--black); font-weight: 600; }
+  p { margin: 0 0 2mm; }
+  b { font-weight: 700; }
+  .mono { font-family: var(--mono); }
+
+  /* ---------- site-style header ---------- */
+  .topbar { height: 12mm; background: var(--green-bright); padding: 0 14mm; display: flex; align-items: center; justify-content: space-between; }
+  .wordmark { font-family: var(--head); font-weight: 700; font-size: 13pt; color: var(--black); display: flex; align-items: center; gap: 2.4mm; }
+  .wordmark i { display: inline-block; width: 3.6mm; height: 5.4mm; border: 0.9mm solid var(--black); border-bottom: 0; border-radius: 2.4mm 2.4mm 0 0; }
+  .topbar .meta-r { font-size: 8pt; font-weight: 600; color: var(--black); }
+  .navbar { height: 8.6mm; background: var(--black); padding: 0 14mm; display: flex; align-items: stretch; gap: 7mm; }
+  .navbar span { color: var(--white); font-size: 8.2pt; font-weight: 600; display: flex; align-items: center; border-bottom: 1mm solid transparent; padding-top: 1mm; }
+  .navbar span.on { border-bottom-color: var(--green-bright); }
+  .navbar span small { color: #9B9B9B; font-weight: 400; margin-right: 1.4mm; font-size: 7.4pt; }
+
+  /* ---------- section intro ---------- */
+  .intro { background: var(--grey); padding: 5.4mm 14mm 5mm; }
+  .intro .label { font-size: 8.4pt; font-weight: 700; color: var(--green); margin-bottom: 1mm; }
+  .intro h2 { font-size: 21pt; line-height: 1.15; }
+  .body { padding: 6mm 14mm 0; }
+  .label { font-size: 8.4pt; font-weight: 700; color: var(--green); margin-bottom: 1.6mm; }
+  .lead { font-size: 10.6pt; line-height: 1.45; margin-bottom: 4mm; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+  .card { background: var(--white); border: 1px solid var(--line); border-radius: 3.5mm; padding: 3.6mm 4mm; }
+  .card h3 { font-size: 11.4pt; margin-bottom: 1.2mm; }
+  .card p { font-size: 9pt; line-height: 1.4; margin: 0; }
+  .pill { display: inline-block; font-size: 7.6pt; font-weight: 700; padding: 0.7mm 2.6mm; border-radius: 10mm; margin-bottom: 2mm; }
+  .more { font-weight: 700; color: var(--black); text-decoration: underline; text-underline-offset: 0.6mm; font-size: 8.8pt; }
+  .footer { position: absolute; left: 14mm; right: 14mm; bottom: 7mm; display: flex; justify-content: space-between; font-size: 7.6pt; color: var(--muted); border-top: 1px solid var(--line); padding-top: 2.2mm; }
+
+  /* ---------- cover ---------- */
+  .hero { background: var(--green-deep); height: 140mm; position: relative; overflow: hidden; padding: 16mm 14mm 0; color: var(--white); }
+  .hero .tag { display: inline-block; background: var(--white); color: var(--black); font-size: 8.4pt; font-weight: 700; padding: 1.4mm 4mm; border-radius: 10mm; }
+  .hero h1 { color: var(--white); font-size: 44pt; line-height: 1.02; margin-top: 7mm; font-weight: 600; }
+  .hero .sub { font-size: 14pt; line-height: 1.35; margin-top: 5mm; max-width: 98mm; color: #E6F5EE; }
+  .hero .cta { display: inline-block; margin-top: 7mm; background: var(--white); color: var(--black); font-weight: 700; font-size: 9.4pt; padding: 2.4mm 6mm; border-radius: 10mm; }
+  .doors { position: absolute; right: 14mm; bottom: 0; width: 82mm; height: 96mm; }
+  .door { position: absolute; bottom: 0; width: 17mm; height: 46mm; border-radius: 8.5mm 8.5mm 0 0; }
+  .door .knob { position: absolute; right: 2.4mm; top: 25mm; width: 2.2mm; height: 2.2mm; border-radius: 50%; background: rgba(0,0,0,.35); }
+  .door.a { left: 0; background: var(--green-bright); }
+  .door.b { left: 21mm; background: var(--green-mid); }
+  .door.c { left: 42mm; background: var(--mint); }
+  .door.open { left: 63mm; width: 19mm; height: 62mm; border-radius: 9.5mm 9.5mm 0 0; border: 1.6mm solid var(--neon); border-bottom: 0; overflow: hidden; }
+  .door.open .glow { position: absolute; inset: 0; background: linear-gradient(180deg, #F2FFF1 0%, var(--mint) 100%); }
+  .door.open .leaf { position: absolute; left: 0; bottom: 0; width: 7mm; height: 64mm; background: var(--neon); transform: skewY(-16deg); transform-origin: left bottom; }
+  .ring { position: absolute; right: -30mm; top: -34mm; width: 92mm; height: 92mm; border-radius: 50%; border: 9mm solid var(--green-mid); opacity: .55; }
+  .oneway { position: absolute; right: 14mm; bottom: 66mm; font-size: 8pt; font-weight: 700; color: var(--neon); letter-spacing: .02em; }
+  .cover-main { padding: 7mm 14mm 0; display: grid; grid-template-columns: 1.5fr 1fr; gap: 8mm; }
+  .meta { display: grid; grid-template-columns: auto 1fr; gap: 1.2mm 4mm; font-size: 8.8pt; margin-top: 3mm; }
+  .meta dt { color: var(--muted); }
+  .meta dd { margin: 0; font-weight: 600; }
+  .stat { background: var(--grey); border-radius: 3.5mm; padding: 3mm 4mm; margin-bottom: 2.6mm; }
+  .stat .n { font-family: var(--head); font-weight: 700; font-size: 17pt; line-height: 1.1; color: var(--green); }
+  .stat .t { font-size: 8.4pt; line-height: 1.3; margin-top: .6mm; }
+  .toc { padding: 3mm 14mm 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+  .toc div { background: var(--grey); border-radius: 3.5mm; padding: 3mm 3.6mm; }
+  .toc small { display: block; color: var(--green); font-weight: 700; font-size: 7.8pt; }
+  .toc b { display: block; font-family: var(--head); font-size: 10.6pt; margin: .6mm 0 1.4mm; }
+
+  /* ---------- problem ---------- */
+  .statement { background: var(--green-deep); color: var(--white); border-radius: 3.5mm; padding: 4.6mm 6mm; margin-bottom: 4.4mm; }
+  .statement .label { color: var(--mint); }
+  .statement p { font-family: var(--head); font-size: 12pt; line-height: 1.4; margin: 0; }
+  .two-col { display: grid; grid-template-columns: 1.12fr 1fr; gap: 6mm; margin-top: 4.4mm; }
+  .miss .row { display: grid; grid-template-columns: 8mm 1fr; gap: 3mm; align-items: start; margin-bottom: 2.4mm; }
+  .miss .k { width: 7mm; height: 7mm; border-radius: 50%; background: var(--green); color: var(--white); font-weight: 700; font-size: 9.4pt; display: flex; align-items: center; justify-content: center; }
+  .miss b { display: block; font-size: 9.6pt; }
+  .miss span { font-size: 9pt; color: var(--muted); }
+  .stakes { background: var(--mint); border-radius: 3.5mm; padding: 4.2mm 5mm; }
+  .stakes h3 { font-size: 12pt; color: var(--green-deep); margin-bottom: 1.6mm; }
+  .stakes ul { margin: 0; padding-left: 4mm; }
+  .stakes li { margin-bottom: 1.4mm; font-size: 8.8pt; line-height: 1.38; }
+  .cost { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .cost div { background: var(--black); color: #EDEDED; border-radius: 3.5mm; padding: 3.4mm 4mm; font-size: 8.8pt; line-height: 1.4; }
+  .cost b { display: block; font-family: var(--head); font-size: 11.2pt; margin-bottom: .8mm; color: var(--green-bright); }
+
+  /* ---------- stories ---------- */
+  .scenario { background: var(--grey); border-radius: 3.5mm; padding: 4mm 5mm; margin-bottom: 5mm; }
+  .scenario h3 { font-size: 12pt; margin-bottom: 1mm; }
+  .scenario h3 span { font-family: var(--body); font-weight: 400; font-size: 8.8pt; color: var(--muted); }
+  .flowstrip { display: flex; align-items: center; gap: 1.6mm; margin: 2.4mm 0 3mm; }
+  .flowstrip .n { flex: 1; border-radius: 2.4mm; padding: 1.8mm 2mm; font-size: 8pt; font-weight: 700; text-align: center; line-height: 1.2; background: var(--white); border: 1px solid var(--line); }
+  .flowstrip .n small { display: block; font-weight: 400; font-size: 7pt; color: var(--muted); }
+  .flowstrip .n.g { background: var(--green); color: var(--white); border-color: var(--green); }
+  .flowstrip .n.g small { color: #D7F0E5; }
+  .flowstrip .n.x { background: var(--black); color: var(--white); border-color: var(--black); }
+  .flowstrip .n.x small { color: #BDBDBD; }
+  .flowstrip .a { font-weight: 700; color: var(--muted); }
+  .persona { background: var(--white); border: 1px solid var(--line); border-radius: 3.5mm; padding: 3.6mm 4mm; display: grid; grid-template-columns: 10mm 1fr; gap: 3mm; }
+  .avatar { width: 10mm; height: 10mm; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--head); font-weight: 700; font-size: 12pt; color: var(--black); }
+  .persona h3 { font-size: 11pt; }
+  .persona .role { font-size: 7.8pt; color: var(--muted); margin-bottom: 1.2mm; }
+  .persona p { font-size: 9.2pt; line-height: 1.45; margin: 0; }
+  .persona em { font-style: normal; font-weight: 700; color: var(--green); }
+  .ac { margin-top: 5mm; display: grid; grid-template-columns: 1.1fr 1fr; gap: 5mm; }
+  .ac ol { margin: 0; padding-left: 5mm; }
+  .ac li { font-size: 9pt; line-height: 1.45; margin-bottom: 2mm; }
+  .ac li b { color: var(--green); }
+  table.journey { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 8.7pt; }
+  table.journey th { text-align: left; font-size: 7.8pt; padding: 1.8mm 2mm; color: var(--white); background: var(--black); font-weight: 700; }
+  table.journey th:first-child { border-radius: 2mm 0 0 0; } table.journey th:last-child { border-radius: 0 2mm 0 0; }
+  table.journey td { padding: 1.8mm 2mm; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.3; }
+  table.journey td.bad { color: var(--red); }
+  table.journey td.good { color: var(--green); font-weight: 700; }
+  table.journey td.stage { font-weight: 700; }
+
+  /* ---------- solution ---------- */
+  .code { background: var(--black); color: #E8E8E8; border-radius: 3.5mm; padding: 4mm 4.4mm; font-family: var(--mono); font-size: 7.3pt; line-height: 1.62; }
+  .code .f { color: var(--green-bright); } .code .c { color: #9B9B9B; } .code .k { color: var(--mint); } .code .y { color: #FFB16A; }
+  .code .v { display: inline-block; background: #F54269; color: var(--black); font-weight: 600; padding: .2mm 2mm; border-radius: 1.4mm; }
+  .steps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2mm; margin: 0 0 4.4mm; }
+  .step { border-radius: 3mm; padding: 2.6mm 2.6mm; min-height: 22mm; }
+  .step .i { font-family: var(--head); font-weight: 700; font-size: 15pt; line-height: 1; color: var(--green); }
+  .step .t { font-size: 8pt; line-height: 1.3; font-weight: 600; margin-top: 1.4mm; }
+  .split { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.2mm; }
+  .split div { background: var(--grey); border-radius: 3mm; padding: 2.6mm 3mm; font-size: 8.3pt; line-height: 1.35; }
+  .split b { display: block; font-family: var(--head); font-size: 10pt; margin-bottom: .6mm; }
+  .principles { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8mm 4mm; font-size: 8.8pt; line-height: 1.35; }
+  .principles div:before { content: "› "; color: var(--green); font-weight: 700; }
+  .ext { background: var(--green-deep); color: var(--white); border-radius: 3.5mm; padding: 3.6mm 4.4mm; }
+  .ext h3 { color: var(--mint); font-size: 11pt; margin-bottom: 1.2mm; }
+  .ext p { font-size: 8.8pt; margin: 0; color: #E6F5EE; }
+  .surfaces { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .surfaces div { background: var(--white); border: 1px solid var(--line); border-radius: 3.5mm; padding: 3.4mm 4mm; font-size: 8.8pt; line-height: 1.4; }
+  .surfaces b { display: block; font-family: var(--head); font-size: 11pt; margin-bottom: .8mm; }
+  .surfaces .how { font-family: var(--mono); font-size: 7.2pt; color: var(--green); margin-top: 1.6mm; display: block; }
+
+  /* ---------- evidence ---------- */
+  table.proof { width: 100%; border-collapse: collapse; font-size: 9pt; }
+  table.proof th { text-align: left; font-size: 7.8pt; color: var(--muted); padding: 1.2mm 2mm; border-bottom: 2px solid var(--black); }
+  table.proof td { padding: 1.6mm 2mm; border-bottom: 1px solid var(--line); }
+  table.proof td.pass { color: var(--green); font-weight: 700; }
+  table.proof td.fail { color: var(--red); font-weight: 700; }
+  .bigstats { display: grid; grid-template-columns: 1fr 1fr; gap: 2.6mm; }
+  .bigstats div { background: var(--grey); border-radius: 3.5mm; padding: 2.8mm 3.4mm; }
+  .bigstats .n { font-family: var(--head); font-weight: 700; font-size: 18pt; line-height: 1.1; color: var(--green); }
+  .bigstats .t { font-size: 8.2pt; line-height: 1.3; margin-top: .6mm; }
+  .list-tight { margin: 0; padding-left: 4mm; font-size: 8.8pt; line-height: 1.4; }
+  .list-tight li { margin-bottom: 1.2mm; }
+  .road { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .road div { border-radius: 3.5mm; padding: 3.4mm 4mm; }
+  .road h3 { font-size: 11pt; margin-bottom: 1.2mm; }
+  .road ul { margin: 0; padding-left: 4mm; font-size: 8.6pt; line-height: 1.38; }
+  .road li { margin-bottom: .8mm; }
+  .ask { margin-top: 4.6mm; background: var(--green-deep); color: var(--white); border-radius: 3.5mm; padding: 5mm 6mm; display: grid; grid-template-columns: 1fr auto; gap: 6mm; align-items: center; }
+  .ask h3 { font-size: 15pt; color: var(--white); margin-bottom: 1.2mm; }
+  .ask p { font-size: 9.2pt; margin: 0; color: #E6F5EE; }
+  .ask .cta { background: var(--white); color: var(--black); font-weight: 700; font-size: 9pt; padding: 2.4mm 5mm; border-radius: 10mm; white-space: nowrap; }
+
+  /* ---------- additions for the technical design document ---------- */
+  .navbar { gap: 3.6mm; }
+  .navbar span { font-size: 7.6pt; }
+  .navbar span small { font-size: 6.8pt; margin-right: 1mm; }
+  .hero.tdd { height: 118mm; }
+  .hero.tdd h1 { font-size: 40pt; }
+  .hero.tdd .doors { height: 84mm; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .grid2 > *, .grid3 > *, .grid4 > * { min-width: 0; }
+  .sp { height: 4mm; }
+  .sp2 { height: 2.4mm; }
+  .h { font-family: var(--head); font-size: 12.6pt; margin: 0 0 2mm; }
+  table.t { width: 100%; border-collapse: collapse; font-size: 8.5pt; }
+  table.t th { text-align: left; font-size: 7.6pt; color: var(--white); background: var(--black); padding: 1.5mm 2mm; font-weight: 700; }
+  table.t th:first-child { border-radius: 1.6mm 0 0 0; } table.t th:last-child { border-radius: 0 1.6mm 0 0; }
+  table.t td { padding: 1.4mm 2mm; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.32; }
+  table.t td:first-child { font-weight: 700; }
+  table.t td.n { font-family: var(--mono); font-size: 7.6pt; font-weight: 400; }
+  table.t td.g { color: var(--green); font-weight: 700; }
+  table.t td.r { color: var(--red); font-weight: 700; }
+  table.t tr.sub td { color: var(--muted); font-weight: 400; padding-top: .6mm; padding-bottom: .6mm; }
+  table.t tr.sub td:first-child { padding-left: 6mm; font-weight: 400; }
+  .contents td.pg { text-align: right; font-family: var(--head); font-weight: 700; font-size: 10.6pt; color: var(--green); width: 12mm; }
+  .contents td.no { font-family: var(--head); font-weight: 700; font-size: 10.6pt; color: var(--green); width: 10mm; }
+  .contents td.sec { font-family: var(--head); font-weight: 700; font-size: 10.6pt; color: var(--black); }
+  .contents td.what { color: var(--muted); font-weight: 400; }
+  .contents td { border-bottom: 1px dotted #BDBDBD; padding: 2mm 2mm; }
+  .contents tr.sub td { border-bottom: 0; padding: .4mm 2mm; font-size: 8.4pt; }
+  table.t.contents tr.sub td { padding-top: .25mm; padding-bottom: .25mm; }
+  .contents tr.sub td.sec { font-family: var(--body); font-weight: 400; font-size: 8.6pt; color: var(--text); padding-left: 5mm; }
+  .contents tr.sub td.pg { font-size: 8.6pt; font-family: var(--body); color: var(--muted); }
+  .box { border-radius: 3.5mm; padding: 3.4mm 4mm; }
+  .box h3 { font-size: 11pt; margin-bottom: 1.2mm; }
+  .box p, .box li { font-size: 8.8pt; line-height: 1.4; }
+  .box ul, .box ol { margin: 0; padding-left: 4.4mm; }
+  .box li { margin-bottom: 1mm; }
+  .b-grey { background: var(--grey); } .b-mint { background: var(--mint); } .b-lilac { background: var(--lilac); }
+  .b-aqua { background: var(--aqua); } .b-orange { background: var(--orange); } .b-pink { background: var(--pink); }
+  .b-line { border: 1px solid var(--line); background: var(--white); }
+  .b-deep { background: var(--green-deep); color: var(--white); } .b-deep h3 { color: var(--mint); } .b-deep p, .b-deep li { color: #E6F5EE; }
+  .b-black { background: var(--black); color: #EDEDED; } .b-black h3 { color: var(--green-bright); }
+  .chips { display: flex; flex-wrap: wrap; gap: 1.2mm; }
+  .chips span { font-family: var(--mono); font-size: 6.9pt; background: var(--white); border: 1px solid var(--line); border-radius: 1.4mm; padding: .3mm 1.4mm; }
+  .tree { background: var(--black); color: #E8E8E8; border-radius: 3.5mm; padding: 3.4mm 4mm; font-family: var(--mono); font-size: 7.1pt; line-height: 1.55; white-space: pre; }
+  .tree .c { color: #9B9B9B; } .tree .f { color: var(--green-bright); } .tree .y { color: #FFB16A; }
+  .cmd { background: var(--black); color: #E8E8E8; border-radius: 2.4mm; padding: 2.2mm 3mm; font-family: var(--mono); font-size: 7.3pt; line-height: 1.55; white-space: pre; }
+  .cmd .c { color: #9B9B9B; }
+  .repo { display: grid; grid-template-columns: 1fr auto; gap: 6mm; align-items: center; }
+  .repo .url { font-family: var(--mono); font-size: 16pt; font-weight: 600; color: var(--white); }
+  .repo .tbd { background: #FFB16A; color: var(--black); font-weight: 800; font-size: 12pt; padding: 2mm 6mm; border-radius: 10mm; }
+  .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  .ba .side { border-radius: 3.5mm; padding: 3.4mm 4mm; display: flex; flex-direction: column; gap: 2mm; }
+  .ba .before { background: var(--grey); }
+  .ba .after { background: var(--white); border: 1.5px solid var(--green); }
+  .ba .tag { align-self: flex-start; font-size: 7.6pt; font-weight: 800; padding: .6mm 2.6mm; border-radius: 10mm; }
+  .ba .before .tag { background: #D0D0D0; } .ba .after .tag { background: var(--green); color: var(--white); }
+  .comment { background: var(--white); border: 1px solid var(--line); border-radius: 2.4mm; padding: 2.6mm 3mm; font-size: 8.2pt; line-height: 1.42; }
+  .ba .before .comment { color: #333; }
+  .comment .v { display: inline-block; background: var(--red); color: var(--white); font-weight: 700; border-radius: 1.2mm; padding: 0 1.8mm; }
+  .comment h4 { font-family: var(--head); font-size: 9pt; margin: 1.6mm 0 .6mm; }
+  .comment ol, .comment ul { margin: 0; padding-left: 4mm; }
+  .comment li { margin-bottom: .6mm; }
+  .comment .src { font-size: 7.2pt; color: var(--muted); margin-top: 1.4mm; }
+  .verdict-x { font-size: 8.4pt; }
+  .num { font-family: var(--head); font-weight: 700; color: var(--green); }
+  .glossary { display: grid; grid-template-columns: 25mm 1fr; gap: 1mm 3mm; font-size: 8.4pt; line-height: 1.35; }
+  .glossary dt { font-weight: 700; }
+  .glossary dd { margin: 0; }
+  .flowstrip.tight .n { font-size: 7.4pt; padding: 1.6mm 1.4mm; }
+  .fig { border: 1px solid var(--line); border-radius: 3mm; overflow: hidden; background: var(--white); }
+  .fig img { display: block; width: 100%; }
+  .fig.shot img { margin-top: -1px; }
+  .cap { font-size: 7.6pt; color: var(--muted); line-height: 1.35; margin-top: 1.2mm; }
+  .cap b { color: var(--text); }
+  .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 3.4mm 4mm; }
+  .shots > div { min-width: 0; }
+  .crop { overflow: hidden; border-radius: 3mm; border: 1px solid var(--line); }
+  .crop img { display: block; width: 100%; }
+  .quote { font-family: var(--mono); font-size: 7.4pt; line-height: 1.5; background: var(--grey); border-radius: 2.4mm; padding: 2.4mm 3mm; }
+</style>
+</head>
+<body>
+
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="hero tdd">
+    <div class="ring"></div>
+    <div class="tag">GitHub Copilot agent skill · Technical design</div>
+    <h1>One-Way Door</h1>
+    <div class="sub">Technical design for a GitHub Copilot skill that checks every change for a way back, before it is merged.</div>
+    <div class="cta">Know before you merge ›</div>
+    <div class="oneway">One way only ›</div>
+    <div class="doors">
+      <div class="door a"><span class="knob"></span></div>
+      <div class="door b"><span class="knob"></span></div>
+      <div class="door c"><span class="knob"></span></div>
+      <div class="door open"><div class="glow"></div><div class="leaf"></div></div>
+    </div>
+  </div>
+  <div class="cover-main">
+    <div>
+      <div class="label">About this document</div>
+      <p style="font-size:10pt;line-height:1.5">This is the technical design for <b>One-Way Door</b>, a GitHub Copilot agent skill. It covers the
+      problem, the user story, the skill and how it works, where the code lives, how to set it up and run the demo, what
+      changes for the user, how to reuse it, its known limitations and the guardrails it keeps to. Everything described is
+      built and tested.</p>
+      <dl class="meta">
+        <dt>Document</dt><dd>Technical design document (TDD)</dd>
+        <dt>Version</dt><dd>1.0, draft for hackathon review</dd>
+        <dt>Date</dt><dd>13 October 2026</dd>
+        <dt>Owner</dt><dd>[Team name]</dd>
+        <dt>Repository</dt><dd>TBD</dd>
+        <dt>Audience</dt><dd>Engineers, reviewers, platform and release teams, judges</dd>
+      </dl>
+    </div>
+    <div>
+      <div class="label">At a glance (measured)</div>
+      <div class="stat"><div class="n">4 pass · 1 fail</div><div class="t">rollback matrix, as the skill predicts</div></div>
+      <div class="stat"><div class="n">24 patterns</div><div class="t">one-way doors in the catalogue, each with a safe split</div></div>
+      <div class="stat"><div class="n">62 + 6 tests</div><div class="t">Node tests (skill, hook, plugin) and Control Centre unit tests</div></div>
+    </div>
+  </div>
+  <div class="toc">
+    <div><small>Contents</small><b>Ten sections</b><span class="more">Page 2 ›</span></div>
+    <div><small>01–02</small><b>Problem and story</b><span class="more">Page 3 ›</span></div>
+    <div><small>03–06</small><b>Skill, setup, demo</b><span class="more">Page 5 ›</span></div>
+    <div><small>07–10</small><b>Outcomes and limits</b><span class="more">Page 18 ›</span></div>
+  </div>
+    <div class="footer"><span>Technical design document</span><span>One-Way Door · Technical design</span><span>1 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">Contents</div><h2>What this document covers</h2></div>
+  <div class="body">
+
+    <table class="t contents">
+      <tr><td class="no">01</td><td class="sec">Problem statement</td><td class="what">Why rollback fails, and why today's checks miss it</td><td class="pg">3</td></tr>
+      <tr><td class="no">02</td><td class="sec">User story</td><td class="what">Who it is for, the stories and the acceptance criteria</td><td class="pg">4</td></tr>
+      <tr><td class="no">03</td><td class="sec">Skill name and mission</td><td class="what">What the skill is, what it does, and how it works</td><td class="pg">5</td></tr>
+      <tr class="sub"><td></td><td class="sec">3.1 Name, mission and capabilities</td><td></td><td class="pg">5</td></tr>
+      <tr class="sub"><td></td><td class="sec">3.2 Components and design principles</td><td></td><td class="pg">6</td></tr>
+      <tr class="sub"><td></td><td class="sec">3.3 How it works</td><td></td><td class="pg">7</td></tr>
+      <tr><td class="no">04</td><td class="sec">Repository link</td><td class="what">Where the code lives (TBD), its layout, branches and quality gates</td><td class="pg">8</td></tr>
+      <tr><td class="no">05</td><td class="sec">Setup instructions</td><td class="what">The tech stack and installing it in VS Code, CLI, cloud agent and code review</td><td class="pg">9</td></tr>
+      <tr class="sub"><td></td><td class="sec">5.1 Tech stack and install options</td><td></td><td class="pg">9</td></tr>
+      <tr class="sub"><td></td><td class="sec">5.2 Setup by Copilot surface</td><td></td><td class="pg">10</td></tr>
+      <tr><td class="no">06</td><td class="sec">Demo instructions</td><td class="what">Architecture, running the live demo on a laptop, and its screens</td><td class="pg">11</td></tr>
+      <tr class="sub"><td></td><td class="sec">6.1 Set up and start</td><td></td><td class="pg">11</td></tr>
+      <tr class="sub"><td></td><td class="sec">6.2 Architecture: the demo system</td><td></td><td class="pg">12</td></tr>
+      <tr class="sub"><td></td><td class="sec">6.3 Architecture: the demo runtime</td><td></td><td class="pg">13</td></tr>
+      <tr class="sub"><td></td><td class="sec">6.4 Run the five acts</td><td></td><td class="pg">14</td></tr>
+      <tr class="sub"><td></td><td class="sec">6.5 Screens: the PR and the rollback</td><td></td><td class="pg">15</td></tr>
+      <tr class="sub"><td></td><td class="sec">6.6 Screens: £0.00, and the review</td><td></td><td class="pg">16</td></tr>
+      <tr class="sub"><td></td><td class="sec">6.7 Screens: the proof</td><td></td><td class="pg">17</td></tr>
+      <tr><td class="no">07</td><td class="sec">Before and after completions</td><td class="what">What Copilot says without the skill and with it, and what changes in the system</td><td class="pg">18</td></tr>
+      <tr><td class="no">08</td><td class="sec">Reuse statements</td><td class="what">What can be reused as it is, what to configure, and how to extend it</td><td class="pg">19</td></tr>
+      <tr><td class="no">09</td><td class="sec">Known limitations</td><td class="what">What it doesn't do yet, the impact, and the workaround</td><td class="pg">20</td></tr>
+      <tr><td class="no">10</td><td class="sec">Guardrails</td><td class="what">What the skill, scripts and hook will and won't do</td><td class="pg">21</td></tr>
+    </table>
+    <div class="sp2"></div>
+    <div class="grid2">
+      <div class="box b-grey">
+        <h3>Document control</h3>
+        <table class="t" style="font-size:8pt">
+          <tr><th>Version</th><th>Date</th><th>Change</th></tr>
+          <tr><td>1.0</td><td>14 Oct 2026</td><td style="font-weight:400">First issue: skill, hook, plugin, laptop demo, diagrams and screens</td></tr>
+        </table>
+        <div class="sp2"></div>
+        <h3>Related documents</h3>
+        <ul>
+          <li><span class="mono">README.md</span>: overview and results</li>
+          <li><span class="mono">docs/setup.md</span>: full setup guide, with sources</li>
+          <li><span class="mono">DEMO.md</span> and <span class="mono">docs/demo-script.md</span>: running and presenting the demo</li>
+          <li><span class="mono">docs/copilot-formats.md</span>: verified Copilot formats</li>
+          <li><span class="mono">One-Way-Door-proposal.pdf</span>: the hackathon proposal</li>
+        </ul>
+      </div>
+      <div class="box b-line">
+        <h3>Terms used</h3>
+        <dl class="glossary">
+          <dt>One-way door</dt><dd>A change that leaves state the previous release can't handle, so rollback doesn't restore service.</dd>
+          <dt>Two-way door</dt><dd>A change that can be deployed and rolled back safely.</dd>
+          <dt>Door closes</dt><dd>The deploy moment after which rollback is no longer safe.</dd>
+          <dt>Rollback window</dt><dd>How long after deploy a rollback is still safe.</dd>
+          <dt>Blast radius</dt><dd>Other code that reads the same table, column, topic or field.</dd>
+          <dt>The split</dt><dd>Expand → migrate → contract → drop: the same change in steps that each roll back.</dd>
+          <dt>Surface</dt><dd>Where Copilot runs: VS Code, Copilot CLI, cloud agent, code review.</dd>
+        </dl>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer"><span>Contents</span><span>One-Way Door · Technical design</span><span>2 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span class="on"><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">01 · Problem statement</div><h2>Rollback is the safety net nobody tests</h2></div>
+  <div class="body">
+
+    <div class="statement">
+      <div class="label">Problem statement</div>
+      <p>Engineers can't tell, before they merge, whether the previous release can still run against the state the new
+      release leaves behind. Tests, CI and code review all check new code against new state. When the old code can't cope,
+      rollback fails loudly, or worse, appears to work while it quietly corrupts data.</p>
+    </div>
+    <div class="label">Where one-way doors hide (the four buckets the skill checks)</div>
+    <div class="grid4">
+      <div class="card"><span class="pill" style="background:var(--lilac);color:var(--lilac-d)">Data</span><p>Columns renamed, dropped, retyped or converted in place. Migrations edited after they ran.</p></div>
+      <div class="card"><span class="pill" style="background:var(--aqua);color:var(--aqua-d)">Messages</span><p>Event fields removed, renamed or retyped. Consumers that read a missing number as zero.</p></div>
+      <div class="card"><span class="pill" style="background:var(--orange);color:var(--orange-d)">State</span><p>Cache entries and idempotency keys rewritten in a format the old code can't read.</p></div>
+      <div class="card"><span class="pill" style="background:var(--pink);color:var(--pink-d)">External</span><p>Webhook payloads sent, queues deleted, API versions removed. Redeploying can't recall them.</p></div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="label">Why today's checks miss it</div>
+        <div class="miss">
+          <div class="row"><div class="k">1</div><div><b>Tests run new code against new state.</b><span>Rollback creates the opposite combination, old code against new state, and nothing exercises it.</span></div></div>
+          <div class="row"><div class="k">2</div><div><b>Migrations only go forward.</b><span>Flyway and its peers have no undo. Going back means a hand-written script under pressure.</span></div></div>
+          <div class="row"><div class="k">3</div><div><b>Reviewers see the diff, not the readers.</b><span>The job that breaks is often not in the PR at all.</span></div></div>
+          <div class="row"><div class="k">4</div><div><b>The worst failures are silent.</b><span>A missing field becomes 0.0; no exception, nothing in the dead-letter queue.</span></div></div>
+        </div>
+      </div>
+      <div class="stakes">
+        <h3>Evidence: the £0.00 settlement, reproduced</h3>
+        <ul>
+          <li><b>The change:</b> PR #482 moves money from <span class="mono">double</span> pounds to <span class="mono">long</span> pence. Migration V3 renames and converts the column in place. Tests are green.</li>
+          <li><b>The rollback:</b> the old ledger won't start (<span class="mono">missing column [amount]</span>). After a hand hotfix it books the queued events.</li>
+          <li><b>The result</b> (recorded run, 13 Oct 2026): <b>50 settlements booked at £0.00, £12,708.11 missing</b>, dead-letter topic empty, every service healthy. Finance's reconciliation, not in the PR, broke first.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="label" style="margin-top:4mm">Scope</div>
+    <div class="grid2">
+      <div class="box b-mint"><h3 style="color:var(--green-deep)">In scope</h3><ul>
+        <li>Reviewing a pull request or diff for rollback safety, before merge, inside GitHub Copilot.</li>
+        <li>Database migrations, event schemas, caches, idempotency keys and external contracts.</li>
+        <li>Finding other readers in the same repository, and proposing a safe split.</li>
+        <li>Blocking agent edits to migrations that have already shipped.</li>
+      </ul></div>
+      <div class="box b-grey"><h3>Out of scope (this version)</h3><ul>
+        <li>Readers in other repositories (planned: see section 9).</li>
+        <li>Running the rollback itself in production, or changing deploy pipelines.</li>
+        <li>Runtime data: the skill reads code and diffs, not live databases or topics.</li>
+        <li>Replacing human review: it informs the reviewer; it doesn't approve.</li>
+      </ul></div>
+    </div>
+
+  </div>
+  <div class="footer"><span>01 · Problem statement</span><span>One-Way Door · Technical design</span><span>3 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span class="on"><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">02 · User story</div><h2>Know before you merge whether you can roll back</h2></div>
+  <div class="body">
+
+    <div class="statement">
+      <div class="label">Primary user story</div>
+      <p>As a developer raising a pull request that changes a database migration or an event contract, I want GitHub
+      Copilot to tell me before I merge whether the change can be rolled back, and if not, how to split it, so that a
+      rollback never makes an incident worse.</p>
+    </div>
+    <div class="label">Supporting stories</div>
+    <div class="grid2">
+      <div class="persona"><div class="avatar" style="background:var(--green-bright)">P</div><div><h3>Priya</h3><div class="role">Payments engineer · author of PR #482</div><p>As the author, I want <em>a plain verdict and the reason, in my editor</em>, so that I can fix the change before anyone reviews it.</p></div></div>
+      <div class="persona"><div class="avatar" style="background:#A19FFF">S</div><div><h3>Sam</h3><div class="role">Tech lead · reviewer</div><p>As a reviewer, I want <em>every reader of a changed column or field, including ones outside the PR</em>, so that I review the blast radius, not just the diff.</p></div></div>
+      <div class="persona"><div class="avatar" style="background:#F5B2F2">A</div><div><h3>Aisha</h3><div class="role">On-call engineer · reliability</div><p>As on-call, I want <em>a safe rollback window for every release</em>, so that I know whether pressing rollback will help or hurt.</p></div></div>
+      <div class="persona"><div class="avatar" style="background:#FFB16A">T</div><div><h3>Tom</h3><div class="role">Finance systems · reconciliation owner</div><p>As the owner of a downstream job, I want <em>changes to data I read to be flagged before merge</em>, so that my totals never break or drift silently.</p></div></div>
+    </div>
+    <div class="ac">
+      <div>
+        <div class="label">Acceptance criteria</div>
+        <ol>
+          <li><b>Given</b> a PR with a destructive migration, <b>when</b> someone asks "can we roll back?", <b>then</b> the answer starts with <b>Verdict: ONE-WAY</b> and a safe rollback window.</li>
+          <li><b>Then</b> each finding says when the door closes, what breaks on rollback (quoting the real error when known), and what data is lost.</li>
+          <li><b>Then</b> the blast radius lists readers outside the PR, marked <b>not in this PR</b>.</li>
+          <li><b>Then</b> it proposes an expand → migrate → contract → drop split, justifies each step, and generates it <b>only when asked</b>.</li>
+          <li><b>Given</b> a safe change, <b>then</b> the verdict is <b>TWO-WAY</b>, window unlimited, with what was checked.</li>
+          <li><b>Given</b> no Node.js, <b>then</b> it still reviews from the catalogue and says the scripts didn't run.</li>
+        </ol>
+      </div>
+      <div>
+        <div class="label">Journey</div>
+        <table class="journey">
+          <tr><th style="width:22%">Stage</th><th style="width:39%">Today</th><th style="width:39%">With One-Way Door</th></tr>
+          <tr><td class="stage">Write</td><td>Sensible refactor, tests green</td><td class="good">Ask Copilot: ONE-WAY, three findings</td></tr>
+          <tr><td class="stage">Review</td><td>Approved on the diff</td><td class="good">Reviewer sees reconciliation-batch</td></tr>
+          <tr><td class="stage">Deploy</td><td>One step, all at once</td><td class="good">Four steps, each reversible</td></tr>
+          <tr><td class="stage">Roll back</td><td class="bad">Old code won't start; hotfix</td><td class="good">Previous step runs fine</td></tr>
+          <tr><td class="stage">Aftermath</td><td class="bad">50 rows at £0.00, no alert</td><td class="good">Totals match at every stage</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer"><span>02 · User story</span><span>One-Way Door · Technical design</span><span>4 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span class="on"><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">03 · Skill name and mission · 3.1</div><h2>One skill, one question, answered before merge</h2></div>
+  <div class="body">
+
+    <div class="grid2" style="grid-template-columns:1fr 1.25fr">
+      <div class="box b-grey">
+        <h3>Skill</h3>
+        <dl class="glossary" style="grid-template-columns:24mm 1fr">
+          <dt>Name</dt><dd><span class="mono">one-way-door</span></dd>
+          <dt>Location</dt><dd><span class="mono">.github/skills/one-way-door/</span></dd>
+          <dt>Type</dt><dd>GitHub Copilot agent skill (<span class="mono">SKILL.md</span>)</dd>
+          <dt>Runs in</dt><dd>VS Code agent mode, Copilot CLI, Copilot cloud agent, Copilot code review</dd>
+          <dt>Needs</dt><dd>git; Node.js 20+ for its scripts (optional)</dd>
+          <dt>Licence</dt><dd>MIT</dd>
+          <dt>Version</dt><dd>1.0.0 (plugin manifest)</dd>
+        </dl>
+      </div>
+      <div class="statement" style="margin:0">
+        <div class="label">Mission</div>
+        <p>For every pull request, answer the question no pipeline asks: <i>if this goes wrong after deploy, can we roll
+        back?</i> Say it plainly, before merge, inside the tools engineers already use, and show the safe way to make the
+        same change.</p>
+      </div>
+    </div>
+    <div class="sp"></div>
+    <div class="label">What it does</div>
+    <div class="grid4">
+      <div class="card"><span class="pill" style="background:var(--mint);color:var(--green-deep)">1 · Classify</span><p>Every change is <b>two-way</b> (safe to roll back) or <b>one-way</b> (not safe).</p></div>
+      <div class="card"><span class="pill" style="background:var(--lilac);color:var(--lilac-d)">2 · Explain</span><p>For each one-way change: <b>when the door closes</b>, <b>what breaks</b> on rollback, and a <b>safe rollback window</b>.</p></div>
+      <div class="card"><span class="pill" style="background:var(--aqua);color:var(--aqua-d)">3 · Blast radius</span><p>Finds <b>other code</b> reading the same table, column, topic or field, and marks what isn't in the PR.</p></div>
+      <div class="card"><span class="pill" style="background:var(--orange);color:var(--orange-d)">4 · Split</span><p>Proposes <b>expand → migrate → contract → drop</b>, and generates it as branches when asked.</p></div>
+    </div>
+    <div class="sp"></div>
+    <div class="label">How Copilot decides to load it: the description (its only trigger)</div>
+    <div class="quote">Rollback-safety review for pull requests, diffs and releases. Answers "if this goes wrong after deploy, can we roll back?" Use when reviewing a PR, checking deploy or release readiness, asking "is this safe to ship" or "can we roll back", or when a change touches database migrations (Flyway, Liquibase, EF Core), event or message schemas (Kafka, JSON Schema, Avro, Service Bus), serialised DTOs, caches, idempotency keys, partner webhooks or API versions. Classifies each change as one-way or two-way, says when the door closes and what breaks on rollback, gives a safe rollback window, finds other code that reads the same table, column or topic, and proposes an expand, migrate, contract, drop split it can generate as branches.</div>
+
+  </div>
+  <div class="footer"><span>03 · Skill name and mission</span><span>One-Way Door · Technical design</span><span>5 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span class="on"><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">03 · Skill name and mission · 3.2</div><h2>Components and design principles</h2></div>
+  <div class="body">
+
+    <div class="label">Components</div>
+    <table class="t">
+      <tr><th style="width:24%">Part</th><th style="width:40%">Path</th><th>Role</th></tr>
+      <tr><td>Skill instructions</td><td class="n">.github/skills/one-way-door/SKILL.md</td><td>The 8-step procedure, gotchas and troubleshooting (167 lines)</td></tr>
+      <tr><td>Pattern catalogue</td><td class="n">references/patterns.md</td><td>24 one-way patterns in 4 buckets, each with its safe split</td></tr>
+      <tr><td>Output contract</td><td class="n">references/output-format.md</td><td>The exact PR comment shape, with worked examples</td></tr>
+      <tr><td>Migration scanner</td><td class="n">scripts/scan-migrations.mjs</td><td>Destructive DDL in Flyway, Liquibase and EF Core migrations</td></tr>
+      <tr><td>Schema checker</td><td class="n">scripts/schema-compat.mjs</td><td>Breaking JSON Schema changes, in the old reader's direction</td></tr>
+      <tr><td>Path rule (optional)</td><td class="n">.github/instructions/migrations.instructions.md</td><td>Rollback rules applied whenever Copilot touches migrations or contracts</td></tr>
+      <tr><td>Hook (optional)</td><td class="n">.github/hooks/one-way-door.json</td><td>preToolUse: blocks agent edits to migrations already on the default branch</td></tr>
+      <tr><td>Agent environment</td><td class="n">.github/workflows/copilot-setup-steps.yml</td><td>Node 20 and the default branch, for the cloud agent and code review</td></tr>
+      <tr><td>Plugin</td><td class="n">plugins/one-way-door/</td><td>Skill and hook as one install, generated and kept in sync by a test</td></tr>
+    </table>
+    <div class="sp2"></div>
+    <div class="label">Design principles</div>
+    <div class="grid3">
+      <div class="box b-grey"><h3>Scripts check, Copilot judges</h3><p>Scripts find the mechanical facts. Copilot judges who else reads the data and what old code does with it.</p></div>
+      <div class="box b-grey"><h3>Copilot's own formats</h3><p>Documented skill, instruction and hook formats. No custom runtime: every surface reads it.</p></div>
+      <div class="box b-grey"><h3>Offline and dependency-free</h3><p>git and Node's standard library. Nothing to install, call or keep running.</p></div>
+      <div class="box b-grey"><h3>Load only what's needed</h3><p>Description first; then the 167-line <span class="mono">SKILL.md</span>; references only when needed.</p></div>
+      <div class="box b-grey"><h3>Plain, fixed verdicts</h3><p>ONE-WAY or TWO-WAY, a window and reasons, in a fixed shape. Real errors, no hedging.</p></div>
+      <div class="box b-grey"><h3>Safe by default</h3><p>Never changes code unasked. Unreachable readers are assumed to exist.</p></div>
+    </div>
+    <div class="sp"></div>
+    <div class="label">Output contract</div>
+    <div class="cmd">## One-way door check
+**Verdict: ONE-WAY | TWO-WAY** · Safe rollback window: **none (…) | until &lt;event&gt; | unlimited**
+### Findings        1. Title · object · file:line · pattern ids  →  Door closes · If rolled back · Data loss
+### Blast radius    | Reader | Where | Uses | Breaks when |   (readers outside the PR marked "not in this PR")
+### Suggested split | 1. Expand | 2. Migrate | 3. Contract | 4. Drop |  + offer to generate
+&lt;sub&gt;scan-migrations: n findings · schema-compat: n findings · checked base...head&lt;/sub&gt;</div>
+
+  </div>
+  <div class="footer"><span>03 · Components and design</span><span>One-Way Door · Technical design</span><span>6 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span class="on"><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">03 · Skill name and mission · 3.3</div><h2>How it works: scripts check, Copilot judges</h2></div>
+  <div class="body">
+
+    <div class="flowstrip tight">
+      <div class="n">Prompt<small>"can we roll back?"</small></div><span class="a">›</span>
+      <div class="n">Match<small>description only</small></div><span class="a">›</span>
+      <div class="n g">SKILL.md<small>loads the procedure</small></div><span class="a">›</span>
+      <div class="n g">Two scripts<small>git diff, offline</small></div><span class="a">›</span>
+      <div class="n g">Judgement<small>readers, old vs new</small></div><span class="a">›</span>
+      <div class="n x">PR comment<small>fixed format</small></div>
+    </div>
+    <div class="label">The procedure (SKILL.md)</div>
+    <table class="t">
+      <tr><th style="width:5%">#</th><th style="width:27%">Step</th><th>What happens</th></tr>
+      <tr><td>1</td><td>Work out base and head</td><td style="font-weight:400">Default branch from <span class="mono">origin/HEAD</span>; always diff from the merge base (<span class="mono">base...head</span>, three dots).</td></tr>
+      <tr><td>2</td><td>Bucket the files</td><td style="font-weight:400">Data, Messages, State or External, by path and content.</td></tr>
+      <tr><td>3</td><td>Run both scripts</td><td style="font-weight:400">Mechanical findings as JSON. Without Node, step 4 does the work alone.</td></tr>
+      <tr><td>4</td><td>Read the patterns</td><td style="font-weight:400">Match each change to the catalogue, including buckets the scripts don't cover.</td></tr>
+      <tr><td>5</td><td>Find the blast radius</td><td style="font-weight:400">Search the whole repo (base and head) for every reader; mark those the PR doesn't change.</td></tr>
+      <tr><td>6</td><td>Old code against new state</td><td style="font-weight:400">What does the previous release do with the new table, events or cache? Quote the real error.</td></tr>
+      <tr><td>7</td><td>Write the comment</td><td style="font-weight:400">The verdict line, findings, blast radius and split, in the fixed format.</td></tr>
+      <tr><td>8</td><td>Generate the split</td><td style="font-weight:400">Only when asked: stacked branches, each commit saying why it rolls back.</td></tr>
+    </table>
+    <div class="sp"></div>
+    <div class="grid2">
+      <div class="box b-grey">
+        <h3><span class="mono" style="font-size:9.6pt">scan-migrations.mjs</span></h3>
+        <p><b>In:</b> <span class="mono">--base --head [--repo] [--worktree]</span>. <b>Reads:</b> Flyway SQL, Liquibase (XML, YAML, formatted SQL), EF Core. <b>Finds:</b> column and table renames and drops, retypes, NOT NULL, in-place conversion, backfill, row deletes, edited applied migrations.</p>
+      </div>
+      <div class="box b-grey">
+        <h3><span class="mono" style="font-size:9.6pt">schema-compat.mjs</span></h3>
+        <p><b>In:</b> <span class="mono">--base --head [--dir]… [--worktree]</span>. <b>Reads:</b> JSON Schema (<span class="mono">*.schema.json</span>). <b>Finds:</b> fields removed, renamed, retyped or made optional, enum values added, new required fields, strict consumers, missing primitive defaults, deleted schemas.</p>
+      </div>
+    </div>
+    <p style="font-size:8.4pt;margin-top:1.6mm">Both: Node 20+ standard library, no network, read-only git; JSON <span class="mono">findings[]</span> (file, line, pattern, object, severity, detail); always exit 0.</p>
+    <div class="label" style="margin-top:2.6mm">Pattern catalogue: 24 one-way doors</div>
+    <div class="grid4">
+      <div class="box b-lilac"><h3 style="font-size:9.6pt">Data · 10</h3><div class="chips"><span>column-rename</span><span>table-rename</span><span>column-drop</span><span>table-drop</span><span>column-retype</span><span>in-place-conversion</span><span>not-null</span><span>backfill</span><span>row-delete</span><span>applied-migration-edited</span></div></div>
+      <div class="box b-aqua"><h3 style="font-size:9.6pt">Messages · 9</h3><div class="chips"><span>event-field-removed</span><span>event-field-renamed</span><span>event-field-retyped</span><span>event-field-made-optional</span><span>event-enum-value-added</span><span>event-required-field-added</span><span>strict-consumer-new-field</span><span>missing-primitive-default</span><span>event-schema-deleted</span></div></div>
+      <div class="box b-orange"><h3 style="font-size:9.6pt">State · 2</h3><div class="chips"><span>cache-format-change</span><span>idempotency-key-format-change</span></div></div>
+      <div class="box b-pink"><h3 style="font-size:9.6pt">External · 3</h3><div class="chips"><span>servicebus-entity-deleted</span><span>apim-version-removed</span><span>webhook-payload-change</span></div></div>
+    </div>
+
+  </div>
+  <div class="footer"><span>03 · How it works</span><span>One-Way Door · Technical design</span><span>7 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span class="on"><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">04 · Repository link</div><h2>Where the code lives</h2></div>
+  <div class="body">
+
+    <div class="box b-deep repo">
+      <div><div class="label" style="color:var(--mint)">Repository</div><div class="url">TBD</div>
+      <p style="margin-top:1.4mm">To be confirmed when the repository is published to GitHub. Once it is, the plugin installs with
+      <span class="mono">copilot plugin install OWNER/REPO:plugins/one-way-door</span>.</p></div>
+      <div class="tbd">TBD</div>
+    </div>
+    <div class="sp"></div>
+    <div class="grid2" style="grid-template-columns:1.15fr 1fr">
+      <div>
+        <div class="label">Repository layout</div>
+        <div class="tree"><span class="f">.github/</span>
+  <span class="f">skills/one-way-door/</span>     <span class="c">the deliverable</span>
+    SKILL.md
+    references/            <span class="c">patterns.md, output-format.md</span>
+    scripts/               <span class="c">two .mjs scripts + tests</span>
+  instructions/            <span class="c">migrations.instructions.md</span>
+  hooks/                   <span class="c">one-way-door.json + .sh/.ps1</span>
+  plugin/marketplace.json
+  workflows/               <span class="c">ci, laptop-demo, setup steps</span>
+<span class="f">plugins/one-way-door/</span>      <span class="c">generated plugin</span>
+<span class="f">contracts/events/</span>          <span class="c">PaymentSettled schema</span>
+<span class="f">demo/</span>
+  settlement-service/      <span class="c">Spring Boot producer</span>
+  ledger-service/          <span class="c">Spring Boot consumer</span>
+  reconciliation-batch/    <span class="c">finance job</span>
+  control-centre/          <span class="c">Java + React console</span>
+  start.sh  start.cmd
+  scripts/                 <span class="c">Docker alternative</span>
+<span class="f">docs/</span>                      <span class="c">setup, demo script, results</span>
+<span class="f">tests/</span>                     <span class="c">repo consistency tests</span>
+README.md  DEMO.md  LICENSE</div>
+      </div>
+      <div>
+        <div class="label">Branches</div>
+        <table class="t">
+          <tr><th>Branch</th><th>Purpose</th></tr>
+          <tr><td class="n">main</td><td>v1: the skill, demo and docs</td></tr>
+          <tr><td class="n">pr-482-minor-units</td><td>The one-way PR: V3 renames and converts</td></tr>
+          <tr><td class="n">split/1-expand</td><td>V3 adds <span class="mono">amount_minor</span></td></tr>
+          <tr><td class="n">split/2-migrate</td><td>V4 backfills and checks</td></tr>
+          <tr><td class="n">split/3-contract</td><td>V5: readers switch; trigger</td></tr>
+          <tr><td class="n">split/4-drop</td><td>V6 drops <span class="mono">amount</span></td></tr>
+        </table>
+        <div class="sp"></div>
+        <div class="label">Quality gates</div>
+        <table class="t">
+          <tr><th>Check</th><th>Covers</th></tr>
+          <tr><td>ci.yml</td><td>62 skill, hook and plugin tests on Linux, Windows and macOS; service unit tests</td></tr>
+          <tr><td>laptop-demo.yml</td><td>Headless incident and rollback matrix on Windows and macOS; UI bundle is current</td></tr>
+          <tr><td>Consistency</td><td>SKILL.md rules, catalogue coverage, <span class="mono">applyTo</span> coverage, plugin in sync</td></tr>
+          <tr><td>Control Centre</td><td>6 JUnit tests for the rules ported from the scripts</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer"><span>04 · Repository link</span><span>One-Way Door · Technical design</span><span>8 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span class="on"><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">05 · Setup instructions · 5.1</div><h2>Tech stack and install options</h2></div>
+  <div class="body">
+
+    <div class="label">Tech stack</div>
+    <table class="t">
+      <tr><th style="width:24%">Component</th><th style="width:17%">Version</th><th style="width:22%">Needed for</th><th>Notes</th></tr>
+      <tr><td>git</td><td>2.x</td><td>Everything</td><td>With the base branch's history (not a shallow clone), so the merge base exists.</td></tr>
+      <tr><td>Node.js</td><td>20 or later</td><td>The two scripts</td><td>Standard library only: no <span class="mono">npm install</span>, no network. Optional: without it the skill reviews from the catalogue.</td></tr>
+      <tr><td>bash 3.2+ / PowerShell 7+</td><td>—</td><td>The hook (optional)</td><td>bash on macOS, Linux and the cloud agent; <span class="mono">pwsh</span> on Windows.</td></tr>
+      <tr><td>GitHub Copilot plan</td><td>Free or paid</td><td>Everything</td><td>Free: VS Code agent mode and CLI only. Pro, Pro+, Max, Business, Enterprise: all four surfaces.</td></tr>
+      <tr><td>VS Code</td><td>1.109 or later</td><td>VS Code</td><td>Agent skills are on by default from 1.109. Workspace Trust required.</td></tr>
+      <tr><td>Copilot CLI</td><td>Current</td><td>Copilot CLI</td><td><span class="mono">npm i -g @github/copilot</span> (Node 22+), WinGet or Homebrew. Windows needs PowerShell 6+.</td></tr>
+      <tr><td>GitHub repo + Actions</td><td>—</td><td>Cloud agent, code review</td><td>Both run on Actions runners; <span class="mono">copilot-setup-steps.yml</span> prepares Node and git.</td></tr>
+      <tr><td>Org policies</td><td>—</td><td>Business, Enterprise</td><td>"Copilot Agent Mode in IDE Chat", "Copilot CLI", "Copilot cloud agent" (off by default), "Copilot code review".</td></tr>
+    </table>
+    <p style="font-size:8.6pt;margin-top:1.6mm"><b>Not needed:</b> a server, database, Docker, npm packages, an MCP server, network access, or any account beyond Copilot. The skill never builds or runs your code.</p>
+    <div class="sp2"></div>
+    <div class="label">Install options</div>
+    <div class="grid2">
+      <div class="box b-mint">
+        <h3 style="color:var(--green-deep)">A · Copy into the repository (every surface)</h3>
+        <div class="cmd">cp -R $SRC/.github/skills/one-way-door  .github/skills/
+cp $SRC/.github/instructions/migrations.instructions.md \
+   .github/instructions/                 <span class="c"># optional rule</span>
+cp -R $SRC/.github/hooks/.  .github/hooks/   <span class="c"># optional hook</span>
+cp $SRC/.github/workflows/copilot-setup-steps.yml \
+   .github/workflows/                    <span class="c"># cloud agent, review</span></div>
+        <p style="margin-top:1.6mm">Then set <span class="mono">applyTo</span> to your migration paths and merge to the default branch.</p>
+      </div>
+      <div class="box b-lilac">
+        <h3 style="color:var(--lilac-d)">B · Install the plugin (VS Code and CLI)</h3>
+        <div class="cmd">copilot plugin install OWNER/REPO:plugins/one-way-door
+copilot plugin install /path/to/plugins/one-way-door</div>
+        <p style="margin-top:1.6mm">VS Code: set <span class="mono">chat.plugins.enabled</span>, then <b>Chat: Install Plugin From Source</b>, or add the folder to <span class="mono">chat.pluginLocations</span>. The cloud agent and code review don't load plugins: use option A there.</p>
+      </div>
+    </div>
+    <div class="sp2"></div>
+    <table class="t">
+      <tr><th style="width:30%">What works where</th><th>VS Code</th><th>Copilot CLI</th><th>Cloud agent</th><th>Code review</th></tr>
+      <tr><td>Copy into the repo</td><td class="g">yes</td><td class="g">yes</td><td class="g">yes</td><td class="g">yes, "when relevant"</td></tr>
+      <tr><td>Plugin</td><td class="g">yes</td><td class="g">yes</td><td class="r">no</td><td class="r">no</td></tr>
+      <tr><td>Hook</td><td>yes (preview)</td><td class="g">yes</td><td class="g">yes (bash only)</td><td>not documented</td></tr>
+    </table>
+
+  </div>
+  <div class="footer"><span>05 · Setup instructions</span><span>One-Way Door · Technical design</span><span>9 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span class="on"><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">05 · Setup instructions · 5.2</div><h2>Setup by Copilot surface</h2></div>
+  <div class="body">
+
+    <div class="grid2">
+      <div class="box b-line">
+        <h3>VS Code (agent mode)</h3>
+        <ol>
+          <li>VS Code 1.109+, signed in to Copilot; git and Node 20+ on the terminal's PATH.</li>
+          <li>Open the folder that contains <span class="mono">.github/</span>; <b>trust the workspace</b>.</li>
+          <li>Chat → <b>Agent</b>. Check <span class="mono">chat.useHooks</span> is on (default).</li>
+          <li><b>Check:</b> type <span class="mono">/</span> or <span class="mono">/skills</span> and look for <span class="mono">one-way-door</span>; <span class="mono">/hooks</span> for the hook; <b>Developer: Open Agent Debug Logs</b> if it's missing.</li>
+          <li>Ask; approve the <span class="mono">git</span> and <span class="mono">node</span> commands. References should list <span class="mono">SKILL.md</span>.</li>
+        </ol>
+      </div>
+      <div class="box b-line">
+        <h3>Copilot CLI</h3>
+        <ol>
+          <li>Install: <span class="mono">npm i -g @github/copilot</span>, <span class="mono">winget install GitHub.Copilot</span> or <span class="mono">brew install --cask copilot-cli</span>.</li>
+          <li>Sign in with <span class="mono">/login</span> (or a fine-grained token with "Copilot Requests").</li>
+          <li>Run <span class="mono">copilot</span> in the repo root and trust the folder.</li>
+          <li><b>Check:</b> <span class="mono">/skills list</span> shows <span class="mono">one-way-door</span>.</li>
+          <li>Ask; approve the commands. A denied hook call shows inline with its reason.</li>
+        </ol>
+      </div>
+      <div class="box b-line">
+        <h3>Copilot cloud agent</h3>
+        <ol>
+          <li>Paid plan. Org admin: policy <b>"Copilot cloud agent"</b> → Enabled (off by default), then Cloud agent → Repository access.</li>
+          <li>Option A files on the <b>default branch</b>, including <span class="mono">copilot-setup-steps.yml</span> (job name <span class="mono">copilot-setup-steps</span>).</li>
+          <li>Trigger: comment <span class="mono">@copilot Review this PR for rollback safety</span>, assign an issue, or use the agents panel.</li>
+          <li><b>Check:</b> the session log shows <span class="mono">SKILL.md</span> read and both scripts run. Firewall doesn't affect them: they are offline.</li>
+        </ol>
+      </div>
+      <div class="box b-line">
+        <h3>Copilot code review</h3>
+        <ol>
+          <li>Paid plan. Org admin: policy <b>"Copilot code review"</b>; Actions runners available.</li>
+          <li>Option A files on the PR's <b>head branch</b>: code review reads skills from there.</li>
+          <li>One PR: Reviewers → <b>Copilot</b>. Every PR: a ruleset with <b>"Automatically request Copilot code review"</b>.</li>
+          <li>Expect the skill to be used "when relevant". Whether code review runs its scripts or hooks isn't documented; for a guaranteed full review, use the cloud agent.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="sp"></div>
+    <div class="label">Verify, then troubleshoot</div>
+    <div class="cmd">node .github/skills/one-way-door/scripts/scan-migrations.mjs --base main --head my-branch   <span class="c"># JSON, exit 0</span>
+node .github/skills/one-way-door/scripts/schema-compat.mjs  --base main --head my-branch</div>
+    <div class="sp2"></div>
+    <table class="t">
+      <tr><th style="width:34%">Symptom</th><th>Fix</th></tr>
+      <tr><td>Skill not listed</td><td><span class="mono">name:</span> must equal the folder name; open the repo root; trust the workspace; check policies.</td></tr>
+      <tr><td><span class="mono">unknown ref</span> in script output</td><td><span class="mono">git fetch origin main:main</span>, or pass <span class="mono">--base origin/main</span>; unshallow the clone.</td></tr>
+      <tr><td>Every tool call denied (CLI, Windows)</td><td>The hook's shell is missing or policy blocks unsigned scripts: install PowerShell 7, or remove the hook.</td></tr>
+      <tr><td>"Scripts didn't run" in the comment</td><td>Install Node 20+. The review is still produced from the catalogue.</td></tr>
+    </table>
+    <p style="font-size:8.2pt;color:var(--muted);margin-top:1.6mm">Full guide with sources: <span class="mono">docs/setup.md</span> (checked against the live GitHub and VS Code docs on 13 October 2026).</p>
+
+  </div>
+  <div class="footer"><span>05 · Setup instructions</span><span>One-Way Door · Technical design</span><span>10 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span class="on"><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">06 · Demo instructions · 6.1</div><h2>Set up and start the demo: Java and git, no Docker</h2></div>
+  <div class="body">
+
+    <div class="label">What runs (one command, one Java process)</div>
+    <div class="flowstrip tight">
+      <div class="n">Browser<small>React UI · :7070</small></div><span class="a">›</span>
+      <div class="n g">Control Centre<small>Spring Boot · :7070</small></div><span class="a">›</span>
+      <div class="n">PostgreSQL 16<small>embedded · :55432</small></div><span class="a">+</span>
+      <div class="n">Kafka (KRaft)<small>in the JVM · :9092</small></div><span class="a">›</span>
+      <div class="n x">3 services<small>built from git</small></div>
+    </div>
+    <table class="t">
+      <tr><th style="width:26%">Service</th><th>Role in the story</th></tr>
+      <tr><td>settlement-service (:8081)</td><td>The writer: <span class="mono">POST /settlements</span> → <span class="mono">PaymentSettled</span> event on Kafka</td></tr>
+      <tr><td>ledger-service (:8082)</td><td>The reader: consumes events, books <span class="mono">ledger_entries</span>; Flyway migrations, Hibernate validation</td></tr>
+      <tr><td>reconciliation-batch</td><td>The reader nobody remembered: finance's <span class="mono">SUM(amount)</span>, straight from Postgres</td></tr>
+    </table>
+    <div class="sp"></div>
+    <div class="grid2">
+      <div>
+        <div class="label">You need</div>
+        <table class="t">
+          <tr><th>Need</th><th>Detail</th></tr>
+          <tr><td>Java (JDK)</td><td>21 or later (tested on 21 and 25)</td></tr>
+          <tr><td>git</td><td>2.x, and the six demo branches locally</td></tr>
+          <tr><td>Internet, once</td><td>Maven Central or a company mirror</td></tr>
+          <tr><td>Disk, ports</td><td>~2.5 GB; 7070, 8081, 8082, 9092, 55432</td></tr>
+          <tr><td>Not needed</td><td>Maven, Docker, Postgres, Kafka, npm, admin rights</td></tr>
+        </table>
+        <div class="sp2"></div>
+        <div class="box b-grey">
+          <h3>Maven and Node libraries</h3>
+          <ul>
+            <li><b>Maven:</b> each project's wrapper (<span class="mono">mvnw</span> / <span class="mono">mvnw.cmd</span>) downloads Maven 3.9.11 and ~400 MB of libraries into <span class="mono">~/.m2</span> on first build. Mirrors via <span class="mono">settings.xml</span>; <span class="mono">MVNW_REPOURL</span> for Maven itself.</li>
+            <li><b>Node:</b> the skill's scripts need no packages. The UI is committed pre-built; <span class="mono">npm ci</span> only to change it.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="label">Steps</div>
+        <div class="cmd"><span class="c"># 1. Get the code and the five demo branches</span>
+git clone &lt;repo-url&gt; oneway-door &amp;&amp; cd oneway-door
+for b in pr-482-minor-units split/1-expand \
+  split/2-migrate split/3-contract split/4-drop; do
+  git branch --track "$b" "origin/$b"; done
+
+<span class="c"># 2. Start (builds itself the first time)</span>
+demo/start.sh            <span class="c"># macOS / Linux</span>
+demo\start.cmd           <span class="c"># Windows</span>
+
+<span class="c"># 3. Optional: download everything ahead</span>
+demo/start.sh --owd.run=prepare</div>
+        <div class="sp2"></div>
+        <div class="box b-mint">
+          <h3 style="color:var(--green-deep)">In the browser (http://localhost:7070)</h3>
+          <ol>
+            <li><b>System check:</b> Java, git, branches, Postgres + Kafka green.</li>
+            <li><b>Prepare:</b> builds every branch, starts v1, sends 10 settlements (~15 s once built).</li>
+            <li>The map shows both services on <b>v1 · main</b>, UP. You're ready.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:8.2pt;color:var(--muted);margin-top:2mm">Stop with Ctrl+C: services, Kafka and Postgres stop in about 2 s. Full guide: <span class="mono">DEMO.md</span>.</p>
+
+  </div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>11 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span class="on"><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">06 · Demo instructions · 6.2</div><h2>Architecture: the demo system</h2></div>
+  <div class="body">
+
+    <p class="lead" style="font-size:9.4pt;margin-bottom:3mm">Northwind Payments is invented. Three small Spring Boot services, one Kafka topic and one Postgres table: just enough to show a rollback that can't work.</p>
+    <div class="fig"><img src="images/lucid-demo-system.png" alt="Northwind demo system: settlement-service publishes PaymentSettled to Kafka; ledger-service consumes and writes ledger_entries in PostgreSQL; reconciliation-batch reads the table directly."></div>
+    <div class="cap"><b>Figure 1.</b> The demo system, drawn in Lucidchart. Badges show the stack: Java 21, Spring Boot, Hibernate, Apache Kafka, PostgreSQL 16 and the React UI.</div>
+    <div class="sp"></div>
+    <div class="grid3">
+      <div class="box b-mint"><h3 style="color:var(--green-deep)">The writer</h3><p><b>settlement-service</b> takes <span class="mono">POST /settlements</span> and publishes <span class="mono">PaymentSettled</span>. v1 sends <span class="mono">amount</span> in pounds; PR #482 sends <span class="mono">amountMinor</span> in pence.</p></div>
+      <div class="box b-lilac"><h3>The reader</h3><p><b>ledger-service</b> consumes each event and books one row in <span class="mono">ledger_entries</span>. Flyway owns the schema; Hibernate validates it at start-up, so a wrong schema fails loudly.</p></div>
+      <div class="box b-pink"><h3>The reader nobody remembered</h3><p><b>reconciliation-batch</b> runs finance's <span class="mono">SUM(amount)</span> straight from Postgres. It isn't in PR #482, so it breaks first. This is the blast radius.</p></div>
+    </div>
+    <div class="sp2"></div>
+    <table class="t">
+      <tr><th style="width:24%">Kept real on purpose</th><th>Why it matters to the story</th></tr>
+      <tr><td>Type headers off</td><td style="font-weight:400">The producer sends no Java type; the consumer maps by field name. So v1 and v2 events are both readable by both versions, as in most real estates.</td></tr>
+      <tr><td>Jackson defaults</td><td style="font-weight:400">Unknown fields are ignored. That default is why v1 books a v2 event at £0.00 without an exception or a dead letter.</td></tr>
+      <tr><td><span class="mono">ddl-auto=validate</span></td><td style="font-weight:400">v1 ledger-service refuses to start against the V3 schema: <span class="mono">missing column [amount]</span>.</td></tr>
+      <tr><td>Real rollbacks</td><td style="font-weight:400">A rollback runs the previous commit's code, built from a git worktree, against the current database and topic.</td></tr>
+    </table>
+
+  </div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>12 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span class="on"><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">06 · Demo instructions · 6.3</div><h2>Architecture: the demo runtime on one laptop</h2></div>
+  <div class="body">
+
+    <p class="lead" style="font-size:9.4pt;margin-bottom:3mm">The org laptop has Java and git, and no Docker. So one Java process, the Control Centre, runs the infrastructure itself and starts the real services as child processes.</p>
+    <div class="fig" style="width:80%;margin:0 auto"><img src="images/lucid-demo-runtime.png" alt="Demo runtime: the browser talks to the Control Centre, which runs embedded PostgreSQL and Kafka, builds services from git worktrees and runs them as java -jar child processes."></div>
+    <div class="cap" style="width:80%;margin:1.2mm auto 0"><b>Figure 2.</b> The demo runtime, drawn in Lucidchart. One command starts it: <span class="mono">demo/start.sh</span> or <span class="mono">demo\start.cmd</span>.</div>
+    <div class="sp2"></div>
+    <table class="t">
+      <tr><th style="width:21%">Part</th><th style="width:33%">What it is</th><th>What it does in the demo</th></tr>
+      <tr><td>API and UI server</td><td style="font-weight:400">Spring Boot on :7070; React + Vite UI, built in</td><td style="font-weight:400">REST for each action; live events to the browser over SSE; plays the recorded run in Replay mode</td></tr>
+      <tr><td>Scenario runner</td><td style="font-weight:400">Incident, rollback test, matrix</td><td style="font-weight:400">One action at a time; the same steps and checks as the scripts in <span class="mono">demo/scripts</span></td></tr>
+      <tr><td>Builder</td><td style="font-weight:400">git worktree per ref, the service's own <span class="mono">mvnw</span></td><td style="font-weight:400">Builds any branch; caches jars by git tree hash, so a rebuild is instant</td></tr>
+      <tr><td>Runner</td><td style="font-weight:400"><span class="mono">java -jar</span> child processes</td><td style="font-weight:400">Health checks, start-up failure root cause, graceful stop so a rollback frees the Kafka group at once</td></tr>
+      <tr><td>PostgreSQL 16</td><td style="font-weight:400">Embedded binaries, :55432</td><td style="font-weight:400">Database <span class="mono">ledger</span>; stopped cleanly on exit</td></tr>
+      <tr><td>Apache Kafka</td><td style="font-weight:400">KRaft broker in the JVM, :9092</td><td style="font-weight:400">Topics <span class="mono">payments.settled</span> and <span class="mono">.DLT</span>; an observer reads each event's real shape for the map</td></tr>
+    </table>
+
+  </div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>13 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span class="on"><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">06 · Demo instructions · 6.4</div><h2>Run the five acts in four minutes</h2></div>
+  <div class="body">
+
+    <table class="t">
+      <tr><th style="width:15%">Act</th><th style="width:9%">Time</th><th style="width:36%">Click and show</th><th>Say</th></tr>
+      <tr><td>1 · The PR</td><td>0:35</td><td style="font-weight:400">Tab 1: the V3 migration and event change; <b>Run tests</b> (green). Send the Copilot prompt in VS Code now.</td><td style="font-weight:400">"PR #482 moves to pence. Tests are green. You'd approve this."</td></tr>
+      <tr><td>2 · The incident</td><td>1:10</td><td style="font-weight:400">Tab 2: <b>Start</b>, then <span class="mono">→</span> for 7 steps. The controls and live numbers sit under the map.</td><td style="font-weight:400">One line per step, ending: "Every dashboard is green, and fifty settlements are booked at £0.00."</td></tr>
+      <tr><td>3 · The review</td><td>1:00</td><td style="font-weight:400">VS Code: Copilot's answer. Tab 3: each finding beside the real error from act 2.</td><td style="font-weight:400">"One folder in .github/skills. Scripts check, Copilot judges."</td></tr>
+      <tr><td>4 · The split</td><td>0:35</td><td style="font-weight:400">Tab 4: expand, migrate, contract, drop.</td><td style="font-weight:400">"Same destination, four steps, each reversible."</td></tr>
+      <tr><td>5 · The proof</td><td>0:40</td><td style="font-weight:400">Tab 5: matrix 4 PASS, 1 FAIL. Optionally <b>Run this row</b> live.</td><td style="font-weight:400">"PR #482 fails before anyone presses rollback."</td></tr>
+    </table>
+    <div class="sp"></div>
+    <div class="label">Act 2, step by step (what each Java service really does)</div>
+    <table class="t">
+      <tr><th style="width:8%">Time</th><th style="width:22%">Step</th><th>What happens</th></tr>
+      <tr><td>16:30</td><td>v1 in pounds</td><td style="font-weight:400">10 settlements published with <span class="mono">amount</span>; ledger books them in <span class="mono">numeric(12,2)</span>.</td></tr>
+      <tr><td>16:40</td><td>PR #482 ships</td><td style="font-weight:400">ledger v2 starts; Flyway runs V3 (rename, ×100) in 5 ms; settlement v2 sends <span class="mono">amountMinor</span>.</td></tr>
+      <tr><td>16:55</td><td>Reconciliation fails</td><td style="font-weight:400"><span class="mono">ERROR: column "amount" does not exist</span>, in a job nobody changed.</td></tr>
+      <tr><td>16:58</td><td>Roll back</td><td style="font-weight:400">v1 ledger stops: <span class="mono">Schema-validation: missing column [amount]</span>. Flyway has no undo.</td></tr>
+      <tr><td>17:00</td><td>Backlog builds</td><td style="font-weight:400">50 v2 events queue on Kafka; nobody is consuming.</td></tr>
+      <tr><td>17:25</td><td>Hand hotfix</td><td style="font-weight:400">DBA reverses V3; v1 starts and drains the queue.</td></tr>
+      <tr><td>17:26</td><td>£0.00</td><td style="font-weight:400">Jackson ignores <span class="mono">amountMinor</span>; missing <span class="mono">double amount</span> = 0.0. 50 rows at £0.00, DLT empty.</td></tr>
+    </table>
+    <div class="sp"></div>
+    <div class="grid3">
+      <div class="box b-grey"><h3>The day before</h3><ul><li>System check green; Prepare</li><li>Run act 2 once</li><li>Control room → <b>Record the incident</b></li><li>Act 5 → Run all 5 rows</li><li>Copilot answers in VS Code</li></ul></div>
+      <div class="box b-orange"><h3 style="color:var(--orange-d)">Fallbacks</h3><ul><li><b>Replay</b> toggle: plays the recorded real run, labelled as a recording</li><li>Copilot slow: tab 3 shows the same review</li><li>Last resort: the backup video</li></ul></div>
+      <div class="box b-line"><h3>Headless checks</h3><div class="cmd" style="font-size:6.8pt">demo/start.sh --owd.run=incident
+demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reproduced; 4 PASS + 1 FAIL.</p></div>
+    </div>
+
+  </div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>14 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span class="on"><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">06 · Demo instructions · 6.5</div><h2>The Control Centre: the PR and the rollback</h2></div>
+  <div class="body">
+
+    <p class="lead" style="font-size:9.4pt;margin-bottom:3mm">Screens from a live run on 14 October 2026: real services, real Kafka, real Postgres, on one laptop. Amounts are random each run; the outcome is the same every time.</p>
+    <div class="crop" style="width:84%;margin:0 auto"><img src="images/cc-act1.png" alt="Act 1: PR #482 and the V3 migration; the map shows v1 on both services"></div>
+    <div class="cap" style="width:84%;margin:1.2mm auto 0"><b>Act 1 · The PR.</b> Both services on v1; the table has <span class="mono">amount numeric(12,2)</span>. Below the map: PR #482's migration and its passing tests.</div>
+    <div class="sp"></div>
+    <div class="crop" style="width:84%;margin:0 auto"><img src="images/cc-act2-backlog.png" alt="Act 2 at 17:00: ledger-service failed to start, backlog of 50 events on Kafka"></div>
+    <div class="cap" style="width:84%;margin:1.2mm auto 0"><b>Act 2 · 17:00.</b> Rolled back, v1 ledger-service won't start: <span class="mono">missing column [amount]</span>. Reconciliation fails too. 50 events wait on Kafka; £12,671.84 is not booked yet.</div>
+
+  </div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>15 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span class="on"><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">06 · Demo instructions · 6.6</div><h2>The Control Centre: £0.00, and the review</h2></div>
+  <div class="body">
+
+    <div class="crop" style="width:84%;margin:0 auto"><img src="images/cc-act2-zero.png" alt="Act 2 at 17:26: £12,671.84 missing, 50 rows booked at £0.00, every service healthy"></div>
+    <div class="cap" style="width:84%;margin:1.2mm auto 0"><b>Act 2 · 17:26.</b> After the hand hotfix, v1 drains the queue. £12,671.84 is missing and 50 rows are at £0.00. The DLT is empty and every service is UP.</div>
+    <div class="sp"></div>
+    <div class="crop" style="width:84%;margin:0 auto"><img src="images/cc-act3-review.png" alt="Act 3: Copilot's ONE-WAY verdict beside the three errors seen in act 2"></div>
+    <div class="cap" style="width:84%;margin:1.2mm auto 0"><b>Act 3 · The review.</b> The skill's verdict, ONE-WAY with no safe window, beside the three things it predicted. The red lines are copied from act 2's run, not typed in.</div>
+
+  </div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>16 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span class="on"><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">06 · Demo instructions · 6.7</div><h2>The Control Centre: the proof, live</h2></div>
+  <div class="body">
+
+    <div class="crop" style="width:90%;margin:0 auto"><img src="images/cc-act5-proof.png" alt="Act 5: rollback test split 2 to split 3, five stages, every check green, PASS"></div>
+    <div class="cap" style="width:90%;margin:1.2mm auto 0"><b>Act 5 · One row, run live.</b> <span class="mono">split/2-migrate → split/3-contract</span>: deploy ledger, deploy settlement, roll each back. After every stage, 20 settlements and six checks. PASS in about 20 seconds.</div>
+    <div class="sp"></div>
+    <div class="crop" style="width:90%;margin:0 auto"><img style="margin-top:-2.2%" src="images/cc-act5-matrix.png" alt="Act 5: the rollback matrix, four split steps pass and PR #482 fails from stage 2"></div>
+    <div class="cap" style="width:90%;margin:1.2mm auto 0"><b>Act 5 · The rollback matrix.</b> Each split step deploys and rolls back cleanly. PR #482 fails at stage 2, before anyone presses rollback: a new consumer reading old events books £0.00 too.</div>
+
+  </div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>17 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span class="on"><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">07 · Before and after completions</div><h2>What Copilot says without the skill, and with it</h2></div>
+  <div class="body">
+
+    <p class="lead" style="font-size:9.6pt;margin-bottom:3mm">Same prompt, same pull request: <i>"Review the pr-482-minor-units branch against main. If this goes wrong after deploy, can we roll back?"</i></p>
+    <div class="ba">
+      <div class="side before">
+        <span class="tag">Before · without the skill</span>
+        <div class="comment">
+          <p><b>Looks good overall.</b> Storing money as integer pence avoids floating-point rounding, which is a good improvement.</p>
+          <ul>
+            <li>The migration converts existing values with <span class="mono">* 100</span>; consider a test for the conversion.</li>
+            <li>Both services are updated consistently.</li>
+            <li>To roll back, revert the commit and redeploy.</li>
+          </ul>
+          <div class="src">Illustrative: a typical generic review. It answers the code, not the question. No verdict, no window, no other readers, and "revert and redeploy" is exactly what fails.</div>
+        </div>
+      </div>
+      <div class="side after">
+        <span class="tag">After · with One-Way Door</span>
+        <div class="comment">
+          <p><span class="v">Verdict: ONE-WAY</span> · Safe rollback window: <b>none</b> (closes when V3 runs at ledger-service start-up)</p>
+          <h4>Findings</h4>
+          <ol>
+            <li><b>Column renamed and converted in place</b> · <span class="mono">V3…sql:3</span> · rename, retype, in-place-conversion. If rolled back: v1 fails start-up, <span class="mono">missing column [amount]</span>.</li>
+            <li><b>amount replaced by amountMinor</b> in the event · door closes with the first v2 event.</li>
+            <li><b>Missing amount silently becomes £0.00</b> · no exception, nothing in the DLT.</li>
+          </ol>
+          <h4>Blast radius</h4>
+          <p><b>reconciliation-batch (not in this PR)</b>: <span class="mono">SUM(amount)</span> breaks when V3 runs.</p>
+          <h4>Suggested split</h4>
+          <p>Expand → migrate → contract → drop, each step justified. Reply "generate the split".</p>
+          <div class="src">From the skill's worked example (<span class="mono">references/output-format.md</span>); scripts: 3 + 5 findings.</div>
+        </div>
+      </div>
+    </div>
+    <div class="sp"></div>
+    <div class="label">Before and after in the running system (measured in the demo)</div>
+    <table class="t">
+      <tr><th style="width:24%">Moment</th><th style="width:38%">PR #482 merged as written</th><th>The split, as the skill proposes</th></tr>
+      <tr><td>Deploy the new reader</td><td class="r">20 old events booked at £0.00</td><td class="g">Reads either field; all booked correctly</td></tr>
+      <tr><td>Finance reconciliation</td><td class="r">Fails: column "amount" does not exist</td><td class="g">Totals match at every stage</td></tr>
+      <tr><td>Roll back the reader</td><td class="r">Old code won't start; hand hotfix</td><td class="g">Previous step runs on the new table</td></tr>
+      <tr><td>Money</td><td class="r">£12,708.11 missing, no alert (recorded run)</td><td class="g">£0 missing; DLT empty; no backlog</td></tr>
+      <tr><td>Rollback matrix</td><td class="r">FAIL at stage 2</td><td class="g">PASS: 4 of 4 steps, 5 stages each</td></tr>
+    </table>
+    <div class="sp"></div>
+    <div class="grid3">
+      <div class="stat" style="margin:0"><div class="n">Before merge</div><div class="t">when the problem is found, instead of at 16:55 on a Friday</div></div>
+      <div class="stat" style="margin:0"><div class="n">3 of 3</div><div class="t">findings that happened in the live incident, as predicted</div></div>
+      <div class="stat" style="margin:0"><div class="n">1 reader</div><div class="t">outside the PR found: the job that broke first</div></div>
+    </div>
+
+  </div>
+  <div class="footer"><span>07 · Before and after completions</span><span>One-Way Door · Technical design</span><span>18 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span class="on"><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">08 · Reuse statements</div><h2>Built for any repository, not just the demo</h2></div>
+  <div class="body">
+
+    <div class="statement">
+      <div class="label">Reuse statement</div>
+      <p>One-Way Door is generic. Nothing in <span style="font-family:var(--mono);font-size:10pt">SKILL.md</span> or its scripts refers to the demo; a test
+      enforces that. Any team can reuse it in any GitHub repository by copying one folder or installing one plugin, with no
+      servers, dependencies or changes to their build.</p>
+    </div>
+    <div class="label">Clear statements</div>
+    <div class="grid2">
+      <div class="box b-mint"><ol>
+        <li><b>Reusable as it is</b> in any repository with Flyway, Liquibase or EF Core migrations, or JSON Schema event contracts.</li>
+        <li><b>Language-agnostic.</b> Blast radius uses <span class="mono">git grep</span>, so readers in Java, C#, Python, TypeScript or SQL are all found.</li>
+        <li><b>Works without its scripts.</b> Avro, Protobuf, caches, webhooks and APIs are reviewed from the catalogue.</li>
+        <li><b>No infrastructure.</b> git and, optionally, Node 20+. No packages, network or accounts beyond Copilot.</li>
+      </ol></div>
+      <div class="box b-mint"><ol start="5">
+        <li><b>Every Copilot surface</b> from one copy: VS Code, CLI, cloud agent and code review.</li>
+        <li><b>Optional parts are independent.</b> Take the skill alone, or add the rule and the hook.</li>
+        <li><b>MIT licensed.</b> Copy, adapt and redistribute.</li>
+        <li><b>The demo is reusable too</b> as a pattern: build each version from git, mix old and new, check the money.</li>
+      </ol></div>
+    </div>
+    <div class="sp"></div>
+    <div class="label">What to reuse, and how</div>
+    <table class="t">
+      <tr><th style="width:24%">Asset</th><th style="width:18%">Reuse</th><th>How</th></tr>
+      <tr><td>The skill</td><td class="g">As it is</td><td>Copy <span class="mono">.github/skills/one-way-door/</span>, or install the plugin.</td></tr>
+      <tr><td>Path rule</td><td>Configure</td><td>Copy, then set <span class="mono">applyTo</span> to your migration and contract folders.</td></tr>
+      <tr><td>Hook</td><td class="g">As it is</td><td>Copy <span class="mono">.github/hooks/</span>. Base branch: <span class="mono">origin/HEAD</span>, or set <span class="mono">ONE_WAY_DOOR_BASE</span>.</td></tr>
+      <tr><td>Agent environment</td><td>Merge</td><td>Add its two steps (Node 20, fetch default branch) to your <span class="mono">copilot-setup-steps.yml</span>.</td></tr>
+      <tr><td>Schema folders</td><td>Configure</td><td><span class="mono">--dir</span> per folder; the skill finds them with <span class="mono">git ls-files '*.schema.json'</span>.</td></tr>
+      <tr><td>Pattern catalogue</td><td>Extend</td><td>Add a pattern with its safe split; a test checks every script pattern is documented.</td></tr>
+      <tr><td>Scripts</td><td>Extend</td><td>New formats (Avro, Protobuf) as new scripts: same contract, JSON out, exit 0.</td></tr>
+      <tr><td>Control Centre</td><td>Pattern</td><td>Demo-specific, but its rollback matrix shows how to prove any split.</td></tr>
+    </table>
+    <div class="sp"></div>
+    <div class="grid3">
+      <div class="box b-grey"><h3>Reuse in three steps</h3><ol><li>Copy the folder (or install the plugin).</li><li>Set <span class="mono">applyTo</span>; merge.</li><li>Ask "can we roll back?" on your next PR.</li></ol></div>
+      <div class="box b-grey"><h3>Versioning</h3><p>Plugin manifest <span class="mono">1.0.0</span>. The plugin is generated from <span class="mono">.github</span> and a test fails if they drift. Reinstall plugins after updates.</p></div>
+      <div class="box b-grey"><h3>Planned extensions</h3><p>Readers across repositories (<span class="mono">find-readers</span>), rule-data checks, Spanner and BigQuery schemas.</p></div>
+    </div>
+
+  </div>
+  <div class="footer"><span>08 · Reuse statements</span><span>One-Way Door · Technical design</span><span>19 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span class="on"><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">09 · Known limitations</div><h2>What it doesn't do yet, and what to do about it</h2></div>
+  <div class="body">
+
+    <table class="t">
+      <tr><th style="width:4%">#</th><th style="width:30%">Limitation</th><th style="width:31%">Impact</th><th>Mitigation</th></tr>
+      <tr><td>1</td><td>Scripts cover SQL (Postgres, MySQL, SQL Server dialects), Liquibase, EF Core and JSON Schema only</td><td style="font-weight:400">Avro, Protobuf, caches and external contracts get no mechanical check</td><td style="font-weight:400">The catalogue and Copilot's judgement cover them; add scripts with the same contract</td></tr>
+      <tr><td>2</td><td>One repository at a time</td><td style="font-weight:400">Readers in other repos are missed</td><td style="font-weight:400">Planned <span class="mono">find-readers</span> across related repos; it will assume unreachable repos read the data</td></tr>
+      <tr><td>3</td><td>Judgement comes from a language model</td><td style="font-weight:400">Answers can vary; it may miss a reader or over-flag</td><td style="font-weight:400">Scripts anchor the facts; fixed format; humans still review</td></tr>
+      <tr><td>4</td><td>Reads code and diffs, not runtime state</td><td style="font-weight:400">Doesn't know deploy order, flags or data volumes unless told</td><td style="font-weight:400">Say them in the prompt; the window uses "until &lt;event&gt;" when order holds the door open</td></tr>
+      <tr><td>5</td><td>Copilot code review uses skills "when relevant"</td><td style="font-weight:400">May not pick the skill; running scripts or hooks there is undocumented</td><td style="font-weight:400">Ask <span class="mono">@copilot</span> (cloud agent) for the full review</td></tr>
+      <tr><td>6</td><td>The split is proposed, not proven, by the skill</td><td style="font-weight:400">Generated branches need review and testing</td><td style="font-weight:400">The demo's rollback matrix shows how to prove each step</td></tr>
+      <tr><td>7</td><td>Needs the base branch's history</td><td style="font-weight:400">Shallow clones have no merge base</td><td style="font-weight:400"><span class="mono">git fetch --unshallow</span>; the setup steps fetch it for the cloud agent</td></tr>
+      <tr><td>8</td><td>Hooks: VS Code is preview; Windows PowerShell hook not yet run on real Windows</td><td style="font-weight:400">The guard may not fire on some setups</td><td style="font-weight:400">CI now runs the hook tests on Windows; the skill doesn't depend on the hook</td></tr>
+      <tr><td>9</td><td>Plugin hook relies on <span class="mono">${PLUGIN_ROOT}</span></td><td style="font-weight:400">If Copilot CLI doesn't expand it, the plugin's hook allows everything</td><td style="font-weight:400">Use the in-repo hook (install option A)</td></tr>
+      <tr><td>10</td><td>Windows: a crashing hook blocks every tool in Copilot CLI</td><td style="font-weight:400">No PowerShell 7, or signed-scripts-only policy, stops Copilot working</td><td style="font-weight:400">Check <span class="mono">Get-ExecutionPolicy -List</span>; leave the hook out if needed</td></tr>
+      <tr><td>11</td><td>Depends on Copilot plans and org policies</td><td style="font-weight:400">Free has no cloud agent; the cloud agent is off by default in orgs</td><td style="font-weight:400">See section 5; ask the org admin</td></tr>
+      <tr><td>12</td><td>The demo Control Centre is for demonstrations</td><td style="font-weight:400">Embedded Postgres; fixed service ports; locked-down laptops may block the binaries</td><td style="font-weight:400">Replay mode needs nothing else; Docker scripts as an alternative</td></tr>
+    </table>
+    <div class="sp"></div>
+    <div class="box b-orange"><h3 style="color:var(--orange-d)">Still to verify by hand</h3><ul>
+      <li>The Copilot test checklist (<span class="mono">docs/copilot-test-checklist.md</span>) on each surface with a real Copilot licence.</li>
+      <li>VS Code showing a hook's deny reason in chat; the Windows hook end to end on the presenting laptop.</li>
+    </ul></div>
+
+  </div>
+  <div class="footer"><span>09 · Known limitations</span><span>One-Way Door · Technical design</span><span>20 / 21</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span class="on"><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">10 · Guardrails</div><h2>What it will and won't do</h2></div>
+  <div class="body">
+
+    <div class="grid2">
+      <div class="box b-line"><h3>The skill: reviews, never acts on its own</h3><ul>
+        <li>Read-only by default. It never edits code, creates branches, pushes or opens pull requests unless the user asks (step 8).</li>
+        <li>No pre-approved tools: <span class="mono">allowed-tools</span> is deliberately not set, so every command it runs needs the user's approval.</li>
+        <li>States what it searched. Readers it can't check are assumed to exist, and it says so.</li>
+        <li>Quotes real errors; marks when scripts didn't run; no guesswork words, no hype, British English.</li>
+      </ul></div>
+      <div class="box b-line"><h3>The scripts: deterministic and offline</h3><ul>
+        <li>Node standard library only; no packages, no network, no writes. They only read git.</li>
+        <li>Same input, same JSON output. Always exit 0: findings are data, not failures.</li>
+        <li>Always diff from the merge base, so other people's changes on main are never blamed on the PR.</li>
+      </ul></div>
+      <div class="box b-line"><h3>The hook: a narrow guard that can't lock you out</h3><ul>
+        <li>Denies only one thing: agent edits to migrations already on the default branch, with a reason and the next version to use.</li>
+        <li>Reading, new migrations, repeatable and undo scripts and Liquibase changelogs stay allowed.</li>
+        <li>Fails open on its own errors: a broken hook must never block every tool call.</li>
+      </ul></div>
+      <div class="box b-line"><h3>The path rule: rollback rules where they matter</h3><ul>
+        <li>Never rename, drop or retype a column in one step; never convert in place.</li>
+        <li>Never edit an applied migration: add a new one.</li>
+        <li>Event fields: add as optional; consumers move first; never let a missing number default to 0.</li>
+      </ul></div>
+    </div>
+    <div class="sp"></div>
+    <div class="grid3">
+      <div class="box b-mint"><h3 style="color:var(--green-deep)">Platform controls respected</h3><p>Workspace Trust, org and device policies, terminal approvals and the cloud agent's firewall all apply. The skill adds no way around them.</p></div>
+      <div class="box b-mint"><h3 style="color:var(--green-deep)">Data and privacy</h3><p>No secrets or credentials needed. The scripts send nothing anywhere. Code is processed only by Copilot, under the user's existing licence.</p></div>
+      <div class="box b-mint"><h3 style="color:var(--green-deep)">Honest demo</h3><p>Every rollback rebuilds the old code from git. Replay is labelled as a recording. All companies, people and amounts are invented.</p></div>
+    </div>
+    <div class="sp"></div>
+    <div class="ask">
+      <div><h3>Sign-off</h3><p>Reviewed by: ____________________ &nbsp;&nbsp; Approved by: ____________________ &nbsp;&nbsp; Date: __________</p></div>
+      <div class="cta">Version 1.0</div>
+    </div>
+
+  </div>
+  <div class="footer"><span>10 · Guardrails</span><span>One-Way Door · Technical design</span><span>21 / 21</span></div>
+</section>
+
+<script>
+  // Flags any block whose bottom runs into the footer zone (read by build.py).
+  window.addEventListener('load', function () {
+    document.fonts.ready.then(function () {
+      var bad = [];
+      document.querySelectorAll('.page').forEach(function (p, i) {
+        var limit = p.getBoundingClientRect().bottom - 16 * 3.78;
+        p.querySelectorAll('.body > *, .cover-main > *, .toc').forEach(function (el) {
+          var over = el.getBoundingClientRect().bottom - limit;
+          if (over > 0) bad.push((i + 1) + ':' + (el.className || el.tagName) + '+' + Math.ceil(over / 3.78) + 'mm');
+        });
+      });
+      document.body.setAttribute('data-overflow', bad.join(' ') || 'none');
+    });
+  });
+</script>
+</body>
+</html>
