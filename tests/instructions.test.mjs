@@ -39,7 +39,7 @@ const matches = (p) => applyTo().some((g) => globToRegExp(g).test(p));
 test('applyTo covers migration folders and event contracts', () => {
   for (const p of [
     'demo/ledger-service/src/main/resources/db/migration/V1__create_ledger_entries.sql',
-    'demo/ledger-service/src/main/resources/db/migration/V42__amount_minor_units.sql',
+    'demo/ledger-service/src/main/resources/db/migration/V3__amount_minor_units.sql',
     'db/migration/V7__x.sql',
     'db/changelog/db.changelog-master.yaml',
     'service/src/main/resources/db/changelog/changes/002.xml',

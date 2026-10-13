@@ -27,14 +27,14 @@ Spring Boot consumer that writes a Postgres ledger, and a nightly reconciliation
 real when you run act 2 in the demo Control Centre (`demo/start.sh` or `demo\start.cmd`), or `demo/scripts/incident.sh`
 with Docker.
 
-1. **PR #482** moves money from `double` pounds to `long` pence. Migration `V42` renames `ledger_entries.amount` to
+1. **PR #482** moves money from `double` pounds to `long` pence. Migration `V3` renames `ledger_entries.amount` to
    `amount_minor` and multiplies the values by 100. The `PaymentSettled` event swaps `amount` for `amountMinor`.
    Both services are updated. **The tests pass.**
 2. It ships. The reconciliation job, which nobody changed, fails: `column "amount" does not exist`.
 3. On-call rolls back ledger-service. **v1 won't start**: `Schema-validation: missing column [amount]`. Flyway has
    no undo.
 4. Settlements keep coming, in the new format, and queue on Kafka.
-5. A DBA reverses V42 by hand. v1 starts and drains the backlog.
+5. A DBA reverses V3 by hand. v1 starts and drains the backlog.
 6. Jackson ignores the unknown `amountMinor`, and the missing primitive `double amount` stays `0.0`.
    **Fifty settlements are booked at £0.00.** No exception, nothing in the dead-letter topic, every dashboard green.
 
@@ -58,17 +58,17 @@ The scripts do the mechanical checks. Copilot, following the skill, does the jud
 and what the old code does with the new state. For PR #482, the review opens like this:
 
 ```markdown
-**Verdict: ONE-WAY** · Safe rollback window: **none** (closes when V42 runs at ledger-service start-up)
+**Verdict: ONE-WAY** · Safe rollback window: **none** (closes when V3 runs at ledger-service start-up)
 
-1. **Column renamed and converted to pence in place** · `ledger_entries.amount` → `amount_minor` · `V42__amount_minor_units.sql:3`
-   - **Door closes:** when ledger-service starts and Flyway runs V42, before it takes traffic.
+1. **Column renamed and converted to pence in place** · `ledger_entries.amount` → `amount_minor` · `V3__amount_minor_units.sql:3`
+   - **Door closes:** when ledger-service starts and Flyway runs V3, before it takes traffic.
    - **If rolled back:** v1 fails start-up: `Schema-validation: missing column [amount] in table [ledger_entries]`.
    …
 3. **Missing amount silently becomes £0.00** · `PaymentSettled.amount` (ledger-service, `double amount`)
    - **If rolled back:** v1 books the settlement at **£0.00, silently**. No exception, nothing in `payments.settled.DLT`.
 
 ### Blast radius
-| reconciliation-batch (**not in this PR**) | `Reconcile.java:20` | `SELECT SUM(amount) FROM ledger_entries` | V42 runs |
+| reconciliation-batch (**not in this PR**) | `Reconcile.java:20` | `SELECT SUM(amount) FROM ledger_entries` | V3 runs |
 ```
 
 The full example is in [`output-format.md`](.github/skills/one-way-door/references/output-format.md#worked-example-pr-482-mainpr-482-minor-units).

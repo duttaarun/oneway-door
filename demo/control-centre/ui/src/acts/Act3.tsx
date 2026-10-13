@@ -102,8 +102,8 @@ export default function Act3() {
           <div className="eyebrow">It predicted act 2</div>
           <h2>Three findings, three things we just watched</h2>
           <div style={{ marginTop: 10 }}>
-            <Prediction n={1} q={<>v1 ledger-service <b>fails start-up</b> after V42: there is no undo.</>} seen={startupFail} />
-            <Prediction n={2} q={<><b>reconciliation-batch</b>, not in this PR, breaks the moment V42 runs.</>} seen={reconFail} />
+            <Prediction n={1} q={<>v1 ledger-service <b>fails start-up</b> after V3: there is no undo.</>} seen={startupFail} />
+            <Prediction n={2} q={<><b>reconciliation-batch</b>, not in this PR, breaks the moment V3 runs.</>} seen={reconFail} />
             <Prediction
               n={3}
               q={<>A v1 ledger books v2 events at <b>£0.00, silently</b>. No exception, nothing in the DLT.</>}

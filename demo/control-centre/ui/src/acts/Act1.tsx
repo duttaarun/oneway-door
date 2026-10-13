@@ -39,7 +39,7 @@ export default function Act1() {
       <div className="grid2" style={{ marginTop: 16 }}>
         <div className="card">
           <div className="eyebrow">The migration</div>
-          <h3 style={{ marginBottom: 10 }}>V42__amount_minor_units.sql</h3>
+          <h3 style={{ marginBottom: 10 }}>V3__amount_minor_units.sql</h3>
           <pre className="code" dangerouslySetInnerHTML={{ __html: highlightSql(data?.migration ?? '') }} />
           <p className="small muted" style={{ marginTop: 10 }}>
             Renames <code>amount</code> and rewrites every value in place, on start-up, through Flyway.

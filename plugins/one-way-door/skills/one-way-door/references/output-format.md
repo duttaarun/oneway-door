@@ -47,7 +47,7 @@ I can generate this split as branches `split/1-expand` to `split/4-drop` (and op
 - `ONE-WAY` if any finding means the previous version breaks, misbehaves or loses data after this PR is deployed.
   Otherwise `TWO-WAY`.
 - The safe rollback window is the time after deploy during which rolling back is still safe. Use one of these:
-  - `none`, with the reason in brackets, for example `none (closes when V42 runs at ledger-service start-up)`.
+  - `none`, with the reason in brackets, for example `none (closes when V3 runs at ledger-service start-up)`.
   - `until <event>`, for example `until the first v2 event is published`. Use this when deploy order or a feature
     flag holds the door open.
   - `unlimited` for TWO-WAY.
@@ -55,13 +55,13 @@ I can generate this split as branches `split/1-expand` to `split/4-drop` (and op
 **Findings**
 - Number them, most severe first. Merge script findings about the same object into one finding, and list every
   pattern id it covers, for example `column-rename, column-retype, in-place-conversion`.
-- `Door closes` names a deploy moment: "when ledger-service starts and Flyway runs V42", or "when settlement-service
+- `Door closes` names a deploy moment: "when ledger-service starts and Flyway runs V3", or "when settlement-service
   publishes its first v2 event". Avoid vague timings like "on deploy".
 - `If rolled back` describes old code against new state. Quote the real error message when you know it. If nothing
   errors, say **silently** and say what is wrong.
 - `Data loss` says `none`, or what is lost. Mention retention or TTL when the bad state expires on its own.
 - Drop script findings you have judged harmless, but mention them in one line under the list, for example:
-  "Not a door: `backfill` in V43 only fills the new column."
+  "Not a door: `backfill` in V4 only fills the new column."
 
 **Blast radius**
 - List every reader of each touched table, column, topic or event field that you found **outside the PR's own
@@ -85,7 +85,7 @@ and scripts that came back clean, plus any low-severity notes. Leave out Blast r
 ```markdown
 ## One-way door check
 
-**Verdict: ONE-WAY** · Safe rollback window: **none** (closes when V42 runs at ledger-service start-up)
+**Verdict: ONE-WAY** · Safe rollback window: **none** (closes when V3 runs at ledger-service start-up)
 
 PR #482 renames and converts `ledger_entries.amount` in place and replaces `amount` with `amountMinor` in the
 `PaymentSettled` event. After it deploys, the previous ledger-service can't start, and once the schema is patched
@@ -93,8 +93,8 @@ it books every new event at £0.00.
 
 ### Findings
 
-1. **Column renamed and converted to pence in place** · `ledger_entries.amount` → `amount_minor` · `demo/ledger-service/src/main/resources/db/migration/V42__amount_minor_units.sql:3` · `column-rename, column-retype, in-place-conversion`
-   - **Door closes:** when ledger-service starts and Flyway runs V42, before it takes traffic.
+1. **Column renamed and converted to pence in place** · `ledger_entries.amount` → `amount_minor` · `demo/ledger-service/src/main/resources/db/migration/V3__amount_minor_units.sql:3` · `column-rename, column-retype, in-place-conversion`
+   - **Door closes:** when ledger-service starts and Flyway runs V3, before it takes traffic.
    - **If rolled back:** v1 ledger-service fails start-up: `Schema-validation: missing column [amount] in table [ledger_entries]`. Flyway has no undo, so a hand-written reverse is the only way back.
    - **Data loss:** none if the reverse divides by exactly 100. Any reverse that rounds differently corrupts history.
 
@@ -112,7 +112,7 @@ it books every new event at £0.00.
 
 | Reader | Where | Uses | Breaks when |
 |---|---|---|---|
-| reconciliation-batch (**not in this PR**) | `demo/reconciliation-batch/src/main/java/com/northwind/reconciliation/Reconcile.java:20` | `SELECT SUM(amount) FROM ledger_entries` | V42 runs: `column "amount" does not exist` |
+| reconciliation-batch (**not in this PR**) | `demo/reconciliation-batch/src/main/java/com/northwind/reconciliation/Reconcile.java:20` | `SELECT SUM(amount) FROM ledger_entries` | V3 runs: `column "amount" does not exist` |
 | ledger-service | `demo/ledger-service/.../LedgerEntry.java` | `ledger_entries.amount` / `amount_minor` | rollback (finding 1) |
 | ledger-service consumer | `demo/ledger-service/.../PaymentSettled.java` | `PaymentSettled.amount` | rollback with a v2 backlog (finding 3) |
 
@@ -142,7 +142,7 @@ reads and writes `amount`, so rolling back is safe.
 
 ### Checked
 
-- Data: V44 sets `amount_minor` NOT NULL. PR 2's ledger-service already writes it on every insert. `amount` stays and is filled by the trigger.
+- Data: V5 sets `amount_minor` NOT NULL. PR 2's ledger-service already writes it on every insert. `amount` stays and is filled by the trigger.
 - Messages: `amount` is no longer required, but settlement-service still sends it. PR 2's consumer prefers `amountMinor`.
 - Blast radius: reconciliation-batch moves to `amount_minor` in this PR. No other readers of `ledger_entries.amount`.
 - Not a door: `not-null` on `amount_minor` (the previous version writes it), and `event-field-made-optional` on `amount` (still sent).

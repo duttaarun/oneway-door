@@ -344,7 +344,7 @@ redundant before you merge.
 
 PR #482 ("store settlement amounts in minor units") changes three things at once.
 
-1. `V42__amount_minor_units.sql`:
+1. `V3__amount_minor_units.sql`:
    ```sql
    ALTER TABLE ledger_entries RENAME COLUMN amount TO amount_minor;
    ALTER TABLE ledger_entries ALTER COLUMN amount_minor TYPE bigint USING (amount_minor * 100)::bigint;
@@ -356,20 +356,20 @@ PR #482 ("store settlement amounts in minor units") changes three things at once
    `missing-primitive-default`.
 
 **Blast radius:** `reconciliation-batch` runs `SELECT SUM(amount) FROM ledger_entries` and isn't in the PR. It breaks as
-soon as V42 runs, with no rollback needed.
+soon as V3 runs, with no rollback needed.
 
 **What happened when it was rolled back.** ledger-service v1 refused to start
-(`Schema-validation: missing column [amount]`). A hand-written hotfix reversed V42 and v1 started. Then v1
+(`Schema-validation: missing column [amount]`). A hand-written hotfix reversed V3 and v1 started. Then v1
 consumed the backlog of v2 events and booked every one at £0.00. There was no error and nothing in the DLT.
 
 **The split** (branches `split/1-expand` … `split/4-drop`) reaches the same end state, and each step rolls back cleanly:
 
 | PR | Database | Event | Code |
 |---|---|---|---|
-| 1 expand | `V42`: add `amount_minor bigint` (nullable) | add optional `amountMinor` | settlement sends both. ledger writes both columns, preferring `amountMinor`. |
-| 2 migrate | `V43`: backfill `amount_minor`, fail if any row disagrees | (none) | reconciliation also reports rows where the columns disagree |
-| 3 contract | `V44`: `amount_minor` NOT NULL. `amount` nullable and filled by a trigger | `amount` no longer required | ledger stops reading and writing `amount` and rejects events without `amountMinor`. reconciliation sums `amount_minor`. |
-| 4 drop | `V45`: drop the trigger and `amount` | remove `amount` | settlement stops sending `amount` |
+| 1 expand | `V3`: add `amount_minor bigint` (nullable) | add optional `amountMinor` | settlement sends both. ledger writes both columns, preferring `amountMinor`. |
+| 2 migrate | `V4`: backfill `amount_minor`, fail if any row disagrees | (none) | reconciliation also reports rows where the columns disagree |
+| 3 contract | `V5`: `amount_minor` NOT NULL. `amount` nullable and filled by a trigger | `amount` no longer required | ledger stops reading and writing `amount` and rejects events without `amountMinor`. reconciliation sums `amount_minor`. |
+| 4 drop | `V6`: drop the trigger and `amount` | remove `amount` | settlement stops sending `amount` |
 
 `demo/scripts/rollback-test.sh` proves it. It deploys each step, sends traffic, rolls back, and sends traffic again.
 Every step passes, and PR #482 fails.

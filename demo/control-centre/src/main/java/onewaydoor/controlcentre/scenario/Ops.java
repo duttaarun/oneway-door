@@ -90,13 +90,13 @@ public class Ops {
         return runner.deploy(service, ref);
     }
 
-    /** Applies demo/scripts/hotfix-reverse-v42.sql and restarts ledger-service on the same build. */
+    /** Applies demo/scripts/hotfix-reverse-v3.sql and restarts ledger-service on the same build. */
     public boolean hotfix() {
-        events.caption("Applying hotfix-reverse-v42.sql");
+        events.caption("Applying hotfix-reverse-v3.sql");
         if (!ledger.hasColumn("amount_minor")) {
-            throw new IllegalStateException("ledger_entries has no amount_minor column; V42 isn't applied, nothing to reverse");
+            throw new IllegalStateException("ledger_entries has no amount_minor column; V3 isn't applied, nothing to reverse");
         }
-        Path file = workspace.root().resolve("demo/scripts/hotfix-reverse-v42.sql");
+        Path file = workspace.root().resolve("demo/scripts/hotfix-reverse-v3.sql");
         try {
             ledger.runScript(Files.readString(file));
         } catch (IOException e) {

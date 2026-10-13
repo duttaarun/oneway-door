@@ -17,9 +17,9 @@ const repo = (files) => { const r = makeRepo(files); repos.push(r); return r; };
 after(() => repos.forEach((r) => r.cleanup()));
 
 describe('scan-migrations: Flyway SQL', () => {
-  test('PR #482: rename, retype and in-place conversion in V42', () => {
+  test('PR #482: rename, retype and in-place conversion in V3', () => {
     const r = repo({ [`${MIG}/V1__init.sql`]: V1 }).branch('feature').write({
-      [`${MIG}/V42__amount_minor_units.sql`]: `-- Store money as integer minor units.
+      [`${MIG}/V3__amount_minor_units.sql`]: `-- Store money as integer minor units.
 -- A comment that says DROP COLUMN amount must not count.
 ALTER TABLE ledger_entries RENAME COLUMN amount TO amount_minor;
 ALTER TABLE ledger_entries ALTER COLUMN amount_minor TYPE bigint USING (amount_minor * 100)::bigint;
@@ -38,7 +38,7 @@ ALTER TABLE ledger_entries ALTER COLUMN amount_minor TYPE bigint USING (amount_m
     assert.equal(find(json, 'column-retype').line, 4);
     assert.equal(find(json, 'column-rename').severity, 'high');
     assert.match(find(json, 'in-place-conversion').detail, /amount_minor \* 100/);
-    assert.deepEqual(json.migrations.map((m) => [m.kind, m.version, m.status]), [['flyway', '42', 'A']]);
+    assert.deepEqual(json.migrations.map((m) => [m.kind, m.version, m.status]), [['flyway', '3', 'A']]);
   });
 
   test('drops: column and table, but not constraints or defaults', () => {

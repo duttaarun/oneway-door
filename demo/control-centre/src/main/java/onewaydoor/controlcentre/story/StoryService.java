@@ -47,7 +47,7 @@ public class StoryService {
         a.put("subject", git.run("log", "-1", "--format=%s", BAD).strip());
         a.put("body", git.run("log", "-1", "--format=%b", BAD).strip());
         a.put("diffStat", git.run("diff", "--stat", "main..." + BAD).stripTrailing());
-        a.put("migration", git.tryRun("show", BAD + ":demo/ledger-service/src/main/resources/db/migration/V42__amount_minor_units.sql")
+        a.put("migration", git.tryRun("show", BAD + ":demo/ledger-service/src/main/resources/db/migration/V3__amount_minor_units.sql")
                 .orElse("").strip());
         a.put("eventDiff", git.run("diff", "main..." + BAD, "--", "contracts/events/payment-settled.schema.json").strip());
         return a;

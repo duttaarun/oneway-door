@@ -76,14 +76,14 @@ The **deliverable runs in GitHub Copilot**: VS Code agent mode, Copilot CLI and 
 
 - **v1 (`main`):** `PaymentSettled { double amount }`. ledger-service writes `ledger_entries.amount numeric(12,2)`.
 - **The bad PR (branch `pr-482-minor-units`):**
-  - Flyway `V42__amount_minor_units.sql` renames `amount` → `amount_minor` and retypes it to `bigint USING (amount_minor * 100)::bigint`.
+  - Flyway `V3__amount_minor_units.sql` renames `amount` → `amount_minor` and retypes it to `bigint USING (amount_minor * 100)::bigint`.
   - The event changes to `long amountMinor`, and `amount` is removed.
   - Both services are updated.
   - Tests pass. It looks like a good refactor.
 - **The incident, reproduced for real:**
-  1. Deploy both v2 services. V42 runs.
+  1. Deploy both v2 services. V3 runs.
   2. Roll back **ledger-service only** to v1. It fails because `column "amount" does not exist`.
-  3. Apply `demo/scripts/hotfix-reverse-v42.sql`. v1 comes back up.
+  3. Apply `demo/scripts/hotfix-reverse-v3.sql`. v1 comes back up.
   4. v1 consumes the backlog of v2 events. Jackson ignores the unknown `amountMinor`, and the missing primitive `double amount` stays at `0.0`. Every settlement is booked at **£0.00**, with no exception and nothing in the dead-letter queue (DLQ).
 - **The fix (branches `split/1-expand`, `split/2-migrate`, `split/3-contract`, `split/4-drop`):** each one deploys and rolls back to its predecessor with zero errors and correct amounts.
 
@@ -91,7 +91,7 @@ The **deliverable runs in GitHub Copilot**: VS Code agent mode, Copilot CLI and 
 - No faking. A rollback must actually run the previous git ref's code against the current DB and topic state. Build from git worktrees.
 - Spring Kafka: **disable type headers** on the producer and use a fixed default type on the consumer, so v1 and v2 DTOs deserialize by field name only.
 - Keep Jackson defaults, which ignore unknown properties. That default is what makes the silent £0.00 happen.
-- Hibernate `ddl-auto=validate` on ledger-service, so v1 fails loudly against the V42 schema.
+- Hibernate `ddl-auto=validate` on ledger-service, so v1 fails loudly against the V3 schema.
 - `traffic.sh` must compress "25 minutes of settlements" into a few seconds of events.
 
 ## Environment

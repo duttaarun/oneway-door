@@ -22,7 +22,7 @@ wait_for_drain 60 || warn "ledger-service is still catching up"
 pause "merge PR #482"
 
 caption "1 · 16:40. PR #482 'store amounts in minor units' is merged. Tests are green. Ship it."
-say "ledger-service goes first: Flyway runs V42 (rename amount → amount_minor, retype to pence)."
+say "ledger-service goes first: Flyway runs V3 (rename amount → amount_minor, retype to pence)."
 "$DIR/deploy.sh" ledger-service "$BAD"
 "$DIR/deploy.sh" settlement-service "$BAD"
 "$DIR/traffic.sh" 20
@@ -39,8 +39,8 @@ say "On-call sees ledger_entries in the stack trace and rolls back the service t
 pause "roll back ledger-service"
 
 caption "3 · 16:58. Roll back ledger-service to v1. The rollback button works; the service doesn't."
-"$DIR/rollback.sh" ledger-service main && die "expected v1 to fail against the V42 schema"
-say "v1 expects a column called amount. V42 renamed it. Flyway can't undo it: there is no undo."
+"$DIR/rollback.sh" ledger-service main && die "expected v1 to fail against the V3 schema"
+say "v1 expects a column called amount. V3 renamed it. Flyway can't undo it: there is no undo."
 pause "carry on trading"
 
 caption "4 · 17:00–17:25. Settlements keep coming. settlement-service is still v2."
@@ -50,7 +50,7 @@ say "These 50 events (£$backlog_total) carry amountMinor and no amount. ledger-
 say "Backlog on payments.settled: ${BOLD}$(consumer_lag)${RESET} events"
 pause "apply the hotfix"
 
-caption "5 · 17:25. A DBA reverses V42 by hand so v1 can start again."
+caption "5 · 17:25. A DBA reverses V3 by hand so v1 can start again."
 "$DIR/apply-hotfix.sh"
 say "v1 drains the backlog…"
 wait_for_drain 90 || warn "backlog not fully drained"

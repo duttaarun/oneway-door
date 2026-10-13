@@ -46,7 +46,7 @@ export function ControlRoom({ onClose, toast }: { onClose: () => void; toast: (m
           </div>
           <div className="row">
             <button className="btn btn-ghost" disabled={busy} onClick={() => run('/recon')}>Run reconciliation</button>
-            <button className="btn btn-ghost" disabled={busy} onClick={() => run('/hotfix')}>Apply V42 hotfix</button>
+            <button className="btn btn-ghost" disabled={busy} onClick={() => run('/hotfix')}>Apply V3 hotfix</button>
           </div>
         </section>
 

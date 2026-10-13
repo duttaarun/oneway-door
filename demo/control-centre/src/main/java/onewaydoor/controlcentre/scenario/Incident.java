@@ -40,8 +40,8 @@ public class Incident {
                     "17:00–17:25. Settlements keep coming. settlement-service is still v2.",
                     "Meanwhile settlements keep arriving. They queue on Kafka, in the new format."),
             new Step("hotfix", "17:25", "Hand hotfix",
-                    "17:25. A DBA reverses V42 by hand so v1 can start again.",
-                    "A DBA reverses V42 by hand. v1 comes back up and drains the queue."),
+                    "17:25. A DBA reverses V3 by hand so v1 can start again.",
+                    "A DBA reverses V3 by hand. v1 comes back up and drains the queue."),
             new Step("zero", "17:26", "£0.00",
                     "17:26. Incident closed. Every dashboard is green.",
                     "Every dashboard is green. And fifty settlements are booked at £0.00. No exception. "
@@ -143,7 +143,7 @@ public class Incident {
                 ops.ledgerReport();
             }
             case 1 -> {
-                e.say("ledger-service goes first: Flyway runs V42 (rename amount → amount_minor, retype to pence).");
+                e.say("ledger-service goes first: Flyway runs V3 (rename amount → amount_minor, retype to pence).");
                 if (!ops.deploy(ServiceRunner.LEDGER, BAD) || !ops.deploy(ServiceRunner.SETTLEMENT, BAD)) {
                     return false;
                 }
@@ -157,17 +157,17 @@ public class Incident {
                 e.say("Nobody changed reconciliation-batch. It still reads ledger_entries.amount directly.");
                 Recon r = ops.recon();
                 if (r.error() == null) {
-                    e.fail("expected reconciliation to fail against the V42 schema");
+                    e.fail("expected reconciliation to fail against the V3 schema");
                     return false;
                 }
                 e.say("On-call sees ledger_entries in the stack trace and rolls back the service that owns it.");
             }
             case 3 -> {
                 if (ops.rollback(ServiceRunner.LEDGER, "main")) {
-                    e.fail("expected v1 to fail against the V42 schema");
+                    e.fail("expected v1 to fail against the V3 schema");
                     return false;
                 }
-                e.say("v1 expects a column called amount. V42 renamed it. Flyway can't undo it: there is no undo.");
+                e.say("v1 expects a column called amount. V3 renamed it. Flyway can't undo it: there is no undo.");
             }
             case 4 -> {
                 ops.traffic.send(50);

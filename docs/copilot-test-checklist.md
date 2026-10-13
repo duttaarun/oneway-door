@@ -39,7 +39,7 @@ Compare it with the worked example in `.github/skills/one-way-door/references/ou
 - [ ] It ran `scan-migrations.mjs` **and** `schema-compat.mjs` (look for both commands in the tool calls).
 - [ ] The first line is `**Verdict: ONE-WAY** · Safe rollback window: **none** …`.
 - [ ] The findings cover, at least:
-  1. V42 rename plus in-place conversion to pence (`column-rename`, `column-retype`, `in-place-conversion`), with
+  1. V3 rename plus in-place conversion to pence (`column-rename`, `column-retype`, `in-place-conversion`), with
      the door closing when ledger-service starts.
   2. `amount` replaced by `amountMinor` in `PaymentSettled` (`event-field-removed`, `event-field-renamed`, …).
   3. **Silent £0.00** from the primitive `double amount` (`missing-primitive-default`), with "no exception, nothing

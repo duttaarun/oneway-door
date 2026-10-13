@@ -38,7 +38,7 @@ Keys: `1`–`5` switch acts. In act 2, `→`, Space or a presentation clicker ru
 
 ## Act 1: The innocent PR (0:00–0:35)
 
-**Show** tab **1 The PR**: the PR title, the V42 migration (the rename and the in-place `USING` conversion are
+**Show** tab **1 The PR**: the PR title, the V3 migration (the rename and the in-place `USING` conversion are
 highlighted) and the event contract diff. Press **Run tests** just before you start talking: three real Maven test
 runs at the PR's commit come back green while you speak.
 
@@ -62,7 +62,7 @@ at the map while it runs: orange dots are v2 events, the backlog fills the pipe,
 | 3 · 16:55 | reconciliation-batch red: `column "amount" does not exist` | "Finance's reconciliation job breaks. Nobody touched it, but it reads that column." |
 | 4 · 16:58 | ledger-service red: `Schema-validation: missing column [amount]` | "So on-call presses rollback. The old code won't even start: the column it needs is gone." |
 | 5 · 17:00 | 50 orange events queue in the pipe; backlog 50 | "Meanwhile settlements keep arriving. They queue on Kafka, in the new format." |
-| 6 · 17:25 | ledger back to green v1; dots drain and pop **£0.00** | "A DBA reverses V42 by hand. v1 comes back up and drains the queue." |
+| 6 · 17:25 | ledger back to green v1; dots drain and pop **£0.00** | "A DBA reverses V3 by hand. v1 comes back up and drains the queue." |
 | 7 · 17:26 | Red banner: about **£12,000 is missing**, 50 at £0.00, DLT 0 | "Every dashboard is green. And fifty settlements are booked at **£0.00**. No exception. Nothing in the dead-letter queue." |
 
 **Close the act:**
@@ -157,7 +157,7 @@ For acts 1 and 4 without the console, use plain git:
 
 ```bash
 git diff --stat main...pr-482-minor-units
-git show pr-482-minor-units:demo/ledger-service/src/main/resources/db/migration/V42__amount_minor_units.sql
+git show pr-482-minor-units:demo/ledger-service/src/main/resources/db/migration/V3__amount_minor_units.sql
 git log --oneline main..split/4-drop
 git diff --stat pr-482-minor-units split/4-drop -- contracts demo/settlement-service   # empty: same end state
 ```

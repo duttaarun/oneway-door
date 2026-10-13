@@ -42,7 +42,7 @@ has no SIGTERM for a JVM.
 | `up.sh`, `down.sh`, `reset.sh` | **Prepare** button; Control room → Fresh start, Stop all |
 | `deploy.sh`, `rollback.sh` | Control room → Build and deploy |
 | `traffic.sh`, `ledger.sh` | Act 2 buttons, the metrics rail and the ledger table |
-| `apply-hotfix.sh` | Control room → Apply V42 hotfix (runs `demo/scripts/hotfix-reverse-v42.sql`) |
+| `apply-hotfix.sh` | Control room → Apply V3 hotfix (runs `demo/scripts/hotfix-reverse-v3.sql`) |
 | `incident.sh` | Act 2, one step per click (or `→`), or `--owd.run=incident` |
 | `rollback-test.sh`, `rollback-matrix.sh` | Act 5, or `--owd.run=matrix` (writes `docs/rollback-results.md`) |
 | `test.sh` | Act 1 → Run tests |
