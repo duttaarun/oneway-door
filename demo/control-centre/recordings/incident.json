@@ -1,0 +1,3944 @@
+{
+  "reproduced" : true,
+  "name" : "incident",
+  "recordedAt" : "2026-10-13T18:20:42.051753Z",
+  "events" : [ {
+    "t" : 1,
+    "type" : "step",
+    "data" : {
+      "scenario" : "incident",
+      "index" : 0,
+      "total" : 7,
+      "id" : "v1",
+      "time" : "16:30",
+      "title" : "v1 in pounds",
+      "caption" : "Friday 16:30. Northwind Payments runs v1 (main). Settlements are booked in pounds.",
+      "say" : "Friday afternoon. Ten settlements, all in pounds.",
+      "status" : "running"
+    }
+  }, {
+    "t" : 891,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : null,
+          "commit" : null,
+          "status" : "STOPPED",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "unreachable",
+          "pid" : null
+        },
+        "settlement-service" : {
+          "ref" : null,
+          "commit" : null,
+          "status" : "STOPPED",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "unreachable",
+          "pid" : null
+        },
+        "reconciliation-batch" : {
+          "ref" : null,
+          "commit" : null,
+          "status" : "STOPPED",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "error" : "Failed to obtain JDBC Connection"
+      },
+      "kafka" : {
+        "published" : 0,
+        "lag" : 0,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 0,
+          "v2" : 0,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 0,
+        "total" : 0.00
+      },
+      "recon" : null,
+      "incident" : {
+        "next" : 0,
+        "status" : "running",
+        "result" : null
+      }
+    }
+  }, {
+    "t" : 974,
+    "type" : "log",
+    "data" : {
+      "level" : "info",
+      "text" : "stopped all services; ledger database and topics are fresh"
+    }
+  }, {
+    "t" : 974,
+    "type" : "log",
+    "data" : {
+      "level" : "caption",
+      "text" : "Starting Northwind Payments at main"
+    }
+  }, {
+    "t" : 974,
+    "type" : "log",
+    "data" : {
+      "level" : "ok",
+      "text" : "✔ postgres and kafka are up; topics payments.settled and payments.settled.DLT exist"
+    }
+  }, {
+    "t" : 1909,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "STARTING",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "unreachable",
+          "pid" : 54830
+        },
+        "settlement-service" : {
+          "ref" : null,
+          "commit" : null,
+          "status" : "STOPPED",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "unreachable",
+          "pid" : null
+        },
+        "reconciliation-batch" : {
+          "ref" : null,
+          "commit" : null,
+          "status" : "STOPPED",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ ],
+        "rows" : 0,
+        "booked" : 0,
+        "zero" : 0,
+        "last" : [ ]
+      },
+      "kafka" : {
+        "published" : 0,
+        "lag" : 0,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 0,
+          "v2" : 0,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 0,
+        "total" : 0.00
+      },
+      "recon" : null,
+      "incident" : {
+        "next" : 0,
+        "status" : "running",
+        "result" : null
+      }
+    }
+  }, {
+    "t" : 2073,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Migrating schema \"public\" to version \"1 - create ledger entries\""
+    }
+  }, {
+    "t" : 2080,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Migrating schema \"public\" to version \"2 - index ledger entries merchant\""
+    }
+  }, {
+    "t" : 2083,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Successfully applied 2 migrations to schema \"public\", now at version v2 (execution time 00:00.003s)"
+    }
+  }, {
+    "t" : 2932,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "STARTING",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "unreachable",
+          "pid" : 54830
+        },
+        "settlement-service" : {
+          "ref" : null,
+          "commit" : null,
+          "status" : "STOPPED",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "unreachable",
+          "pid" : null
+        },
+        "reconciliation-batch" : {
+          "ref" : null,
+          "commit" : null,
+          "status" : "STOPPED",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ "amount" ],
+        "rows" : 0,
+        "booked" : 0.00,
+        "zero" : 0,
+        "last" : [ ]
+      },
+      "kafka" : {
+        "published" : 0,
+        "lag" : 0,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 0,
+          "v2" : 0,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 0,
+        "total" : 0.00
+      },
+      "recon" : null,
+      "incident" : {
+        "next" : 0,
+        "status" : "running",
+        "result" : null
+      }
+    }
+  }, {
+    "t" : 3098,
+    "type" : "log",
+    "data" : {
+      "level" : "ok",
+      "text" : "✔ ledger-service @ main (720e12e) is UP (http://localhost:8082/actuator/health)"
+    }
+  }, {
+    "t" : 3133,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Started LedgerApplication in 1.964 seconds (process running for 2.126)"
+    }
+  }, {
+    "t" : 3962,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "UP",
+          "pid" : 54830
+        },
+        "settlement-service" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "STARTING",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "unreachable",
+          "pid" : 54847
+        },
+        "reconciliation-batch" : {
+          "ref" : null,
+          "commit" : null,
+          "status" : "STOPPED",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ "amount" ],
+        "rows" : 0,
+        "booked" : 0.00,
+        "zero" : 0,
+        "last" : [ ]
+      },
+      "kafka" : {
+        "published" : 0,
+        "lag" : 0,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 0,
+          "v2" : 0,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 0,
+        "total" : 0.00
+      },
+      "recon" : null,
+      "incident" : {
+        "next" : 0,
+        "status" : "running",
+        "result" : null
+      }
+    }
+  }, {
+    "t" : 4022,
+    "type" : "svc",
+    "data" : {
+      "service" : "settlement-service",
+      "text" : "Started SettlementApplication in 0.762 seconds (process running for 0.895)"
+    }
+  }, {
+    "t" : 4189,
+    "type" : "log",
+    "data" : {
+      "level" : "ok",
+      "text" : "✔ settlement-service @ main (720e12e) is UP (http://localhost:8081/actuator/health)"
+    }
+  }, {
+    "t" : 4209,
+    "type" : "log",
+    "data" : {
+      "level" : "ok",
+      "text" : "✔ reconciliation-batch @ main (720e12e) ready (runs on demand)"
+    }
+  }, {
+    "t" : 4555,
+    "type" : "observed",
+    "data" : {
+      "offset" : 0,
+      "format" : "v1",
+      "merchantId" : "merchant-0028",
+      "amount" : 473.43,
+      "raw" : "{\"paymentId\":\"cb590764-d3fc-42be-b1f2-bad703adcb8d\",\"merchantId\":\"merchant-0028\",\"currency\":\"GBP\",\"amount\":473.43,\"settledAt\":\"2026-10-13T18:16:28Z\"}"
+    }
+  }, {
+    "t" : 4556,
+    "type" : "observed",
+    "data" : {
+      "offset" : 1,
+      "format" : "v1",
+      "merchantId" : "merchant-0040",
+      "amount" : 393.71,
+      "raw" : "{\"paymentId\":\"a65685c8-be8d-4f53-8232-70dc7a52fb01\",\"merchantId\":\"merchant-0040\",\"currency\":\"GBP\",\"amount\":393.71,\"settledAt\":\"2026-10-13T18:19:28Z\"}"
+    }
+  }, {
+    "t" : 4556,
+    "type" : "observed",
+    "data" : {
+      "offset" : 2,
+      "format" : "v1",
+      "merchantId" : "merchant-0030",
+      "amount" : 54.06,
+      "raw" : "{\"paymentId\":\"56b19518-7019-4fc6-8af0-ff9203668396\",\"merchantId\":\"merchant-0030\",\"currency\":\"GBP\",\"amount\":54.06,\"settledAt\":\"2026-10-13T18:18:28Z\"}"
+    }
+  }, {
+    "t" : 4557,
+    "type" : "observed",
+    "data" : {
+      "offset" : 3,
+      "format" : "v1",
+      "merchantId" : "merchant-0007",
+      "amount" : 304.51,
+      "raw" : "{\"paymentId\":\"e62ed42c-8936-4f43-98f2-3d5879301cf6\",\"merchantId\":\"merchant-0007\",\"currency\":\"GBP\",\"amount\":304.51,\"settledAt\":\"2026-10-13T18:18:58Z\"}"
+    }
+  }, {
+    "t" : 4557,
+    "type" : "observed",
+    "data" : {
+      "offset" : 4,
+      "format" : "v1",
+      "merchantId" : "merchant-0036",
+      "amount" : 359.61,
+      "raw" : "{\"paymentId\":\"bdcfcc22-6d5d-4609-98e3-5fdacf547df5\",\"merchantId\":\"merchant-0036\",\"currency\":\"GBP\",\"amount\":359.61,\"settledAt\":\"2026-10-13T18:17:58Z\"}"
+    }
+  }, {
+    "t" : 4557,
+    "type" : "observed",
+    "data" : {
+      "offset" : 5,
+      "format" : "v1",
+      "merchantId" : "merchant-0023",
+      "amount" : 249.86,
+      "raw" : "{\"paymentId\":\"775ba86a-7f35-4aaa-a984-481b678d9cd2\",\"merchantId\":\"merchant-0023\",\"currency\":\"GBP\",\"amount\":249.86,\"settledAt\":\"2026-10-13T18:17:28Z\"}"
+    }
+  }, {
+    "t" : 4558,
+    "type" : "observed",
+    "data" : {
+      "offset" : 6,
+      "format" : "v1",
+      "merchantId" : "merchant-0006",
+      "amount" : 251.36,
+      "raw" : "{\"paymentId\":\"d85e9fd0-de0e-4ae2-8316-2e663dbb332c\",\"merchantId\":\"merchant-0006\",\"currency\":\"GBP\",\"amount\":251.36,\"settledAt\":\"2026-10-13T18:16:58Z\"}"
+    }
+  }, {
+    "t" : 4558,
+    "type" : "observed",
+    "data" : {
+      "offset" : 7,
+      "format" : "v1",
+      "merchantId" : "merchant-0003",
+      "amount" : 165.71,
+      "raw" : "{\"paymentId\":\"a080c6d7-3651-4c90-b7ce-44a43e96cccc\",\"merchantId\":\"merchant-0003\",\"currency\":\"GBP\",\"amount\":165.71,\"settledAt\":\"2026-10-13T18:15:58Z\"}"
+    }
+  }, {
+    "t" : 4559,
+    "type" : "observed",
+    "data" : {
+      "offset" : 8,
+      "format" : "v1",
+      "merchantId" : "merchant-0014",
+      "amount" : 316.69,
+      "raw" : "{\"paymentId\":\"73c9560f-dbcb-4bff-be4f-3eece9298ebe\",\"merchantId\":\"merchant-0014\",\"currency\":\"GBP\",\"amount\":316.69,\"settledAt\":\"2026-10-13T18:20:28Z\"}"
+    }
+  }, {
+    "t" : 4559,
+    "type" : "observed",
+    "data" : {
+      "offset" : 9,
+      "format" : "v1",
+      "merchantId" : "merchant-0040",
+      "amount" : 115.73,
+      "raw" : "{\"paymentId\":\"9b334c32-beef-4aaf-8716-ed9a4986e334\",\"merchantId\":\"merchant-0040\",\"currency\":\"GBP\",\"amount\":115.73,\"settledAt\":\"2026-10-13T18:19:58Z\"}"
+    }
+  }, {
+    "t" : 4559,
+    "type" : "log",
+    "data" : {
+      "level" : "ok",
+      "text" : "✔ sent 10 settlements worth £2684.67 (settledAt 18:15–18:20 UTC) in 0.3s"
+    }
+  }, {
+    "t" : 4636,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked cb590764-d3fc-42be-b1f2-bad703adcb8d GBP 473.43 for merchant-0028"
+    }
+  }, {
+    "t" : 4640,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked a65685c8-be8d-4f53-8232-70dc7a52fb01 GBP 393.71 for merchant-0040"
+    }
+  }, {
+    "t" : 4641,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 56b19518-7019-4fc6-8af0-ff9203668396 GBP 54.06 for merchant-0030"
+    }
+  }, {
+    "t" : 4643,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked e62ed42c-8936-4f43-98f2-3d5879301cf6 GBP 304.51 for merchant-0007"
+    }
+  }, {
+    "t" : 4645,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked bdcfcc22-6d5d-4609-98e3-5fdacf547df5 GBP 359.61 for merchant-0036"
+    }
+  }, {
+    "t" : 4646,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 775ba86a-7f35-4aaa-a984-481b678d9cd2 GBP 249.86 for merchant-0023"
+    }
+  }, {
+    "t" : 4647,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked d85e9fd0-de0e-4ae2-8316-2e663dbb332c GBP 251.36 for merchant-0006"
+    }
+  }, {
+    "t" : 4649,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked a080c6d7-3651-4c90-b7ce-44a43e96cccc GBP 165.71 for merchant-0003"
+    }
+  }, {
+    "t" : 4656,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 73c9560f-dbcb-4bff-be4f-3eece9298ebe GBP 316.69 for merchant-0014"
+    }
+  }, {
+    "t" : 4658,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 9b334c32-beef-4aaf-8716-ed9a4986e334 GBP 115.73 for merchant-0040"
+    }
+  }, {
+    "t" : 5006,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "UP",
+          "pid" : 54830
+        },
+        "settlement-service" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "UP",
+          "pid" : 54847
+        },
+        "reconciliation-batch" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ "amount" ],
+        "rows" : 10,
+        "booked" : 2684.67,
+        "zero" : 0,
+        "last" : [ {
+          "id" : 10,
+          "payment" : "9b334c32",
+          "merchant" : "merchant-0040",
+          "amount" : 115.73,
+          "settledUtc" : "18:19:58"
+        }, {
+          "id" : 9,
+          "payment" : "73c9560f",
+          "merchant" : "merchant-0014",
+          "amount" : 316.69,
+          "settledUtc" : "18:20:28"
+        }, {
+          "id" : 8,
+          "payment" : "a080c6d7",
+          "merchant" : "merchant-0003",
+          "amount" : 165.71,
+          "settledUtc" : "18:15:58"
+        }, {
+          "id" : 7,
+          "payment" : "d85e9fd0",
+          "merchant" : "merchant-0006",
+          "amount" : 251.36,
+          "settledUtc" : "18:16:58"
+        }, {
+          "id" : 6,
+          "payment" : "775ba86a",
+          "merchant" : "merchant-0023",
+          "amount" : 249.86,
+          "settledUtc" : "18:17:28"
+        }, {
+          "id" : 5,
+          "payment" : "bdcfcc22",
+          "merchant" : "merchant-0036",
+          "amount" : 359.61,
+          "settledUtc" : "18:17:58"
+        }, {
+          "id" : 4,
+          "payment" : "e62ed42c",
+          "merchant" : "merchant-0007",
+          "amount" : 304.51,
+          "settledUtc" : "18:18:58"
+        }, {
+          "id" : 3,
+          "payment" : "56b19518",
+          "merchant" : "merchant-0030",
+          "amount" : 54.06,
+          "settledUtc" : "18:18:28"
+        }, {
+          "id" : 2,
+          "payment" : "a65685c8",
+          "merchant" : "merchant-0040",
+          "amount" : 393.71,
+          "settledUtc" : "18:19:28"
+        }, {
+          "id" : 1,
+          "payment" : "cb590764",
+          "merchant" : "merchant-0028",
+          "amount" : 473.43,
+          "settledUtc" : "18:16:28"
+        } ]
+      },
+      "kafka" : {
+        "published" : 10,
+        "lag" : 0,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 10,
+          "v2" : 0,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 10,
+        "total" : 2684.67
+      },
+      "recon" : null,
+      "incident" : {
+        "next" : 0,
+        "status" : "running",
+        "result" : null
+      }
+    }
+  }, {
+    "t" : 5086,
+    "type" : "log",
+    "data" : {
+      "level" : "info",
+      "text" : "  ledger_entries (amount): 10 rows, £2684.67 booked, 0 at £0.00 · sent 10 (£2684.67) · backlog 0 · DLT 0"
+    }
+  }, {
+    "t" : 5086,
+    "type" : "step",
+    "data" : {
+      "scenario" : "incident",
+      "index" : 0,
+      "total" : 7,
+      "id" : "v1",
+      "time" : "16:30",
+      "title" : "v1 in pounds",
+      "caption" : "Friday 16:30. Northwind Payments runs v1 (main). Settlements are booked in pounds.",
+      "say" : "Friday afternoon. Ten settlements, all in pounds.",
+      "status" : "done"
+    }
+  }, {
+    "t" : 5086,
+    "type" : "step",
+    "data" : {
+      "scenario" : "incident",
+      "index" : 1,
+      "total" : 7,
+      "id" : "deploy",
+      "time" : "16:40",
+      "title" : "PR #482 ships",
+      "caption" : "16:40. PR #482 'store amounts in minor units' is merged. Tests are green. Ship it.",
+      "say" : "PR #482 ships. Flyway renames the column on start-up.",
+      "status" : "running"
+    }
+  }, {
+    "t" : 5086,
+    "type" : "log",
+    "data" : {
+      "level" : "say",
+      "text" : "ledger-service goes first: Flyway runs V42 (rename amount → amount_minor, retype to pence)."
+    }
+  }, {
+    "t" : 5087,
+    "type" : "log",
+    "data" : {
+      "level" : "caption",
+      "text" : "Deploying ledger-service → pr-482-minor-units  (was: main (720e12e))"
+    }
+  }, {
+    "t" : 6028,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "pr-482-minor-units",
+          "commit" : "9bd52fd",
+          "status" : "STARTING",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "unreachable",
+          "pid" : 54861
+        },
+        "settlement-service" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "UP",
+          "pid" : 54847
+        },
+        "reconciliation-batch" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ "amount" ],
+        "rows" : 10,
+        "booked" : 2684.67,
+        "zero" : 0,
+        "last" : [ {
+          "id" : 10,
+          "payment" : "9b334c32",
+          "merchant" : "merchant-0040",
+          "amount" : 115.73,
+          "settledUtc" : "18:19:58"
+        }, {
+          "id" : 9,
+          "payment" : "73c9560f",
+          "merchant" : "merchant-0014",
+          "amount" : 316.69,
+          "settledUtc" : "18:20:28"
+        }, {
+          "id" : 8,
+          "payment" : "a080c6d7",
+          "merchant" : "merchant-0003",
+          "amount" : 165.71,
+          "settledUtc" : "18:15:58"
+        }, {
+          "id" : 7,
+          "payment" : "d85e9fd0",
+          "merchant" : "merchant-0006",
+          "amount" : 251.36,
+          "settledUtc" : "18:16:58"
+        }, {
+          "id" : 6,
+          "payment" : "775ba86a",
+          "merchant" : "merchant-0023",
+          "amount" : 249.86,
+          "settledUtc" : "18:17:28"
+        }, {
+          "id" : 5,
+          "payment" : "bdcfcc22",
+          "merchant" : "merchant-0036",
+          "amount" : 359.61,
+          "settledUtc" : "18:17:58"
+        }, {
+          "id" : 4,
+          "payment" : "e62ed42c",
+          "merchant" : "merchant-0007",
+          "amount" : 304.51,
+          "settledUtc" : "18:18:58"
+        }, {
+          "id" : 3,
+          "payment" : "56b19518",
+          "merchant" : "merchant-0030",
+          "amount" : 54.06,
+          "settledUtc" : "18:18:28"
+        }, {
+          "id" : 2,
+          "payment" : "a65685c8",
+          "merchant" : "merchant-0040",
+          "amount" : 393.71,
+          "settledUtc" : "18:19:28"
+        }, {
+          "id" : 1,
+          "payment" : "cb590764",
+          "merchant" : "merchant-0028",
+          "amount" : 473.43,
+          "settledUtc" : "18:16:28"
+        } ]
+      },
+      "kafka" : {
+        "published" : 10,
+        "lag" : 0,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 10,
+          "v2" : 0,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 10,
+        "total" : 2684.67
+      },
+      "recon" : null,
+      "incident" : {
+        "next" : 1,
+        "status" : "running",
+        "result" : null
+      }
+    }
+  }, {
+    "t" : 6747,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Migrating schema \"public\" to version \"42 - amount minor units\""
+    }
+  }, {
+    "t" : 6756,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Successfully applied 1 migration to schema \"public\", now at version v42 (execution time 00:00.004s)"
+    }
+  }, {
+    "t" : 7049,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "pr-482-minor-units",
+          "commit" : "9bd52fd",
+          "status" : "STARTING",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "unreachable",
+          "pid" : 54861
+        },
+        "settlement-service" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "UP",
+          "pid" : 54847
+        },
+        "reconciliation-batch" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ "amount_minor" ],
+        "rows" : 10,
+        "booked" : 2684.67,
+        "zero" : 0,
+        "last" : [ {
+          "id" : 10,
+          "payment" : "9b334c32",
+          "merchant" : "merchant-0040",
+          "amount" : 115.73,
+          "settledUtc" : "18:19:58"
+        }, {
+          "id" : 9,
+          "payment" : "73c9560f",
+          "merchant" : "merchant-0014",
+          "amount" : 316.69,
+          "settledUtc" : "18:20:28"
+        }, {
+          "id" : 8,
+          "payment" : "a080c6d7",
+          "merchant" : "merchant-0003",
+          "amount" : 165.71,
+          "settledUtc" : "18:15:58"
+        }, {
+          "id" : 7,
+          "payment" : "d85e9fd0",
+          "merchant" : "merchant-0006",
+          "amount" : 251.36,
+          "settledUtc" : "18:16:58"
+        }, {
+          "id" : 6,
+          "payment" : "775ba86a",
+          "merchant" : "merchant-0023",
+          "amount" : 249.86,
+          "settledUtc" : "18:17:28"
+        }, {
+          "id" : 5,
+          "payment" : "bdcfcc22",
+          "merchant" : "merchant-0036",
+          "amount" : 359.61,
+          "settledUtc" : "18:17:58"
+        }, {
+          "id" : 4,
+          "payment" : "e62ed42c",
+          "merchant" : "merchant-0007",
+          "amount" : 304.51,
+          "settledUtc" : "18:18:58"
+        }, {
+          "id" : 3,
+          "payment" : "56b19518",
+          "merchant" : "merchant-0030",
+          "amount" : 54.06,
+          "settledUtc" : "18:18:28"
+        }, {
+          "id" : 2,
+          "payment" : "a65685c8",
+          "merchant" : "merchant-0040",
+          "amount" : 393.71,
+          "settledUtc" : "18:19:28"
+        }, {
+          "id" : 1,
+          "payment" : "cb590764",
+          "merchant" : "merchant-0028",
+          "amount" : 473.43,
+          "settledUtc" : "18:16:28"
+        } ]
+      },
+      "kafka" : {
+        "published" : 10,
+        "lag" : 0,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 10,
+          "v2" : 0,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 10,
+        "total" : 2684.67
+      },
+      "recon" : null,
+      "incident" : {
+        "next" : 1,
+        "status" : "running",
+        "result" : null
+      }
+    }
+  }, {
+    "t" : 7779,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Started LedgerApplication in 1.905 seconds (process running for 2.066)"
+    }
+  }, {
+    "t" : 7779,
+    "type" : "log",
+    "data" : {
+      "level" : "ok",
+      "text" : "✔ ledger-service @ pr-482-minor-units (9bd52fd) is UP (http://localhost:8082/actuator/health)"
+    }
+  }, {
+    "t" : 7780,
+    "type" : "log",
+    "data" : {
+      "level" : "caption",
+      "text" : "Deploying settlement-service → pr-482-minor-units  (was: main (720e12e))"
+    }
+  }, {
+    "t" : 8074,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "pr-482-minor-units",
+          "commit" : "9bd52fd",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "UP",
+          "pid" : 54861
+        },
+        "settlement-service" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "UP",
+          "pid" : 54847
+        },
+        "reconciliation-batch" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ "amount_minor" ],
+        "rows" : 10,
+        "booked" : 2684.67,
+        "zero" : 0,
+        "last" : [ {
+          "id" : 10,
+          "payment" : "9b334c32",
+          "merchant" : "merchant-0040",
+          "amount" : 115.73,
+          "settledUtc" : "18:19:58"
+        }, {
+          "id" : 9,
+          "payment" : "73c9560f",
+          "merchant" : "merchant-0014",
+          "amount" : 316.69,
+          "settledUtc" : "18:20:28"
+        }, {
+          "id" : 8,
+          "payment" : "a080c6d7",
+          "merchant" : "merchant-0003",
+          "amount" : 165.71,
+          "settledUtc" : "18:15:58"
+        }, {
+          "id" : 7,
+          "payment" : "d85e9fd0",
+          "merchant" : "merchant-0006",
+          "amount" : 251.36,
+          "settledUtc" : "18:16:58"
+        }, {
+          "id" : 6,
+          "payment" : "775ba86a",
+          "merchant" : "merchant-0023",
+          "amount" : 249.86,
+          "settledUtc" : "18:17:28"
+        }, {
+          "id" : 5,
+          "payment" : "bdcfcc22",
+          "merchant" : "merchant-0036",
+          "amount" : 359.61,
+          "settledUtc" : "18:17:58"
+        }, {
+          "id" : 4,
+          "payment" : "e62ed42c",
+          "merchant" : "merchant-0007",
+          "amount" : 304.51,
+          "settledUtc" : "18:18:58"
+        }, {
+          "id" : 3,
+          "payment" : "56b19518",
+          "merchant" : "merchant-0030",
+          "amount" : 54.06,
+          "settledUtc" : "18:18:28"
+        }, {
+          "id" : 2,
+          "payment" : "a65685c8",
+          "merchant" : "merchant-0040",
+          "amount" : 393.71,
+          "settledUtc" : "18:19:28"
+        }, {
+          "id" : 1,
+          "payment" : "cb590764",
+          "merchant" : "merchant-0028",
+          "amount" : 473.43,
+          "settledUtc" : "18:16:28"
+        } ]
+      },
+      "kafka" : {
+        "published" : 10,
+        "lag" : 0,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 10,
+          "v2" : 0,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 10,
+        "total" : 2684.67
+      },
+      "recon" : null,
+      "incident" : {
+        "next" : 1,
+        "status" : "running",
+        "result" : null
+      }
+    }
+  }, {
+    "t" : 9097,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "pr-482-minor-units",
+          "commit" : "9bd52fd",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "UP",
+          "pid" : 54861
+        },
+        "settlement-service" : {
+          "ref" : "pr-482-minor-units",
+          "commit" : "9bd52fd",
+          "status" : "STARTING",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "unreachable",
+          "pid" : 54883
+        },
+        "reconciliation-batch" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ "amount_minor" ],
+        "rows" : 10,
+        "booked" : 2684.67,
+        "zero" : 0,
+        "last" : [ {
+          "id" : 10,
+          "payment" : "9b334c32",
+          "merchant" : "merchant-0040",
+          "amount" : 115.73,
+          "settledUtc" : "18:19:58"
+        }, {
+          "id" : 9,
+          "payment" : "73c9560f",
+          "merchant" : "merchant-0014",
+          "amount" : 316.69,
+          "settledUtc" : "18:20:28"
+        }, {
+          "id" : 8,
+          "payment" : "a080c6d7",
+          "merchant" : "merchant-0003",
+          "amount" : 165.71,
+          "settledUtc" : "18:15:58"
+        }, {
+          "id" : 7,
+          "payment" : "d85e9fd0",
+          "merchant" : "merchant-0006",
+          "amount" : 251.36,
+          "settledUtc" : "18:16:58"
+        }, {
+          "id" : 6,
+          "payment" : "775ba86a",
+          "merchant" : "merchant-0023",
+          "amount" : 249.86,
+          "settledUtc" : "18:17:28"
+        }, {
+          "id" : 5,
+          "payment" : "bdcfcc22",
+          "merchant" : "merchant-0036",
+          "amount" : 359.61,
+          "settledUtc" : "18:17:58"
+        }, {
+          "id" : 4,
+          "payment" : "e62ed42c",
+          "merchant" : "merchant-0007",
+          "amount" : 304.51,
+          "settledUtc" : "18:18:58"
+        }, {
+          "id" : 3,
+          "payment" : "56b19518",
+          "merchant" : "merchant-0030",
+          "amount" : 54.06,
+          "settledUtc" : "18:18:28"
+        }, {
+          "id" : 2,
+          "payment" : "a65685c8",
+          "merchant" : "merchant-0040",
+          "amount" : 393.71,
+          "settledUtc" : "18:19:28"
+        }, {
+          "id" : 1,
+          "payment" : "cb590764",
+          "merchant" : "merchant-0028",
+          "amount" : 473.43,
+          "settledUtc" : "18:16:28"
+        } ]
+      },
+      "kafka" : {
+        "published" : 10,
+        "lag" : 0,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 10,
+          "v2" : 0,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 10,
+        "total" : 2684.67
+      },
+      "recon" : null,
+      "incident" : {
+        "next" : 1,
+        "status" : "running",
+        "result" : null
+      }
+    }
+  }, {
+    "t" : 9245,
+    "type" : "svc",
+    "data" : {
+      "service" : "settlement-service",
+      "text" : "Started SettlementApplication in 0.76 seconds (process running for 0.895)"
+    }
+  }, {
+    "t" : 9419,
+    "type" : "log",
+    "data" : {
+      "level" : "ok",
+      "text" : "✔ settlement-service @ pr-482-minor-units (9bd52fd) is UP (http://localhost:8081/actuator/health)"
+    }
+  }, {
+    "t" : 9660,
+    "type" : "observed",
+    "data" : {
+      "offset" : 10,
+      "format" : "v2",
+      "merchantId" : "merchant-0016",
+      "amountMinor" : 6619,
+      "raw" : "{\"paymentId\":\"b4c09c22-9624-411c-9670-f42c73423f74\",\"merchantId\":\"merchant-0016\",\"currency\":\"GBP\",\"amountMinor\":6619,\"settledAt\":\"2026-10-13T18:12:03Z\"}"
+    }
+  }, {
+    "t" : 9660,
+    "type" : "observed",
+    "data" : {
+      "offset" : 11,
+      "format" : "v2",
+      "merchantId" : "merchant-0039",
+      "amountMinor" : 42688,
+      "raw" : "{\"paymentId\":\"5b8eeff0-1b9a-491f-bff2-f91874803f58\",\"merchantId\":\"merchant-0039\",\"currency\":\"GBP\",\"amountMinor\":42688,\"settledAt\":\"2026-10-13T18:14:03Z\"}"
+    }
+  }, {
+    "t" : 9661,
+    "type" : "observed",
+    "data" : {
+      "offset" : 12,
+      "format" : "v2",
+      "merchantId" : "merchant-0025",
+      "amountMinor" : 32044,
+      "raw" : "{\"paymentId\":\"8c543c06-d2c8-4ef0-b739-06afaca77237\",\"merchantId\":\"merchant-0025\",\"currency\":\"GBP\",\"amountMinor\":32044,\"settledAt\":\"2026-10-13T18:12:33Z\"}"
+    }
+  }, {
+    "t" : 9661,
+    "type" : "observed",
+    "data" : {
+      "offset" : 13,
+      "format" : "v2",
+      "merchantId" : "merchant-0031",
+      "amountMinor" : 20266,
+      "raw" : "{\"paymentId\":\"0597015e-bb1b-4b70-b3e1-8fe0b2e08dfe\",\"merchantId\":\"merchant-0031\",\"currency\":\"GBP\",\"amountMinor\":20266,\"settledAt\":\"2026-10-13T18:14:33Z\"}"
+    }
+  }, {
+    "t" : 9661,
+    "type" : "observed",
+    "data" : {
+      "offset" : 14,
+      "format" : "v2",
+      "merchantId" : "merchant-0017",
+      "amountMinor" : 34613,
+      "raw" : "{\"paymentId\":\"bb3a8332-6b5c-4794-92d2-c4364b6b4f3c\",\"merchantId\":\"merchant-0017\",\"currency\":\"GBP\",\"amountMinor\":34613,\"settledAt\":\"2026-10-13T18:13:33Z\"}"
+    }
+  }, {
+    "t" : 9661,
+    "type" : "observed",
+    "data" : {
+      "offset" : 15,
+      "format" : "v2",
+      "merchantId" : "merchant-0036",
+      "amountMinor" : 23716,
+      "raw" : "{\"paymentId\":\"0f36780a-02d3-4503-8565-8575cf5d85b1\",\"merchantId\":\"merchant-0036\",\"currency\":\"GBP\",\"amountMinor\":23716,\"settledAt\":\"2026-10-13T18:13:03Z\"}"
+    }
+  }, {
+    "t" : 9661,
+    "type" : "observed",
+    "data" : {
+      "offset" : 16,
+      "format" : "v2",
+      "merchantId" : "merchant-0024",
+      "amountMinor" : 30528,
+      "raw" : "{\"paymentId\":\"14b809ba-5896-4465-9d29-abbf14bb5c4e\",\"merchantId\":\"merchant-0024\",\"currency\":\"GBP\",\"amountMinor\":30528,\"settledAt\":\"2026-10-13T18:11:33Z\"}"
+    }
+  }, {
+    "t" : 9661,
+    "type" : "observed",
+    "data" : {
+      "offset" : 17,
+      "format" : "v2",
+      "merchantId" : "merchant-0015",
+      "amountMinor" : 47854,
+      "raw" : "{\"paymentId\":\"31c907b3-081b-4da1-b871-19c05da08fc3\",\"merchantId\":\"merchant-0015\",\"currency\":\"GBP\",\"amountMinor\":47854,\"settledAt\":\"2026-10-13T18:11:03Z\"}"
+    }
+  }, {
+    "t" : 9666,
+    "type" : "observed",
+    "data" : {
+      "offset" : 18,
+      "format" : "v2",
+      "merchantId" : "merchant-0014",
+      "amountMinor" : 14619,
+      "raw" : "{\"paymentId\":\"b230734f-a863-4799-9e47-0c270e6d924c\",\"merchantId\":\"merchant-0014\",\"currency\":\"GBP\",\"amountMinor\":14619,\"settledAt\":\"2026-10-13T18:16:03Z\"}"
+    }
+  }, {
+    "t" : 9666,
+    "type" : "observed",
+    "data" : {
+      "offset" : 19,
+      "format" : "v2",
+      "merchantId" : "merchant-0025",
+      "amountMinor" : 28152,
+      "raw" : "{\"paymentId\":\"60755f74-b5da-40c7-ae78-2a4c31f2c208\",\"merchantId\":\"merchant-0025\",\"currency\":\"GBP\",\"amountMinor\":28152,\"settledAt\":\"2026-10-13T18:15:33Z\"}"
+    }
+  }, {
+    "t" : 9667,
+    "type" : "observed",
+    "data" : {
+      "offset" : 20,
+      "format" : "v2",
+      "merchantId" : "merchant-0016",
+      "amountMinor" : 42616,
+      "raw" : "{\"paymentId\":\"ff3989b3-6cde-4004-bcf5-7c52a5c33939\",\"merchantId\":\"merchant-0016\",\"currency\":\"GBP\",\"amountMinor\":42616,\"settledAt\":\"2026-10-13T18:18:03Z\"}"
+    }
+  }, {
+    "t" : 9667,
+    "type" : "observed",
+    "data" : {
+      "offset" : 21,
+      "format" : "v2",
+      "merchantId" : "merchant-0040",
+      "amountMinor" : 30733,
+      "raw" : "{\"paymentId\":\"81976d5e-9498-4a6c-8a55-f80479014f2a\",\"merchantId\":\"merchant-0040\",\"currency\":\"GBP\",\"amountMinor\":30733,\"settledAt\":\"2026-10-13T18:18:33Z\"}"
+    }
+  }, {
+    "t" : 9667,
+    "type" : "observed",
+    "data" : {
+      "offset" : 22,
+      "format" : "v2",
+      "merchantId" : "merchant-0027",
+      "amountMinor" : 13205,
+      "raw" : "{\"paymentId\":\"372c17d8-5594-4a00-9eff-027bffa744dd\",\"merchantId\":\"merchant-0027\",\"currency\":\"GBP\",\"amountMinor\":13205,\"settledAt\":\"2026-10-13T18:17:33Z\"}"
+    }
+  }, {
+    "t" : 9668,
+    "type" : "observed",
+    "data" : {
+      "offset" : 23,
+      "format" : "v2",
+      "merchantId" : "merchant-0020",
+      "amountMinor" : 31079,
+      "raw" : "{\"paymentId\":\"93496154-1929-40ce-898e-eb2063cd9bba\",\"merchantId\":\"merchant-0020\",\"currency\":\"GBP\",\"amountMinor\":31079,\"settledAt\":\"2026-10-13T18:15:03Z\"}"
+    }
+  }, {
+    "t" : 9668,
+    "type" : "observed",
+    "data" : {
+      "offset" : 24,
+      "format" : "v2",
+      "merchantId" : "merchant-0040",
+      "amountMinor" : 41166,
+      "raw" : "{\"paymentId\":\"afcdf0c1-2e96-4a6d-ad44-049d123c9f14\",\"merchantId\":\"merchant-0040\",\"currency\":\"GBP\",\"amountMinor\":41166,\"settledAt\":\"2026-10-13T18:16:33Z\"}"
+    }
+  }, {
+    "t" : 9668,
+    "type" : "observed",
+    "data" : {
+      "offset" : 25,
+      "format" : "v2",
+      "merchantId" : "merchant-0028",
+      "amountMinor" : 6976,
+      "raw" : "{\"paymentId\":\"34f47c67-1b91-4d1f-a7b3-8be24196157e\",\"merchantId\":\"merchant-0028\",\"currency\":\"GBP\",\"amountMinor\":6976,\"settledAt\":\"2026-10-13T18:17:03Z\"}"
+    }
+  }, {
+    "t" : 9669,
+    "type" : "observed",
+    "data" : {
+      "offset" : 26,
+      "format" : "v2",
+      "merchantId" : "merchant-0024",
+      "amountMinor" : 4510,
+      "raw" : "{\"paymentId\":\"b797aee9-5451-4f38-9864-bab5f053b71f\",\"merchantId\":\"merchant-0024\",\"currency\":\"GBP\",\"amountMinor\":4510,\"settledAt\":\"2026-10-13T18:20:33Z\"}"
+    }
+  }, {
+    "t" : 9669,
+    "type" : "observed",
+    "data" : {
+      "offset" : 27,
+      "format" : "v2",
+      "merchantId" : "merchant-0036",
+      "amountMinor" : 39511,
+      "raw" : "{\"paymentId\":\"f3a4ab8b-78e2-4f25-8a63-c7b91b22493d\",\"merchantId\":\"merchant-0036\",\"currency\":\"GBP\",\"amountMinor\":39511,\"settledAt\":\"2026-10-13T18:20:03Z\"}"
+    }
+  }, {
+    "t" : 9670,
+    "type" : "observed",
+    "data" : {
+      "offset" : 28,
+      "format" : "v2",
+      "merchantId" : "merchant-0016",
+      "amountMinor" : 31420,
+      "raw" : "{\"paymentId\":\"b2da502c-af98-48cd-839e-549a48c11f4f\",\"merchantId\":\"merchant-0016\",\"currency\":\"GBP\",\"amountMinor\":31420,\"settledAt\":\"2026-10-13T18:19:03Z\"}"
+    }
+  }, {
+    "t" : 9670,
+    "type" : "observed",
+    "data" : {
+      "offset" : 29,
+      "format" : "v2",
+      "merchantId" : "merchant-0005",
+      "amountMinor" : 30697,
+      "raw" : "{\"paymentId\":\"06133a7c-8e8c-45b0-bf48-cd2ce0641fe1\",\"merchantId\":\"merchant-0005\",\"currency\":\"GBP\",\"amountMinor\":30697,\"settledAt\":\"2026-10-13T18:19:33Z\"}"
+    }
+  }, {
+    "t" : 9670,
+    "type" : "log",
+    "data" : {
+      "level" : "ok",
+      "text" : "✔ sent 20 settlements worth £5530.12 (settledAt 18:11–18:20 UTC) in 0.2s"
+    }
+  }, {
+    "t" : 9741,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked b4c09c22-9624-411c-9670-f42c73423f74 GBP 6619 minor units for merchant-0016"
+    }
+  }, {
+    "t" : 9745,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 5b8eeff0-1b9a-491f-bff2-f91874803f58 GBP 42688 minor units for merchant-0039"
+    }
+  }, {
+    "t" : 9747,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 8c543c06-d2c8-4ef0-b739-06afaca77237 GBP 32044 minor units for merchant-0025"
+    }
+  }, {
+    "t" : 9748,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 0597015e-bb1b-4b70-b3e1-8fe0b2e08dfe GBP 20266 minor units for merchant-0031"
+    }
+  }, {
+    "t" : 9750,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked bb3a8332-6b5c-4794-92d2-c4364b6b4f3c GBP 34613 minor units for merchant-0017"
+    }
+  }, {
+    "t" : 9751,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 0f36780a-02d3-4503-8565-8575cf5d85b1 GBP 23716 minor units for merchant-0036"
+    }
+  }, {
+    "t" : 9752,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 14b809ba-5896-4465-9d29-abbf14bb5c4e GBP 30528 minor units for merchant-0024"
+    }
+  }, {
+    "t" : 9754,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 31c907b3-081b-4da1-b871-19c05da08fc3 GBP 47854 minor units for merchant-0015"
+    }
+  }, {
+    "t" : 9758,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked b230734f-a863-4799-9e47-0c270e6d924c GBP 14619 minor units for merchant-0014"
+    }
+  }, {
+    "t" : 9759,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 60755f74-b5da-40c7-ae78-2a4c31f2c208 GBP 28152 minor units for merchant-0025"
+    }
+  }, {
+    "t" : 9760,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked ff3989b3-6cde-4004-bcf5-7c52a5c33939 GBP 42616 minor units for merchant-0016"
+    }
+  }, {
+    "t" : 9762,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 81976d5e-9498-4a6c-8a55-f80479014f2a GBP 30733 minor units for merchant-0040"
+    }
+  }, {
+    "t" : 9763,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 372c17d8-5594-4a00-9eff-027bffa744dd GBP 13205 minor units for merchant-0027"
+    }
+  }, {
+    "t" : 9764,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 93496154-1929-40ce-898e-eb2063cd9bba GBP 31079 minor units for merchant-0020"
+    }
+  }, {
+    "t" : 9766,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked afcdf0c1-2e96-4a6d-ad44-049d123c9f14 GBP 41166 minor units for merchant-0040"
+    }
+  }, {
+    "t" : 9767,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 34f47c67-1b91-4d1f-a7b3-8be24196157e GBP 6976 minor units for merchant-0028"
+    }
+  }, {
+    "t" : 9768,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked b797aee9-5451-4f38-9864-bab5f053b71f GBP 4510 minor units for merchant-0024"
+    }
+  }, {
+    "t" : 9769,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked f3a4ab8b-78e2-4f25-8a63-c7b91b22493d GBP 39511 minor units for merchant-0036"
+    }
+  }, {
+    "t" : 9770,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked b2da502c-af98-48cd-839e-549a48c11f4f GBP 31420 minor units for merchant-0016"
+    }
+  }, {
+    "t" : 9772,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 06133a7c-8e8c-45b0-bf48-cd2ce0641fe1 GBP 30697 minor units for merchant-0005"
+    }
+  }, {
+    "t" : 10134,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "pr-482-minor-units",
+          "commit" : "9bd52fd",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "UP",
+          "pid" : 54861
+        },
+        "settlement-service" : {
+          "ref" : "pr-482-minor-units",
+          "commit" : "9bd52fd",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "UP",
+          "pid" : 54883
+        },
+        "reconciliation-batch" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ "amount_minor" ],
+        "rows" : 30,
+        "booked" : 8214.79,
+        "zero" : 0,
+        "last" : [ {
+          "id" : 30,
+          "payment" : "06133a7c",
+          "merchant" : "merchant-0005",
+          "amount" : 306.97,
+          "settledUtc" : "18:19:33"
+        }, {
+          "id" : 29,
+          "payment" : "b2da502c",
+          "merchant" : "merchant-0016",
+          "amount" : 314.20,
+          "settledUtc" : "18:19:03"
+        }, {
+          "id" : 28,
+          "payment" : "f3a4ab8b",
+          "merchant" : "merchant-0036",
+          "amount" : 395.11,
+          "settledUtc" : "18:20:03"
+        }, {
+          "id" : 27,
+          "payment" : "b797aee9",
+          "merchant" : "merchant-0024",
+          "amount" : 45.10,
+          "settledUtc" : "18:20:33"
+        }, {
+          "id" : 26,
+          "payment" : "34f47c67",
+          "merchant" : "merchant-0028",
+          "amount" : 69.76,
+          "settledUtc" : "18:17:03"
+        }, {
+          "id" : 25,
+          "payment" : "afcdf0c1",
+          "merchant" : "merchant-0040",
+          "amount" : 411.66,
+          "settledUtc" : "18:16:33"
+        }, {
+          "id" : 24,
+          "payment" : "93496154",
+          "merchant" : "merchant-0020",
+          "amount" : 310.79,
+          "settledUtc" : "18:15:03"
+        }, {
+          "id" : 23,
+          "payment" : "372c17d8",
+          "merchant" : "merchant-0027",
+          "amount" : 132.05,
+          "settledUtc" : "18:17:33"
+        }, {
+          "id" : 22,
+          "payment" : "81976d5e",
+          "merchant" : "merchant-0040",
+          "amount" : 307.33,
+          "settledUtc" : "18:18:33"
+        }, {
+          "id" : 21,
+          "payment" : "ff3989b3",
+          "merchant" : "merchant-0016",
+          "amount" : 426.16,
+          "settledUtc" : "18:18:03"
+        } ]
+      },
+      "kafka" : {
+        "published" : 30,
+        "lag" : 0,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 10,
+          "v2" : 20,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 30,
+        "total" : 8214.79
+      },
+      "recon" : null,
+      "incident" : {
+        "next" : 1,
+        "status" : "running",
+        "result" : null
+      }
+    }
+  }, {
+    "t" : 10197,
+    "type" : "log",
+    "data" : {
+      "level" : "info",
+      "text" : "  ledger_entries (amount_minor): 30 rows, £8214.79 booked, 0 at £0.00 · sent 30 (£8214.79) · backlog 0 · DLT 0"
+    }
+  }, {
+    "t" : 10197,
+    "type" : "step",
+    "data" : {
+      "scenario" : "incident",
+      "index" : 1,
+      "total" : 7,
+      "id" : "deploy",
+      "time" : "16:40",
+      "title" : "PR #482 ships",
+      "caption" : "16:40. PR #482 'store amounts in minor units' is merged. Tests are green. Ship it.",
+      "say" : "PR #482 ships. Flyway renames the column on start-up.",
+      "status" : "done"
+    }
+  }, {
+    "t" : 10197,
+    "type" : "step",
+    "data" : {
+      "scenario" : "incident",
+      "index" : 2,
+      "total" : 7,
+      "id" : "recon",
+      "time" : "16:55",
+      "title" : "Reconciliation fails",
+      "caption" : "16:55. Finance's reconciliation job starts failing.",
+      "say" : "Finance's reconciliation job breaks. Nobody touched it, but it reads that column.",
+      "status" : "running"
+    }
+  }, {
+    "t" : 10197,
+    "type" : "log",
+    "data" : {
+      "level" : "say",
+      "text" : "Nobody changed reconciliation-batch. It still reads ledger_entries.amount directly."
+    }
+  }, {
+    "t" : 10296,
+    "type" : "recon",
+    "data" : {
+      "ref" : "main (720e12e)",
+      "entries" : null,
+      "total" : null,
+      "mismatches" : null,
+      "error" : "ERROR: column \"amount\" does not exist",
+      "at" : "2026-10-13T18:20:34.765895Z"
+    }
+  }, {
+    "t" : 10297,
+    "type" : "log",
+    "data" : {
+      "level" : "fail",
+      "text" : "✘ reconciliation-batch: ERROR: column \"amount\" does not exist"
+    }
+  }, {
+    "t" : 10297,
+    "type" : "log",
+    "data" : {
+      "level" : "say",
+      "text" : "On-call sees ledger_entries in the stack trace and rolls back the service that owns it."
+    }
+  }, {
+    "t" : 10297,
+    "type" : "step",
+    "data" : {
+      "scenario" : "incident",
+      "index" : 2,
+      "total" : 7,
+      "id" : "recon",
+      "time" : "16:55",
+      "title" : "Reconciliation fails",
+      "caption" : "16:55. Finance's reconciliation job starts failing.",
+      "say" : "Finance's reconciliation job breaks. Nobody touched it, but it reads that column.",
+      "status" : "done"
+    }
+  }, {
+    "t" : 10297,
+    "type" : "step",
+    "data" : {
+      "scenario" : "incident",
+      "index" : 3,
+      "total" : 7,
+      "id" : "rollback",
+      "time" : "16:58",
+      "title" : "Roll back",
+      "caption" : "16:58. Roll back ledger-service to v1. The rollback button works; the service doesn't.",
+      "say" : "So on-call presses rollback. The old code won't even start: the column it needs is gone.",
+      "status" : "running"
+    }
+  }, {
+    "t" : 10297,
+    "type" : "log",
+    "data" : {
+      "level" : "caption",
+      "text" : "Rolling back ledger-service → main  (was: pr-482-minor-units (9bd52fd))"
+    }
+  }, {
+    "t" : 11176,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "pr-482-minor-units",
+          "commit" : "9bd52fd",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "UP",
+          "pid" : 54861
+        },
+        "settlement-service" : {
+          "ref" : "pr-482-minor-units",
+          "commit" : "9bd52fd",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "UP",
+          "pid" : 54883
+        },
+        "reconciliation-batch" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ "amount_minor" ],
+        "rows" : 30,
+        "booked" : 8214.79,
+        "zero" : 0,
+        "last" : [ {
+          "id" : 30,
+          "payment" : "06133a7c",
+          "merchant" : "merchant-0005",
+          "amount" : 306.97,
+          "settledUtc" : "18:19:33"
+        }, {
+          "id" : 29,
+          "payment" : "b2da502c",
+          "merchant" : "merchant-0016",
+          "amount" : 314.20,
+          "settledUtc" : "18:19:03"
+        }, {
+          "id" : 28,
+          "payment" : "f3a4ab8b",
+          "merchant" : "merchant-0036",
+          "amount" : 395.11,
+          "settledUtc" : "18:20:03"
+        }, {
+          "id" : 27,
+          "payment" : "b797aee9",
+          "merchant" : "merchant-0024",
+          "amount" : 45.10,
+          "settledUtc" : "18:20:33"
+        }, {
+          "id" : 26,
+          "payment" : "34f47c67",
+          "merchant" : "merchant-0028",
+          "amount" : 69.76,
+          "settledUtc" : "18:17:03"
+        }, {
+          "id" : 25,
+          "payment" : "afcdf0c1",
+          "merchant" : "merchant-0040",
+          "amount" : 411.66,
+          "settledUtc" : "18:16:33"
+        }, {
+          "id" : 24,
+          "payment" : "93496154",
+          "merchant" : "merchant-0020",
+          "amount" : 310.79,
+          "settledUtc" : "18:15:03"
+        }, {
+          "id" : 23,
+          "payment" : "372c17d8",
+          "merchant" : "merchant-0027",
+          "amount" : 132.05,
+          "settledUtc" : "18:17:33"
+        }, {
+          "id" : 22,
+          "payment" : "81976d5e",
+          "merchant" : "merchant-0040",
+          "amount" : 307.33,
+          "settledUtc" : "18:18:33"
+        }, {
+          "id" : 21,
+          "payment" : "ff3989b3",
+          "merchant" : "merchant-0016",
+          "amount" : 426.16,
+          "settledUtc" : "18:18:03"
+        } ]
+      },
+      "kafka" : {
+        "published" : 30,
+        "lag" : 0,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 10,
+          "v2" : 20,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 30,
+        "total" : 8214.79
+      },
+      "recon" : {
+        "ref" : "main (720e12e)",
+        "entries" : null,
+        "total" : null,
+        "mismatches" : null,
+        "error" : "ERROR: column \"amount\" does not exist",
+        "at" : "2026-10-13T18:20:34.765895Z"
+      },
+      "incident" : {
+        "next" : 3,
+        "status" : "running",
+        "result" : null
+      }
+    }
+  }, {
+    "t" : 12197,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "STARTING",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "unreachable",
+          "pid" : 54900
+        },
+        "settlement-service" : {
+          "ref" : "pr-482-minor-units",
+          "commit" : "9bd52fd",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "UP",
+          "pid" : 54883
+        },
+        "reconciliation-batch" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ "amount_minor" ],
+        "rows" : 30,
+        "booked" : 8214.79,
+        "zero" : 0,
+        "last" : [ {
+          "id" : 30,
+          "payment" : "06133a7c",
+          "merchant" : "merchant-0005",
+          "amount" : 306.97,
+          "settledUtc" : "18:19:33"
+        }, {
+          "id" : 29,
+          "payment" : "b2da502c",
+          "merchant" : "merchant-0016",
+          "amount" : 314.20,
+          "settledUtc" : "18:19:03"
+        }, {
+          "id" : 28,
+          "payment" : "f3a4ab8b",
+          "merchant" : "merchant-0036",
+          "amount" : 395.11,
+          "settledUtc" : "18:20:03"
+        }, {
+          "id" : 27,
+          "payment" : "b797aee9",
+          "merchant" : "merchant-0024",
+          "amount" : 45.10,
+          "settledUtc" : "18:20:33"
+        }, {
+          "id" : 26,
+          "payment" : "34f47c67",
+          "merchant" : "merchant-0028",
+          "amount" : 69.76,
+          "settledUtc" : "18:17:03"
+        }, {
+          "id" : 25,
+          "payment" : "afcdf0c1",
+          "merchant" : "merchant-0040",
+          "amount" : 411.66,
+          "settledUtc" : "18:16:33"
+        }, {
+          "id" : 24,
+          "payment" : "93496154",
+          "merchant" : "merchant-0020",
+          "amount" : 310.79,
+          "settledUtc" : "18:15:03"
+        }, {
+          "id" : 23,
+          "payment" : "372c17d8",
+          "merchant" : "merchant-0027",
+          "amount" : 132.05,
+          "settledUtc" : "18:17:33"
+        }, {
+          "id" : 22,
+          "payment" : "81976d5e",
+          "merchant" : "merchant-0040",
+          "amount" : 307.33,
+          "settledUtc" : "18:18:33"
+        }, {
+          "id" : 21,
+          "payment" : "ff3989b3",
+          "merchant" : "merchant-0016",
+          "amount" : 426.16,
+          "settledUtc" : "18:18:03"
+        } ]
+      },
+      "kafka" : {
+        "published" : 30,
+        "lag" : 0,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 10,
+          "v2" : 20,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 30,
+        "total" : 8214.79
+      },
+      "recon" : {
+        "ref" : "main (720e12e)",
+        "entries" : null,
+        "total" : null,
+        "mismatches" : null,
+        "error" : "ERROR: column \"amount\" does not exist",
+        "at" : "2026-10-13T18:20:34.765895Z"
+      },
+      "incident" : {
+        "next" : 3,
+        "status" : "running",
+        "result" : null
+      }
+    }
+  }, {
+    "t" : 12352,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Schema \"public\" is up to date. No migration necessary."
+    }
+  }, {
+    "t" : 12926,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Failed to initialize JPA EntityManagerFactory: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema-validation: missing column [amount] in t…"
+    }
+  }, {
+    "t" : 12927,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframew…"
+    }
+  }, {
+    "t" : 12940,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Application run failed"
+    }
+  }, {
+    "t" : 12941,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: [PersistenceUnit:…"
+    }
+  }, {
+    "t" : 13229,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "STARTING",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "unreachable",
+          "pid" : 54900
+        },
+        "settlement-service" : {
+          "ref" : "pr-482-minor-units",
+          "commit" : "9bd52fd",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "UP",
+          "pid" : 54883
+        },
+        "reconciliation-batch" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ "amount_minor" ],
+        "rows" : 30,
+        "booked" : 8214.79,
+        "zero" : 0,
+        "last" : [ {
+          "id" : 30,
+          "payment" : "06133a7c",
+          "merchant" : "merchant-0005",
+          "amount" : 306.97,
+          "settledUtc" : "18:19:33"
+        }, {
+          "id" : 29,
+          "payment" : "b2da502c",
+          "merchant" : "merchant-0016",
+          "amount" : 314.20,
+          "settledUtc" : "18:19:03"
+        }, {
+          "id" : 28,
+          "payment" : "f3a4ab8b",
+          "merchant" : "merchant-0036",
+          "amount" : 395.11,
+          "settledUtc" : "18:20:03"
+        }, {
+          "id" : 27,
+          "payment" : "b797aee9",
+          "merchant" : "merchant-0024",
+          "amount" : 45.10,
+          "settledUtc" : "18:20:33"
+        }, {
+          "id" : 26,
+          "payment" : "34f47c67",
+          "merchant" : "merchant-0028",
+          "amount" : 69.76,
+          "settledUtc" : "18:17:03"
+        }, {
+          "id" : 25,
+          "payment" : "afcdf0c1",
+          "merchant" : "merchant-0040",
+          "amount" : 411.66,
+          "settledUtc" : "18:16:33"
+        }, {
+          "id" : 24,
+          "payment" : "93496154",
+          "merchant" : "merchant-0020",
+          "amount" : 310.79,
+          "settledUtc" : "18:15:03"
+        }, {
+          "id" : 23,
+          "payment" : "372c17d8",
+          "merchant" : "merchant-0027",
+          "amount" : 132.05,
+          "settledUtc" : "18:17:33"
+        }, {
+          "id" : 22,
+          "payment" : "81976d5e",
+          "merchant" : "merchant-0040",
+          "amount" : 307.33,
+          "settledUtc" : "18:18:33"
+        }, {
+          "id" : 21,
+          "payment" : "ff3989b3",
+          "merchant" : "merchant-0016",
+          "amount" : 426.16,
+          "settledUtc" : "18:18:03"
+        } ]
+      },
+      "kafka" : {
+        "published" : 30,
+        "lag" : 0,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 10,
+          "v2" : 20,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 30,
+        "total" : 8214.79
+      },
+      "recon" : {
+        "ref" : "main (720e12e)",
+        "entries" : null,
+        "total" : null,
+        "mismatches" : null,
+        "error" : "ERROR: column \"amount\" does not exist",
+        "at" : "2026-10-13T18:20:34.765895Z"
+      },
+      "incident" : {
+        "next" : 3,
+        "status" : "running",
+        "result" : null
+      }
+    }
+  }, {
+    "t" : 13321,
+    "type" : "log",
+    "data" : {
+      "level" : "fail",
+      "text" : "✘ ledger-service @ main (720e12e) failed to start"
+    }
+  }, {
+    "t" : 13322,
+    "type" : "log",
+    "data" : {
+      "level" : "fail",
+      "text" : "    org.hibernate.tool.schema.spi.SchemaManagementException: Schema-validation: missing column [amount] in table [ledger_entries]"
+    }
+  }, {
+    "t" : 13322,
+    "type" : "log",
+    "data" : {
+      "level" : "say",
+      "text" : "v1 expects a column called amount. V42 renamed it. Flyway can't undo it: there is no undo."
+    }
+  }, {
+    "t" : 13322,
+    "type" : "step",
+    "data" : {
+      "scenario" : "incident",
+      "index" : 3,
+      "total" : 7,
+      "id" : "rollback",
+      "time" : "16:58",
+      "title" : "Roll back",
+      "caption" : "16:58. Roll back ledger-service to v1. The rollback button works; the service doesn't.",
+      "say" : "So on-call presses rollback. The old code won't even start: the column it needs is gone.",
+      "status" : "done"
+    }
+  }, {
+    "t" : 13322,
+    "type" : "step",
+    "data" : {
+      "scenario" : "incident",
+      "index" : 4,
+      "total" : 7,
+      "id" : "backlog",
+      "time" : "17:00",
+      "title" : "Backlog builds",
+      "caption" : "17:00–17:25. Settlements keep coming. settlement-service is still v2.",
+      "say" : "Meanwhile settlements keep arriving. They queue on Kafka, in the new format.",
+      "status" : "running"
+    }
+  }, {
+    "t" : 13329,
+    "type" : "observed",
+    "data" : {
+      "offset" : 30,
+      "format" : "v2",
+      "merchantId" : "merchant-0024",
+      "amountMinor" : 22634,
+      "raw" : "{\"paymentId\":\"08fbd441-d1fc-4e34-b1f1-f2b0346574f0\",\"merchantId\":\"merchant-0024\",\"currency\":\"GBP\",\"amountMinor\":22634,\"settledAt\":\"2026-10-13T17:59:37Z\"}"
+    }
+  }, {
+    "t" : 13329,
+    "type" : "observed",
+    "data" : {
+      "offset" : 31,
+      "format" : "v2",
+      "merchantId" : "merchant-0005",
+      "amountMinor" : 13990,
+      "raw" : "{\"paymentId\":\"5188a79b-f80d-4e79-837b-bb0472ebed40\",\"merchantId\":\"merchant-0005\",\"currency\":\"GBP\",\"amountMinor\":13990,\"settledAt\":\"2026-10-13T17:57:07Z\"}"
+    }
+  }, {
+    "t" : 13329,
+    "type" : "observed",
+    "data" : {
+      "offset" : 32,
+      "format" : "v2",
+      "merchantId" : "merchant-0021",
+      "amountMinor" : 43386,
+      "raw" : "{\"paymentId\":\"ba3b1cfa-06f4-45fd-bdf9-eed5ec4cf65b\",\"merchantId\":\"merchant-0021\",\"currency\":\"GBP\",\"amountMinor\":43386,\"settledAt\":\"2026-10-13T17:58:37Z\"}"
+    }
+  }, {
+    "t" : 13329,
+    "type" : "observed",
+    "data" : {
+      "offset" : 33,
+      "format" : "v2",
+      "merchantId" : "merchant-0030",
+      "amountMinor" : 6907,
+      "raw" : "{\"paymentId\":\"a0076ebf-1a0f-4ac6-be31-a8343e71a9ba\",\"merchantId\":\"merchant-0030\",\"currency\":\"GBP\",\"amountMinor\":6907,\"settledAt\":\"2026-10-13T17:59:07Z\"}"
+    }
+  }, {
+    "t" : 13330,
+    "type" : "observed",
+    "data" : {
+      "offset" : 34,
+      "format" : "v2",
+      "merchantId" : "merchant-0008",
+      "amountMinor" : 32998,
+      "raw" : "{\"paymentId\":\"1a33951d-2503-4696-9910-ee16bb670dd6\",\"merchantId\":\"merchant-0008\",\"currency\":\"GBP\",\"amountMinor\":32998,\"settledAt\":\"2026-10-13T17:57:37Z\"}"
+    }
+  }, {
+    "t" : 13330,
+    "type" : "observed",
+    "data" : {
+      "offset" : 35,
+      "format" : "v2",
+      "merchantId" : "merchant-0015",
+      "amountMinor" : 7312,
+      "raw" : "{\"paymentId\":\"b1cb2c63-bc6d-4726-80ca-6f783b266cd5\",\"merchantId\":\"merchant-0015\",\"currency\":\"GBP\",\"amountMinor\":7312,\"settledAt\":\"2026-10-13T17:56:07Z\"}"
+    }
+  }, {
+    "t" : 13330,
+    "type" : "observed",
+    "data" : {
+      "offset" : 36,
+      "format" : "v2",
+      "merchantId" : "merchant-0006",
+      "amountMinor" : 48570,
+      "raw" : "{\"paymentId\":\"ffbb0cf5-e52f-4050-8687-10bd430d2da0\",\"merchantId\":\"merchant-0006\",\"currency\":\"GBP\",\"amountMinor\":48570,\"settledAt\":\"2026-10-13T17:58:07Z\"}"
+    }
+  }, {
+    "t" : 13330,
+    "type" : "observed",
+    "data" : {
+      "offset" : 37,
+      "format" : "v2",
+      "merchantId" : "merchant-0027",
+      "amountMinor" : 48774,
+      "raw" : "{\"paymentId\":\"b1c3fcac-6f5e-43bb-bd30-41cd235959b3\",\"merchantId\":\"merchant-0027\",\"currency\":\"GBP\",\"amountMinor\":48774,\"settledAt\":\"2026-10-13T17:56:37Z\"}"
+    }
+  }, {
+    "t" : 13333,
+    "type" : "observed",
+    "data" : {
+      "offset" : 38,
+      "format" : "v2",
+      "merchantId" : "merchant-0005",
+      "amountMinor" : 27759,
+      "raw" : "{\"paymentId\":\"422beda5-8a09-494d-bfbc-77092254ddcb\",\"merchantId\":\"merchant-0005\",\"currency\":\"GBP\",\"amountMinor\":27759,\"settledAt\":\"2026-10-13T18:00:07Z\"}"
+    }
+  }, {
+    "t" : 13333,
+    "type" : "observed",
+    "data" : {
+      "offset" : 39,
+      "format" : "v2",
+      "merchantId" : "merchant-0020",
+      "amountMinor" : 18716,
+      "raw" : "{\"paymentId\":\"c5a72990-fd75-48f0-9fa8-0a15b367898c\",\"merchantId\":\"merchant-0020\",\"currency\":\"GBP\",\"amountMinor\":18716,\"settledAt\":\"2026-10-13T18:01:37Z\"}"
+    }
+  }, {
+    "t" : 13333,
+    "type" : "observed",
+    "data" : {
+      "offset" : 40,
+      "format" : "v2",
+      "merchantId" : "merchant-0007",
+      "amountMinor" : 37892,
+      "raw" : "{\"paymentId\":\"3fd37123-9158-4403-9f95-7f589d7ba8a3\",\"merchantId\":\"merchant-0007\",\"currency\":\"GBP\",\"amountMinor\":37892,\"settledAt\":\"2026-10-13T18:02:07Z\"}"
+    }
+  }, {
+    "t" : 13334,
+    "type" : "observed",
+    "data" : {
+      "offset" : 41,
+      "format" : "v2",
+      "merchantId" : "merchant-0021",
+      "amountMinor" : 16823,
+      "raw" : "{\"paymentId\":\"dc5a14ef-16e8-46fa-a9bb-40e3d05c036f\",\"merchantId\":\"merchant-0021\",\"currency\":\"GBP\",\"amountMinor\":16823,\"settledAt\":\"2026-10-13T18:01:07Z\"}"
+    }
+  }, {
+    "t" : 13334,
+    "type" : "observed",
+    "data" : {
+      "offset" : 42,
+      "format" : "v2",
+      "merchantId" : "merchant-0006",
+      "amountMinor" : 31588,
+      "raw" : "{\"paymentId\":\"fb2e08af-639f-4821-a4a4-724bb30f96ec\",\"merchantId\":\"merchant-0006\",\"currency\":\"GBP\",\"amountMinor\":31588,\"settledAt\":\"2026-10-13T18:02:37Z\"}"
+    }
+  }, {
+    "t" : 13334,
+    "type" : "observed",
+    "data" : {
+      "offset" : 43,
+      "format" : "v2",
+      "merchantId" : "merchant-0003",
+      "amountMinor" : 15828,
+      "raw" : "{\"paymentId\":\"dae6eb4c-31c9-4dcb-be80-0dfadd0b329e\",\"merchantId\":\"merchant-0003\",\"currency\":\"GBP\",\"amountMinor\":15828,\"settledAt\":\"2026-10-13T18:00:37Z\"}"
+    }
+  }, {
+    "t" : 13335,
+    "type" : "observed",
+    "data" : {
+      "offset" : 44,
+      "format" : "v2",
+      "merchantId" : "merchant-0013",
+      "amountMinor" : 39271,
+      "raw" : "{\"paymentId\":\"b3436460-40db-4cf7-a0e9-91decbf114b3\",\"merchantId\":\"merchant-0013\",\"currency\":\"GBP\",\"amountMinor\":39271,\"settledAt\":\"2026-10-13T18:03:07Z\"}"
+    }
+  }, {
+    "t" : 13335,
+    "type" : "observed",
+    "data" : {
+      "offset" : 45,
+      "format" : "v2",
+      "merchantId" : "merchant-0007",
+      "amountMinor" : 43269,
+      "raw" : "{\"paymentId\":\"5bfe8e34-3b82-4815-933f-40659f0d56d2\",\"merchantId\":\"merchant-0007\",\"currency\":\"GBP\",\"amountMinor\":43269,\"settledAt\":\"2026-10-13T18:03:37Z\"}"
+    }
+  }, {
+    "t" : 13337,
+    "type" : "observed",
+    "data" : {
+      "offset" : 46,
+      "format" : "v2",
+      "merchantId" : "merchant-0025",
+      "amountMinor" : 34458,
+      "raw" : "{\"paymentId\":\"c6e833b5-f461-4c97-87d9-5b4f5d667aa3\",\"merchantId\":\"merchant-0025\",\"currency\":\"GBP\",\"amountMinor\":34458,\"settledAt\":\"2026-10-13T18:05:07Z\"}"
+    }
+  }, {
+    "t" : 13337,
+    "type" : "observed",
+    "data" : {
+      "offset" : 47,
+      "format" : "v2",
+      "merchantId" : "merchant-0005",
+      "amountMinor" : 1782,
+      "raw" : "{\"paymentId\":\"424fe21b-daeb-4879-aac9-168a7c2b0180\",\"merchantId\":\"merchant-0005\",\"currency\":\"GBP\",\"amountMinor\":1782,\"settledAt\":\"2026-10-13T18:05:37Z\"}"
+    }
+  }, {
+    "t" : 13337,
+    "type" : "observed",
+    "data" : {
+      "offset" : 48,
+      "format" : "v2",
+      "merchantId" : "merchant-0034",
+      "amountMinor" : 10945,
+      "raw" : "{\"paymentId\":\"c14f0fb7-4f05-4b53-adc9-e6402733c303\",\"merchantId\":\"merchant-0034\",\"currency\":\"GBP\",\"amountMinor\":10945,\"settledAt\":\"2026-10-13T18:04:37Z\"}"
+    }
+  }, {
+    "t" : 13337,
+    "type" : "observed",
+    "data" : {
+      "offset" : 49,
+      "format" : "v2",
+      "merchantId" : "merchant-0033",
+      "amountMinor" : 44921,
+      "raw" : "{\"paymentId\":\"f246523b-9c7c-4aa8-a7e3-ebbe914a6aa7\",\"merchantId\":\"merchant-0033\",\"currency\":\"GBP\",\"amountMinor\":44921,\"settledAt\":\"2026-10-13T18:06:07Z\"}"
+    }
+  }, {
+    "t" : 13337,
+    "type" : "observed",
+    "data" : {
+      "offset" : 50,
+      "format" : "v2",
+      "merchantId" : "merchant-0030",
+      "amountMinor" : 22095,
+      "raw" : "{\"paymentId\":\"1981143b-7e68-49b0-a3c8-44f9417b1cc3\",\"merchantId\":\"merchant-0030\",\"currency\":\"GBP\",\"amountMinor\":22095,\"settledAt\":\"2026-10-13T18:07:37Z\"}"
+    }
+  }, {
+    "t" : 13337,
+    "type" : "observed",
+    "data" : {
+      "offset" : 51,
+      "format" : "v2",
+      "merchantId" : "merchant-0025",
+      "amountMinor" : 38869,
+      "raw" : "{\"paymentId\":\"20c81a01-f9ae-49c6-a594-8251f08e6d6a\",\"merchantId\":\"merchant-0025\",\"currency\":\"GBP\",\"amountMinor\":38869,\"settledAt\":\"2026-10-13T18:04:07Z\"}"
+    }
+  }, {
+    "t" : 13337,
+    "type" : "observed",
+    "data" : {
+      "offset" : 52,
+      "format" : "v2",
+      "merchantId" : "merchant-0013",
+      "amountMinor" : 47680,
+      "raw" : "{\"paymentId\":\"e7dd1b50-3cbc-4281-8299-d3b3014efe92\",\"merchantId\":\"merchant-0013\",\"currency\":\"GBP\",\"amountMinor\":47680,\"settledAt\":\"2026-10-13T18:07:07Z\"}"
+    }
+  }, {
+    "t" : 13338,
+    "type" : "observed",
+    "data" : {
+      "offset" : 53,
+      "format" : "v2",
+      "merchantId" : "merchant-0005",
+      "amountMinor" : 34030,
+      "raw" : "{\"paymentId\":\"c5db0c50-5c87-4dc6-9014-fe6c556fa1fd\",\"merchantId\":\"merchant-0005\",\"currency\":\"GBP\",\"amountMinor\":34030,\"settledAt\":\"2026-10-13T18:06:37Z\"}"
+    }
+  }, {
+    "t" : 13340,
+    "type" : "observed",
+    "data" : {
+      "offset" : 54,
+      "format" : "v2",
+      "merchantId" : "merchant-0016",
+      "amountMinor" : 2684,
+      "raw" : "{\"paymentId\":\"5fe4e599-6f3d-43a0-bd11-303791e11649\",\"merchantId\":\"merchant-0016\",\"currency\":\"GBP\",\"amountMinor\":2684,\"settledAt\":\"2026-10-13T18:10:37Z\"}"
+    }
+  }, {
+    "t" : 13340,
+    "type" : "observed",
+    "data" : {
+      "offset" : 55,
+      "format" : "v2",
+      "merchantId" : "merchant-0009",
+      "amountMinor" : 9893,
+      "raw" : "{\"paymentId\":\"3523b4d0-8b10-476d-a105-4afbc2ec6d9c\",\"merchantId\":\"merchant-0009\",\"currency\":\"GBP\",\"amountMinor\":9893,\"settledAt\":\"2026-10-13T18:09:07Z\"}"
+    }
+  }, {
+    "t" : 13341,
+    "type" : "observed",
+    "data" : {
+      "offset" : 56,
+      "format" : "v2",
+      "merchantId" : "merchant-0034",
+      "amountMinor" : 48000,
+      "raw" : "{\"paymentId\":\"0e336996-14ff-4f33-94e4-2ceb9fa751a8\",\"merchantId\":\"merchant-0034\",\"currency\":\"GBP\",\"amountMinor\":48000,\"settledAt\":\"2026-10-13T18:11:07Z\"}"
+    }
+  }, {
+    "t" : 13341,
+    "type" : "observed",
+    "data" : {
+      "offset" : 57,
+      "format" : "v2",
+      "merchantId" : "merchant-0006",
+      "amountMinor" : 2716,
+      "raw" : "{\"paymentId\":\"f87c1070-28b2-4890-aa63-4494307f7c94\",\"merchantId\":\"merchant-0006\",\"currency\":\"GBP\",\"amountMinor\":2716,\"settledAt\":\"2026-10-13T18:08:07Z\"}"
+    }
+  }, {
+    "t" : 13341,
+    "type" : "observed",
+    "data" : {
+      "offset" : 58,
+      "format" : "v2",
+      "merchantId" : "merchant-0026",
+      "amountMinor" : 1279,
+      "raw" : "{\"paymentId\":\"f899dd2d-1691-47b0-be2e-814f3ad417dc\",\"merchantId\":\"merchant-0026\",\"currency\":\"GBP\",\"amountMinor\":1279,\"settledAt\":\"2026-10-13T18:10:07Z\"}"
+    }
+  }, {
+    "t" : 13341,
+    "type" : "observed",
+    "data" : {
+      "offset" : 59,
+      "format" : "v2",
+      "merchantId" : "merchant-0028",
+      "amountMinor" : 39615,
+      "raw" : "{\"paymentId\":\"15fe15f4-bd0c-435e-8f3f-b8a458fec3eb\",\"merchantId\":\"merchant-0028\",\"currency\":\"GBP\",\"amountMinor\":39615,\"settledAt\":\"2026-10-13T18:11:37Z\"}"
+    }
+  }, {
+    "t" : 13341,
+    "type" : "observed",
+    "data" : {
+      "offset" : 60,
+      "format" : "v2",
+      "merchantId" : "merchant-0029",
+      "amountMinor" : 48303,
+      "raw" : "{\"paymentId\":\"fc870159-9af2-4ff6-bc52-8337dc8876f7\",\"merchantId\":\"merchant-0029\",\"currency\":\"GBP\",\"amountMinor\":48303,\"settledAt\":\"2026-10-13T18:09:37Z\"}"
+    }
+  }, {
+    "t" : 13341,
+    "type" : "observed",
+    "data" : {
+      "offset" : 61,
+      "format" : "v2",
+      "merchantId" : "merchant-0024",
+      "amountMinor" : 37685,
+      "raw" : "{\"paymentId\":\"8fe25616-2fff-4d09-b167-b10fe522972f\",\"merchantId\":\"merchant-0024\",\"currency\":\"GBP\",\"amountMinor\":37685,\"settledAt\":\"2026-10-13T18:08:37Z\"}"
+    }
+  }, {
+    "t" : 13344,
+    "type" : "observed",
+    "data" : {
+      "offset" : 62,
+      "format" : "v2",
+      "merchantId" : "merchant-0008",
+      "amountMinor" : 34239,
+      "raw" : "{\"paymentId\":\"d7c6eab9-e44c-4110-bbc9-c89accdff661\",\"merchantId\":\"merchant-0008\",\"currency\":\"GBP\",\"amountMinor\":34239,\"settledAt\":\"2026-10-13T18:12:07Z\"}"
+    }
+  }, {
+    "t" : 13344,
+    "type" : "observed",
+    "data" : {
+      "offset" : 63,
+      "format" : "v2",
+      "merchantId" : "merchant-0038",
+      "amountMinor" : 44330,
+      "raw" : "{\"paymentId\":\"d7e81bdf-44bb-4ca7-a34f-03a2e9247b7e\",\"merchantId\":\"merchant-0038\",\"currency\":\"GBP\",\"amountMinor\":44330,\"settledAt\":\"2026-10-13T18:12:37Z\"}"
+    }
+  }, {
+    "t" : 13344,
+    "type" : "observed",
+    "data" : {
+      "offset" : 64,
+      "format" : "v2",
+      "merchantId" : "merchant-0037",
+      "amountMinor" : 42848,
+      "raw" : "{\"paymentId\":\"630e1708-e451-4587-8b50-40c949d548de\",\"merchantId\":\"merchant-0037\",\"currency\":\"GBP\",\"amountMinor\":42848,\"settledAt\":\"2026-10-13T18:13:07Z\"}"
+    }
+  }, {
+    "t" : 13344,
+    "type" : "observed",
+    "data" : {
+      "offset" : 65,
+      "format" : "v2",
+      "merchantId" : "merchant-0027",
+      "amountMinor" : 5431,
+      "raw" : "{\"paymentId\":\"54eed72e-71dd-49bf-a3bf-9dd7ff38ed8e\",\"merchantId\":\"merchant-0027\",\"currency\":\"GBP\",\"amountMinor\":5431,\"settledAt\":\"2026-10-13T18:13:37Z\"}"
+    }
+  }, {
+    "t" : 13345,
+    "type" : "observed",
+    "data" : {
+      "offset" : 66,
+      "format" : "v2",
+      "merchantId" : "merchant-0013",
+      "amountMinor" : 31799,
+      "raw" : "{\"paymentId\":\"337e76ae-6e1a-48ee-a940-61b1021ce177\",\"merchantId\":\"merchant-0013\",\"currency\":\"GBP\",\"amountMinor\":31799,\"settledAt\":\"2026-10-13T18:14:37Z\"}"
+    }
+  }, {
+    "t" : 13345,
+    "type" : "observed",
+    "data" : {
+      "offset" : 67,
+      "format" : "v2",
+      "merchantId" : "merchant-0037",
+      "amountMinor" : 48044,
+      "raw" : "{\"paymentId\":\"e3752470-e4b4-4eee-84a0-9e8e34949023\",\"merchantId\":\"merchant-0037\",\"currency\":\"GBP\",\"amountMinor\":48044,\"settledAt\":\"2026-10-13T18:14:07Z\"}"
+    }
+  }, {
+    "t" : 13345,
+    "type" : "observed",
+    "data" : {
+      "offset" : 68,
+      "format" : "v2",
+      "merchantId" : "merchant-0005",
+      "amountMinor" : 1371,
+      "raw" : "{\"paymentId\":\"1cd0e37b-0f54-410c-8450-f72300c248dd\",\"merchantId\":\"merchant-0005\",\"currency\":\"GBP\",\"amountMinor\":1371,\"settledAt\":\"2026-10-13T18:15:37Z\"}"
+    }
+  }, {
+    "t" : 13345,
+    "type" : "observed",
+    "data" : {
+      "offset" : 69,
+      "format" : "v2",
+      "merchantId" : "merchant-0019",
+      "amountMinor" : 29454,
+      "raw" : "{\"paymentId\":\"39b7fb5e-7af7-4d72-899f-9b221c8c674d\",\"merchantId\":\"merchant-0019\",\"currency\":\"GBP\",\"amountMinor\":29454,\"settledAt\":\"2026-10-13T18:15:07Z\"}"
+    }
+  }, {
+    "t" : 13347,
+    "type" : "observed",
+    "data" : {
+      "offset" : 70,
+      "format" : "v2",
+      "merchantId" : "merchant-0034",
+      "amountMinor" : 31340,
+      "raw" : "{\"paymentId\":\"0f0a458f-42ff-459a-9008-050ff9864af8\",\"merchantId\":\"merchant-0034\",\"currency\":\"GBP\",\"amountMinor\":31340,\"settledAt\":\"2026-10-13T18:16:07Z\"}"
+    }
+  }, {
+    "t" : 13347,
+    "type" : "observed",
+    "data" : {
+      "offset" : 71,
+      "format" : "v2",
+      "merchantId" : "merchant-0031",
+      "amountMinor" : 43167,
+      "raw" : "{\"paymentId\":\"efe918a4-7b99-4ef7-8960-da1cf5faab76\",\"merchantId\":\"merchant-0031\",\"currency\":\"GBP\",\"amountMinor\":43167,\"settledAt\":\"2026-10-13T18:17:37Z\"}"
+    }
+  }, {
+    "t" : 13347,
+    "type" : "observed",
+    "data" : {
+      "offset" : 72,
+      "format" : "v2",
+      "merchantId" : "merchant-0006",
+      "amountMinor" : 25900,
+      "raw" : "{\"paymentId\":\"6ac25a87-10fd-4f65-99c6-a95ce5781511\",\"merchantId\":\"merchant-0006\",\"currency\":\"GBP\",\"amountMinor\":25900,\"settledAt\":\"2026-10-13T18:18:07Z\"}"
+    }
+  }, {
+    "t" : 13348,
+    "type" : "observed",
+    "data" : {
+      "offset" : 73,
+      "format" : "v2",
+      "merchantId" : "merchant-0030",
+      "amountMinor" : 29252,
+      "raw" : "{\"paymentId\":\"4818420a-4816-40bf-895c-c2fad29761f9\",\"merchantId\":\"merchant-0030\",\"currency\":\"GBP\",\"amountMinor\":29252,\"settledAt\":\"2026-10-13T18:17:07Z\"}"
+    }
+  }, {
+    "t" : 13348,
+    "type" : "observed",
+    "data" : {
+      "offset" : 74,
+      "format" : "v2",
+      "merchantId" : "merchant-0003",
+      "amountMinor" : 38677,
+      "raw" : "{\"paymentId\":\"038c0de5-9b8a-49a7-8ae4-9e6a9395708d\",\"merchantId\":\"merchant-0003\",\"currency\":\"GBP\",\"amountMinor\":38677,\"settledAt\":\"2026-10-13T18:16:37Z\"}"
+    }
+  }, {
+    "t" : 13348,
+    "type" : "observed",
+    "data" : {
+      "offset" : 75,
+      "format" : "v2",
+      "merchantId" : "merchant-0006",
+      "amountMinor" : 26170,
+      "raw" : "{\"paymentId\":\"64d19ef4-4c3e-4056-a80a-387239d005c9\",\"merchantId\":\"merchant-0006\",\"currency\":\"GBP\",\"amountMinor\":26170,\"settledAt\":\"2026-10-13T18:18:37Z\"}"
+    }
+  }, {
+    "t" : 13349,
+    "type" : "observed",
+    "data" : {
+      "offset" : 76,
+      "format" : "v2",
+      "merchantId" : "merchant-0011",
+      "amountMinor" : 48525,
+      "raw" : "{\"paymentId\":\"f3f4c130-f4b1-4a76-b198-7aedcedcdaa5\",\"merchantId\":\"merchant-0011\",\"currency\":\"GBP\",\"amountMinor\":48525,\"settledAt\":\"2026-10-13T18:19:37Z\"}"
+    }
+  }, {
+    "t" : 13349,
+    "type" : "observed",
+    "data" : {
+      "offset" : 77,
+      "format" : "v2",
+      "merchantId" : "merchant-0034",
+      "amountMinor" : 31797,
+      "raw" : "{\"paymentId\":\"dcc55043-d465-4d28-9ccf-0e0bc0c9ad8d\",\"merchantId\":\"merchant-0034\",\"currency\":\"GBP\",\"amountMinor\":31797,\"settledAt\":\"2026-10-13T18:19:07Z\"}"
+    }
+  }, {
+    "t" : 13350,
+    "type" : "observed",
+    "data" : {
+      "offset" : 78,
+      "format" : "v2",
+      "merchantId" : "merchant-0006",
+      "amountMinor" : 17893,
+      "raw" : "{\"paymentId\":\"b58f16b1-eaa9-4deb-b044-8c4d5ef0e8b7\",\"merchantId\":\"merchant-0006\",\"currency\":\"GBP\",\"amountMinor\":17893,\"settledAt\":\"2026-10-13T18:20:37Z\"}"
+    }
+  }, {
+    "t" : 13350,
+    "type" : "observed",
+    "data" : {
+      "offset" : 79,
+      "format" : "v2",
+      "merchantId" : "merchant-0021",
+      "amountMinor" : 15900,
+      "raw" : "{\"paymentId\":\"b82ef5d3-07dd-46df-80a8-6e0486f3955f\",\"merchantId\":\"merchant-0021\",\"currency\":\"GBP\",\"amountMinor\":15900,\"settledAt\":\"2026-10-13T18:20:07Z\"}"
+    }
+  }, {
+    "t" : 13350,
+    "type" : "log",
+    "data" : {
+      "level" : "ok",
+      "text" : "✔ sent 50 settlements worth £14268.09 (settledAt 17:56–18:20 UTC) in 0.0s"
+    }
+  }, {
+    "t" : 13351,
+    "type" : "log",
+    "data" : {
+      "level" : "say",
+      "text" : "These 50 events (£14268.09) carry amountMinor and no amount. ledger-service is down, so they queue."
+    }
+  }, {
+    "t" : 13353,
+    "type" : "log",
+    "data" : {
+      "level" : "say",
+      "text" : "Backlog on payments.settled: 50 events"
+    }
+  }, {
+    "t" : 13353,
+    "type" : "step",
+    "data" : {
+      "scenario" : "incident",
+      "index" : 4,
+      "total" : 7,
+      "id" : "backlog",
+      "time" : "17:00",
+      "title" : "Backlog builds",
+      "caption" : "17:00–17:25. Settlements keep coming. settlement-service is still v2.",
+      "say" : "Meanwhile settlements keep arriving. They queue on Kafka, in the new format.",
+      "status" : "done"
+    }
+  }, {
+    "t" : 13353,
+    "type" : "step",
+    "data" : {
+      "scenario" : "incident",
+      "index" : 5,
+      "total" : 7,
+      "id" : "hotfix",
+      "time" : "17:25",
+      "title" : "Hand hotfix",
+      "caption" : "17:25. A DBA reverses V42 by hand so v1 can start again.",
+      "say" : "A DBA reverses V42 by hand. v1 comes back up and drains the queue.",
+      "status" : "running"
+    }
+  }, {
+    "t" : 13353,
+    "type" : "log",
+    "data" : {
+      "level" : "caption",
+      "text" : "Applying hotfix-reverse-v42.sql"
+    }
+  }, {
+    "t" : 13365,
+    "type" : "log",
+    "data" : {
+      "level" : "ok",
+      "text" : "✔ ledger_entries.amount_minor (pence, bigint) is back to amount (pounds, numeric(12,2))"
+    }
+  }, {
+    "t" : 14252,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "STARTING",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "unreachable",
+          "pid" : 54919
+        },
+        "settlement-service" : {
+          "ref" : "pr-482-minor-units",
+          "commit" : "9bd52fd",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "UP",
+          "pid" : 54883
+        },
+        "reconciliation-batch" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ "amount" ],
+        "rows" : 30,
+        "booked" : 8214.79,
+        "zero" : 0,
+        "last" : [ {
+          "id" : 30,
+          "payment" : "06133a7c",
+          "merchant" : "merchant-0005",
+          "amount" : 306.97,
+          "settledUtc" : "18:19:33"
+        }, {
+          "id" : 29,
+          "payment" : "b2da502c",
+          "merchant" : "merchant-0016",
+          "amount" : 314.20,
+          "settledUtc" : "18:19:03"
+        }, {
+          "id" : 28,
+          "payment" : "f3a4ab8b",
+          "merchant" : "merchant-0036",
+          "amount" : 395.11,
+          "settledUtc" : "18:20:03"
+        }, {
+          "id" : 27,
+          "payment" : "b797aee9",
+          "merchant" : "merchant-0024",
+          "amount" : 45.10,
+          "settledUtc" : "18:20:33"
+        }, {
+          "id" : 26,
+          "payment" : "34f47c67",
+          "merchant" : "merchant-0028",
+          "amount" : 69.76,
+          "settledUtc" : "18:17:03"
+        }, {
+          "id" : 25,
+          "payment" : "afcdf0c1",
+          "merchant" : "merchant-0040",
+          "amount" : 411.66,
+          "settledUtc" : "18:16:33"
+        }, {
+          "id" : 24,
+          "payment" : "93496154",
+          "merchant" : "merchant-0020",
+          "amount" : 310.79,
+          "settledUtc" : "18:15:03"
+        }, {
+          "id" : 23,
+          "payment" : "372c17d8",
+          "merchant" : "merchant-0027",
+          "amount" : 132.05,
+          "settledUtc" : "18:17:33"
+        }, {
+          "id" : 22,
+          "payment" : "81976d5e",
+          "merchant" : "merchant-0040",
+          "amount" : 307.33,
+          "settledUtc" : "18:18:33"
+        }, {
+          "id" : 21,
+          "payment" : "ff3989b3",
+          "merchant" : "merchant-0016",
+          "amount" : 426.16,
+          "settledUtc" : "18:18:03"
+        } ]
+      },
+      "kafka" : {
+        "published" : 80,
+        "lag" : 50,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 10,
+          "v2" : 70,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 80,
+        "total" : 22482.88
+      },
+      "recon" : {
+        "ref" : "main (720e12e)",
+        "entries" : null,
+        "total" : null,
+        "mismatches" : null,
+        "error" : "ERROR: column \"amount\" does not exist",
+        "at" : "2026-10-13T18:20:34.765895Z"
+      },
+      "incident" : {
+        "next" : 5,
+        "status" : "running",
+        "result" : null
+      }
+    }
+  }, {
+    "t" : 14440,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Schema \"public\" is up to date. No migration necessary."
+    }
+  }, {
+    "t" : 15271,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "STARTING",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "unreachable",
+          "pid" : 54919
+        },
+        "settlement-service" : {
+          "ref" : "pr-482-minor-units",
+          "commit" : "9bd52fd",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "UP",
+          "pid" : 54883
+        },
+        "reconciliation-batch" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ "amount" ],
+        "rows" : 30,
+        "booked" : 8214.79,
+        "zero" : 0,
+        "last" : [ {
+          "id" : 30,
+          "payment" : "06133a7c",
+          "merchant" : "merchant-0005",
+          "amount" : 306.97,
+          "settledUtc" : "18:19:33"
+        }, {
+          "id" : 29,
+          "payment" : "b2da502c",
+          "merchant" : "merchant-0016",
+          "amount" : 314.20,
+          "settledUtc" : "18:19:03"
+        }, {
+          "id" : 28,
+          "payment" : "f3a4ab8b",
+          "merchant" : "merchant-0036",
+          "amount" : 395.11,
+          "settledUtc" : "18:20:03"
+        }, {
+          "id" : 27,
+          "payment" : "b797aee9",
+          "merchant" : "merchant-0024",
+          "amount" : 45.10,
+          "settledUtc" : "18:20:33"
+        }, {
+          "id" : 26,
+          "payment" : "34f47c67",
+          "merchant" : "merchant-0028",
+          "amount" : 69.76,
+          "settledUtc" : "18:17:03"
+        }, {
+          "id" : 25,
+          "payment" : "afcdf0c1",
+          "merchant" : "merchant-0040",
+          "amount" : 411.66,
+          "settledUtc" : "18:16:33"
+        }, {
+          "id" : 24,
+          "payment" : "93496154",
+          "merchant" : "merchant-0020",
+          "amount" : 310.79,
+          "settledUtc" : "18:15:03"
+        }, {
+          "id" : 23,
+          "payment" : "372c17d8",
+          "merchant" : "merchant-0027",
+          "amount" : 132.05,
+          "settledUtc" : "18:17:33"
+        }, {
+          "id" : 22,
+          "payment" : "81976d5e",
+          "merchant" : "merchant-0040",
+          "amount" : 307.33,
+          "settledUtc" : "18:18:33"
+        }, {
+          "id" : 21,
+          "payment" : "ff3989b3",
+          "merchant" : "merchant-0016",
+          "amount" : 426.16,
+          "settledUtc" : "18:18:03"
+        } ]
+      },
+      "kafka" : {
+        "published" : 80,
+        "lag" : 50,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 10,
+          "v2" : 70,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 80,
+        "total" : 22482.88
+      },
+      "recon" : {
+        "ref" : "main (720e12e)",
+        "entries" : null,
+        "total" : null,
+        "mismatches" : null,
+        "error" : "ERROR: column \"amount\" does not exist",
+        "at" : "2026-10-13T18:20:34.765895Z"
+      },
+      "incident" : {
+        "next" : 5,
+        "status" : "running",
+        "result" : null
+      }
+    }
+  }, {
+    "t" : 15448,
+    "type" : "log",
+    "data" : {
+      "level" : "ok",
+      "text" : "✔ ledger-service @ main (720e12e) is UP (http://localhost:8082/actuator/health)"
+    }
+  }, {
+    "t" : 15448,
+    "type" : "log",
+    "data" : {
+      "level" : "say",
+      "text" : "v1 drains the backlog…"
+    }
+  }, {
+    "t" : 15502,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Started LedgerApplication in 1.967 seconds (process running for 2.128)"
+    }
+  }, {
+    "t" : 15815,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 08fbd441-d1fc-4e34-b1f1-f2b0346574f0 GBP 0.00 for merchant-0024"
+    }
+  }, {
+    "t" : 15819,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 5188a79b-f80d-4e79-837b-bb0472ebed40 GBP 0.00 for merchant-0005"
+    }
+  }, {
+    "t" : 15820,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked ba3b1cfa-06f4-45fd-bdf9-eed5ec4cf65b GBP 0.00 for merchant-0021"
+    }
+  }, {
+    "t" : 15821,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked a0076ebf-1a0f-4ac6-be31-a8343e71a9ba GBP 0.00 for merchant-0030"
+    }
+  }, {
+    "t" : 15823,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 1a33951d-2503-4696-9910-ee16bb670dd6 GBP 0.00 for merchant-0008"
+    }
+  }, {
+    "t" : 15824,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked b1cb2c63-bc6d-4726-80ca-6f783b266cd5 GBP 0.00 for merchant-0015"
+    }
+  }, {
+    "t" : 15825,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked ffbb0cf5-e52f-4050-8687-10bd430d2da0 GBP 0.00 for merchant-0006"
+    }
+  }, {
+    "t" : 15827,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked b1c3fcac-6f5e-43bb-bd30-41cd235959b3 GBP 0.00 for merchant-0027"
+    }
+  }, {
+    "t" : 15828,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 422beda5-8a09-494d-bfbc-77092254ddcb GBP 0.00 for merchant-0005"
+    }
+  }, {
+    "t" : 15830,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked c5a72990-fd75-48f0-9fa8-0a15b367898c GBP 0.00 for merchant-0020"
+    }
+  }, {
+    "t" : 15831,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 3fd37123-9158-4403-9f95-7f589d7ba8a3 GBP 0.00 for merchant-0007"
+    }
+  }, {
+    "t" : 15832,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked dc5a14ef-16e8-46fa-a9bb-40e3d05c036f GBP 0.00 for merchant-0021"
+    }
+  }, {
+    "t" : 15833,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked fb2e08af-639f-4821-a4a4-724bb30f96ec GBP 0.00 for merchant-0006"
+    }
+  }, {
+    "t" : 15834,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked dae6eb4c-31c9-4dcb-be80-0dfadd0b329e GBP 0.00 for merchant-0003"
+    }
+  }, {
+    "t" : 15836,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked b3436460-40db-4cf7-a0e9-91decbf114b3 GBP 0.00 for merchant-0013"
+    }
+  }, {
+    "t" : 15837,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 5bfe8e34-3b82-4815-933f-40659f0d56d2 GBP 0.00 for merchant-0007"
+    }
+  }, {
+    "t" : 15838,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked c6e833b5-f461-4c97-87d9-5b4f5d667aa3 GBP 0.00 for merchant-0025"
+    }
+  }, {
+    "t" : 15839,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 424fe21b-daeb-4879-aac9-168a7c2b0180 GBP 0.00 for merchant-0005"
+    }
+  }, {
+    "t" : 15840,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked c14f0fb7-4f05-4b53-adc9-e6402733c303 GBP 0.00 for merchant-0034"
+    }
+  }, {
+    "t" : 15841,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked f246523b-9c7c-4aa8-a7e3-ebbe914a6aa7 GBP 0.00 for merchant-0033"
+    }
+  }, {
+    "t" : 15842,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 1981143b-7e68-49b0-a3c8-44f9417b1cc3 GBP 0.00 for merchant-0030"
+    }
+  }, {
+    "t" : 15844,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 20c81a01-f9ae-49c6-a594-8251f08e6d6a GBP 0.00 for merchant-0025"
+    }
+  }, {
+    "t" : 15845,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked e7dd1b50-3cbc-4281-8299-d3b3014efe92 GBP 0.00 for merchant-0013"
+    }
+  }, {
+    "t" : 15846,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked c5db0c50-5c87-4dc6-9014-fe6c556fa1fd GBP 0.00 for merchant-0005"
+    }
+  }, {
+    "t" : 15847,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 5fe4e599-6f3d-43a0-bd11-303791e11649 GBP 0.00 for merchant-0016"
+    }
+  }, {
+    "t" : 15849,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 3523b4d0-8b10-476d-a105-4afbc2ec6d9c GBP 0.00 for merchant-0009"
+    }
+  }, {
+    "t" : 15850,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 0e336996-14ff-4f33-94e4-2ceb9fa751a8 GBP 0.00 for merchant-0034"
+    }
+  }, {
+    "t" : 15851,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked f87c1070-28b2-4890-aa63-4494307f7c94 GBP 0.00 for merchant-0006"
+    }
+  }, {
+    "t" : 15852,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked f899dd2d-1691-47b0-be2e-814f3ad417dc GBP 0.00 for merchant-0026"
+    }
+  }, {
+    "t" : 15853,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 15fe15f4-bd0c-435e-8f3f-b8a458fec3eb GBP 0.00 for merchant-0028"
+    }
+  }, {
+    "t" : 15854,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked fc870159-9af2-4ff6-bc52-8337dc8876f7 GBP 0.00 for merchant-0029"
+    }
+  }, {
+    "t" : 15855,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 8fe25616-2fff-4d09-b167-b10fe522972f GBP 0.00 for merchant-0024"
+    }
+  }, {
+    "t" : 15857,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked d7c6eab9-e44c-4110-bbc9-c89accdff661 GBP 0.00 for merchant-0008"
+    }
+  }, {
+    "t" : 15858,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked d7e81bdf-44bb-4ca7-a34f-03a2e9247b7e GBP 0.00 for merchant-0038"
+    }
+  }, {
+    "t" : 15859,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 630e1708-e451-4587-8b50-40c949d548de GBP 0.00 for merchant-0037"
+    }
+  }, {
+    "t" : 15860,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 54eed72e-71dd-49bf-a3bf-9dd7ff38ed8e GBP 0.00 for merchant-0027"
+    }
+  }, {
+    "t" : 15862,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 337e76ae-6e1a-48ee-a940-61b1021ce177 GBP 0.00 for merchant-0013"
+    }
+  }, {
+    "t" : 15863,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked e3752470-e4b4-4eee-84a0-9e8e34949023 GBP 0.00 for merchant-0037"
+    }
+  }, {
+    "t" : 15865,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 1cd0e37b-0f54-410c-8450-f72300c248dd GBP 0.00 for merchant-0005"
+    }
+  }, {
+    "t" : 15866,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 39b7fb5e-7af7-4d72-899f-9b221c8c674d GBP 0.00 for merchant-0019"
+    }
+  }, {
+    "t" : 15867,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 0f0a458f-42ff-459a-9008-050ff9864af8 GBP 0.00 for merchant-0034"
+    }
+  }, {
+    "t" : 15868,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked efe918a4-7b99-4ef7-8960-da1cf5faab76 GBP 0.00 for merchant-0031"
+    }
+  }, {
+    "t" : 15870,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 6ac25a87-10fd-4f65-99c6-a95ce5781511 GBP 0.00 for merchant-0006"
+    }
+  }, {
+    "t" : 15871,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 4818420a-4816-40bf-895c-c2fad29761f9 GBP 0.00 for merchant-0030"
+    }
+  }, {
+    "t" : 15872,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 038c0de5-9b8a-49a7-8ae4-9e6a9395708d GBP 0.00 for merchant-0003"
+    }
+  }, {
+    "t" : 15873,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked 64d19ef4-4c3e-4056-a80a-387239d005c9 GBP 0.00 for merchant-0006"
+    }
+  }, {
+    "t" : 15874,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked f3f4c130-f4b1-4a76-b198-7aedcedcdaa5 GBP 0.00 for merchant-0011"
+    }
+  }, {
+    "t" : 15875,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked dcc55043-d465-4d28-9ccf-0e0bc0c9ad8d GBP 0.00 for merchant-0034"
+    }
+  }, {
+    "t" : 15876,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked b58f16b1-eaa9-4deb-b044-8c4d5ef0e8b7 GBP 0.00 for merchant-0006"
+    }
+  }, {
+    "t" : 15878,
+    "type" : "svc",
+    "data" : {
+      "service" : "ledger-service",
+      "text" : "Booked b82ef5d3-07dd-46df-80a8-6e0486f3955f GBP 0.00 for merchant-0021"
+    }
+  }, {
+    "t" : 15951,
+    "type" : "step",
+    "data" : {
+      "scenario" : "incident",
+      "index" : 5,
+      "total" : 7,
+      "id" : "hotfix",
+      "time" : "17:25",
+      "title" : "Hand hotfix",
+      "caption" : "17:25. A DBA reverses V42 by hand so v1 can start again.",
+      "say" : "A DBA reverses V42 by hand. v1 comes back up and drains the queue.",
+      "status" : "done"
+    }
+  }, {
+    "t" : 15951,
+    "type" : "step",
+    "data" : {
+      "scenario" : "incident",
+      "index" : 6,
+      "total" : 7,
+      "id" : "zero",
+      "time" : "17:26",
+      "title" : "£0.00",
+      "caption" : "17:26. Incident closed. Every dashboard is green.",
+      "say" : "Every dashboard is green. And fifty settlements are booked at £0.00. No exception. Nothing in the dead-letter queue.",
+      "status" : "running"
+    }
+  }, {
+    "t" : 15968,
+    "type" : "log",
+    "data" : {
+      "level" : "info",
+      "text" : "  ledger_entries (amount): 80 rows, £8214.79 booked, 50 at £0.00 · sent 80 (£22482.88) · backlog 0 · DLT 0"
+    }
+  }, {
+    "t" : 16066,
+    "type" : "recon",
+    "data" : {
+      "ref" : "main (720e12e)",
+      "entries" : 80,
+      "total" : 8214.79,
+      "mismatches" : null,
+      "error" : null,
+      "at" : "2026-10-13T18:20:40.535554Z"
+    }
+  }, {
+    "t" : 16066,
+    "type" : "log",
+    "data" : {
+      "level" : "info",
+      "text" : "  Reconciliation: 80 ledger entries, total £8214.79"
+    }
+  }, {
+    "t" : 16077,
+    "type" : "log",
+    "data" : {
+      "level" : "caption",
+      "text" : "What happened"
+    }
+  }, {
+    "t" : 16077,
+    "type" : "log",
+    "data" : {
+      "level" : "say",
+      "text" : "Reconciliation total: £8214.79. Settlements sent: £22482.88. £14268.09 is missing."
+    }
+  }, {
+    "t" : 16078,
+    "type" : "log",
+    "data" : {
+      "level" : "say",
+      "text" : "50 settlements were booked at £0.00. No exception. Nothing in the dead-letter topic (0 records)."
+    }
+  }, {
+    "t" : 16078,
+    "type" : "log",
+    "data" : {
+      "level" : "say",
+      "text" : "Why: v1 reads the v2 events by field name. Jackson ignores the unknown amountMinor,"
+    }
+  }, {
+    "t" : 16078,
+    "type" : "log",
+    "data" : {
+      "level" : "say",
+      "text" : "and the missing primitive 'double amount' quietly stays 0.0."
+    }
+  }, {
+    "t" : 16078,
+    "type" : "log",
+    "data" : {
+      "level" : "say",
+      "text" : "Rolling back the code didn't roll back the database or the events already on the topic."
+    }
+  }, {
+    "t" : 16078,
+    "type" : "log",
+    "data" : {
+      "level" : "say",
+      "text" : "PR #482 was a one-way door."
+    }
+  }, {
+    "t" : 16078,
+    "type" : "log",
+    "data" : {
+      "level" : "ok",
+      "text" : "✔ Reproduced: 50 rows at £0.00, empty DLT, ledger-service healthy."
+    }
+  }, {
+    "t" : 16078,
+    "type" : "step",
+    "data" : {
+      "scenario" : "incident",
+      "index" : 6,
+      "total" : 7,
+      "id" : "zero",
+      "time" : "17:26",
+      "title" : "£0.00",
+      "caption" : "17:26. Incident closed. Every dashboard is green.",
+      "say" : "Every dashboard is green. And fifty settlements are booked at £0.00. No exception. Nothing in the dead-letter queue.",
+      "status" : "done",
+      "result" : {
+        "booked" : 8214.79,
+        "sent" : 22482.88,
+        "missing" : 14268.09,
+        "zeroRows" : 50,
+        "dlt" : 0,
+        "ledgerHealth" : "UP",
+        "backlogTotal" : 14268.09,
+        "reproduced" : true
+      }
+    }
+  }, {
+    "t" : 16301,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "UP",
+          "pid" : 54919
+        },
+        "settlement-service" : {
+          "ref" : "pr-482-minor-units",
+          "commit" : "9bd52fd",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "UP",
+          "pid" : 54883
+        },
+        "reconciliation-batch" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ "amount" ],
+        "rows" : 80,
+        "booked" : 8214.79,
+        "zero" : 50,
+        "last" : [ {
+          "id" : 80,
+          "payment" : "b82ef5d3",
+          "merchant" : "merchant-0021",
+          "amount" : 0.00,
+          "settledUtc" : "18:20:07"
+        }, {
+          "id" : 79,
+          "payment" : "b58f16b1",
+          "merchant" : "merchant-0006",
+          "amount" : 0.00,
+          "settledUtc" : "18:20:37"
+        }, {
+          "id" : 78,
+          "payment" : "dcc55043",
+          "merchant" : "merchant-0034",
+          "amount" : 0.00,
+          "settledUtc" : "18:19:07"
+        }, {
+          "id" : 77,
+          "payment" : "f3f4c130",
+          "merchant" : "merchant-0011",
+          "amount" : 0.00,
+          "settledUtc" : "18:19:37"
+        }, {
+          "id" : 76,
+          "payment" : "64d19ef4",
+          "merchant" : "merchant-0006",
+          "amount" : 0.00,
+          "settledUtc" : "18:18:37"
+        }, {
+          "id" : 75,
+          "payment" : "038c0de5",
+          "merchant" : "merchant-0003",
+          "amount" : 0.00,
+          "settledUtc" : "18:16:37"
+        }, {
+          "id" : 74,
+          "payment" : "4818420a",
+          "merchant" : "merchant-0030",
+          "amount" : 0.00,
+          "settledUtc" : "18:17:07"
+        }, {
+          "id" : 73,
+          "payment" : "6ac25a87",
+          "merchant" : "merchant-0006",
+          "amount" : 0.00,
+          "settledUtc" : "18:18:07"
+        }, {
+          "id" : 72,
+          "payment" : "efe918a4",
+          "merchant" : "merchant-0031",
+          "amount" : 0.00,
+          "settledUtc" : "18:17:37"
+        }, {
+          "id" : 71,
+          "payment" : "0f0a458f",
+          "merchant" : "merchant-0034",
+          "amount" : 0.00,
+          "settledUtc" : "18:16:07"
+        } ]
+      },
+      "kafka" : {
+        "published" : 80,
+        "lag" : 0,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 10,
+          "v2" : 70,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 80,
+        "total" : 22482.88
+      },
+      "recon" : {
+        "ref" : "main (720e12e)",
+        "entries" : 80,
+        "total" : 8214.79,
+        "mismatches" : null,
+        "error" : null,
+        "at" : "2026-10-13T18:20:40.535554Z"
+      },
+      "incident" : {
+        "next" : 7,
+        "status" : "done",
+        "result" : {
+          "booked" : 8214.79,
+          "sent" : 22482.88,
+          "missing" : 14268.09,
+          "zeroRows" : 50,
+          "dlt" : 0,
+          "ledgerHealth" : "UP",
+          "backlogTotal" : 14268.09,
+          "reproduced" : true
+        }
+      }
+    }
+  }, {
+    "t" : 17333,
+    "type" : "state",
+    "data" : {
+      "infra" : {
+        "status" : "UP",
+        "failure" : null,
+        "postgres" : "localhost:55432",
+        "kafka" : "localhost:9092"
+      },
+      "busy" : null,
+      "services" : {
+        "ledger-service" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8082,
+          "health" : "UP",
+          "pid" : 54919
+        },
+        "settlement-service" : {
+          "ref" : "pr-482-minor-units",
+          "commit" : "9bd52fd",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 8081,
+          "health" : "UP",
+          "pid" : 54883
+        },
+        "reconciliation-batch" : {
+          "ref" : "main",
+          "commit" : "720e12e",
+          "status" : "UP",
+          "failure" : null,
+          "port" : 0
+        }
+      },
+      "ledger" : {
+        "columns" : [ "amount" ],
+        "rows" : 80,
+        "booked" : 8214.79,
+        "zero" : 50,
+        "last" : [ {
+          "id" : 80,
+          "payment" : "b82ef5d3",
+          "merchant" : "merchant-0021",
+          "amount" : 0.00,
+          "settledUtc" : "18:20:07"
+        }, {
+          "id" : 79,
+          "payment" : "b58f16b1",
+          "merchant" : "merchant-0006",
+          "amount" : 0.00,
+          "settledUtc" : "18:20:37"
+        }, {
+          "id" : 78,
+          "payment" : "dcc55043",
+          "merchant" : "merchant-0034",
+          "amount" : 0.00,
+          "settledUtc" : "18:19:07"
+        }, {
+          "id" : 77,
+          "payment" : "f3f4c130",
+          "merchant" : "merchant-0011",
+          "amount" : 0.00,
+          "settledUtc" : "18:19:37"
+        }, {
+          "id" : 76,
+          "payment" : "64d19ef4",
+          "merchant" : "merchant-0006",
+          "amount" : 0.00,
+          "settledUtc" : "18:18:37"
+        }, {
+          "id" : 75,
+          "payment" : "038c0de5",
+          "merchant" : "merchant-0003",
+          "amount" : 0.00,
+          "settledUtc" : "18:16:37"
+        }, {
+          "id" : 74,
+          "payment" : "4818420a",
+          "merchant" : "merchant-0030",
+          "amount" : 0.00,
+          "settledUtc" : "18:17:07"
+        }, {
+          "id" : 73,
+          "payment" : "6ac25a87",
+          "merchant" : "merchant-0006",
+          "amount" : 0.00,
+          "settledUtc" : "18:18:07"
+        }, {
+          "id" : 72,
+          "payment" : "efe918a4",
+          "merchant" : "merchant-0031",
+          "amount" : 0.00,
+          "settledUtc" : "18:17:37"
+        }, {
+          "id" : 71,
+          "payment" : "0f0a458f",
+          "merchant" : "merchant-0034",
+          "amount" : 0.00,
+          "settledUtc" : "18:16:07"
+        } ]
+      },
+      "kafka" : {
+        "published" : 80,
+        "lag" : 0,
+        "dlt" : 0,
+        "formats" : {
+          "v1" : 10,
+          "v2" : 70,
+          "both" : 0
+        }
+      },
+      "traffic" : {
+        "sent" : 80,
+        "total" : 22482.88
+      },
+      "recon" : {
+        "ref" : "main (720e12e)",
+        "entries" : 80,
+        "total" : 8214.79,
+        "mismatches" : null,
+        "error" : null,
+        "at" : "2026-10-13T18:20:40.535554Z"
+      },
+      "incident" : {
+        "next" : 7,
+        "status" : "done",
+        "result" : {
+          "booked" : 8214.79,
+          "sent" : 22482.88,
+          "missing" : 14268.09,
+          "zeroRows" : 50,
+          "dlt" : 0,
+          "ledgerHealth" : "UP",
+          "backlogTotal" : 14268.09,
+          "reproduced" : true
+        }
+      }
+    }
+  } ]
+}

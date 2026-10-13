@@ -1,0 +1,4 @@
+# Windows batch files need CRLF; shell scripts need LF, whatever the checkout settings.
+*.cmd text eol=crlf
+*.sh text eol=lf
+mvnw text eol=lf

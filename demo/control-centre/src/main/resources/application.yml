@@ -1,0 +1,32 @@
+server:
+  port: ${OWD_PORT:7070}
+  # The browser holds an event stream open; don't wait for it when stopping.
+  shutdown: immediate
+
+spring:
+  application:
+    name: control-centre
+  main:
+    banner-mode: off
+  autoconfigure:
+    exclude:
+      # We start Postgres and Kafka ourselves (EmbeddedInfra) and talk to them directly.
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+  mvc:
+    async:
+      request-timeout: -1
+
+owd:
+  pg-port: ${OWD_PG_PORT:55432}
+  kafka-port: ${OWD_KAFKA_PORT:9092}
+  # Headless mode: incident | matrix | reset | rollback-test (with owd.from / owd.to). Empty = serve the UI.
+  run: ""
+  # Open the browser when the UI is ready.
+  open-browser: true
+
+logging:
+  level:
+    root: WARN
+    onewaydoor: INFO
+    org.springframework.boot.web.embedded.tomcat: INFO

@@ -173,3 +173,56 @@ Newest phase at the bottom. Each entry: what's done, decisions, gotchas.
   doesn't trigger.
 - Push to GitHub, open PR #482 from `pr-482-minor-units`, and try the cloud agent (checklist section C).
 - Record a backup video of `docs/demo-script.md`.
+
+## Laptop mode: the demo Control Centre (no Docker)
+
+Why: the hackathon laptop is an org machine (Windows or macOS) with Java 21+, Node and Maven Central, but no Docker.
+
+Done:
+- `demo/control-centre/`: one Spring Boot process that replaces docker-compose and the bash scripts.
+  - Real PostgreSQL 16 from Maven-packaged binaries (zonky embedded-postgres; macOS arm64/x64, Windows x64, Linux x64).
+  - A real Kafka broker (KRaft) in the same JVM (spring-kafka-test, Kafka 3.9.2, the services' client line).
+  - Builds each service from a git worktree with its own `mvnw`/`mvnw.cmd`; jars cached by tree hash, as the images were.
+  - Runs the services as `java -jar` child processes. Rollbacks really run the previous commit.
+  - Ports `incident.sh`, `rollback-test.sh` and `rollback-matrix.sh` one for one, with the same assertions.
+    `hotfix` runs the existing `hotfix-reverse-v42.sql`.
+- A React + Vite UI. Five tabs, one per act; a live system map, metrics, the ledger, a log, and a control room.
+  - The map's dots are real records: a no-group observer consumer reads the payload (v1 `amount`, v2 `amountMinor`,
+    or both).
+  - Replay mode plays `recordings/incident.json`, a recorded real run, for when the venue laptop misbehaves.
+  - The built bundle is committed to `src/main/resources/static`, so the laptop needs no npm. CI checks it is fresh.
+- `demo/start.sh` and `demo/start.cmd`: build if needed, then run. Headless: `--owd.run=incident|matrix|prepare`.
+- `.github/workflows/laptop-demo.yml`: headless incident and matrix on `windows-latest` and `macos-latest`, plus the
+  bundle check. `control-centre` was added to the unit-test matrix in `ci.yml`.
+- `docs/demo-script.md` rewritten around the console; the Docker route is kept at the end. README updated.
+
+Decisions:
+- Services and branches are untouched. The one launch-time difference: `/actuator/shutdown` is exposed so a
+  rollback stops a service gracefully. Windows has no SIGTERM for a JVM, and a killed consumer would leave the next
+  version waiting 45 s for the group session to time out.
+- Postgres and Kafka start in a background thread. The UI and replay still work if a locked-down laptop blocks the
+  Postgres binaries.
+- `server.shutdown: immediate`: the browser's open event stream made graceful shutdown wait 30 s.
+
+Gotchas:
+- `EmbeddedKafkaKraftBroker.kafkaPorts()` is ignored in KRaft mode. A fixed `listeners` broker property
+  (`EXTERNAL://localhost:9092,CONTROLLER://localhost:0`) pins the port.
+- A Control Centre killed outright leaves its postgres running. On start it reads `postmaster.pid` and stops it.
+  Leftover services are found through pid files.
+- Spring Boot's `java.awt.headless` means `Desktop.browse` is out. The browser opens with `open` /
+  `rundll32 url.dll,FileProtocolHandler`.
+- Act 4 diff stats use three-dot diffs. main has moved on since the split branches were cut.
+
+Verified on this Mac (Docker Desktop not running):
+- Headless incident reproduced 4 times out of 4: JDK 21 (JBR 21.0.11) ×3 and JDK 25 ×1, in 17–36 s (the first run
+  includes builds).
+- Headless matrix: 4 PASS and 1 FAIL, as expected, in 1m52s (Docker: 4m02s). `docs/rollback-results.md` is refreshed.
+- The full incident was clicked through in the UI, step by step, and Replay played the recording.
+- Checked at 1280, 1440 and 1920 px with no console errors.
+- Stop with Ctrl+C or SIGTERM: everything is gone in 2 s, with no java, postgres or ports left.
+- `start.sh` built the Control Centre from a clean `target/` and prepared every ref.
+- JUnit: 6 tests for the ported rules. Node tests: unchanged (60 pass, 1 PowerShell test skipped locally).
+
+Not verified here: Windows. Its route uses `mvnw.cmd`, `cmd.exe` only for `.cmd` files, `ProcessHandle` and the
+graceful-stop endpoints, with no bash anywhere. `laptop-demo.yml` on `windows-latest` is the check once the repo is
+on GitHub.

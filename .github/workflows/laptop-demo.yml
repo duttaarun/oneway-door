@@ -1,0 +1,75 @@
+name: Laptop demo (no Docker)
+
+# The demo Control Centre must work on a plain Windows or macOS laptop with only Java and git.
+# This runs it headless on both: the £0.00 incident, then the full rollback matrix.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'demo/**'
+      - '.github/workflows/laptop-demo.yml'
+
+jobs:
+  ui-bundle:
+    name: UI bundle is up to date
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: demo/control-centre/ui
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run build
+      # The built bundle is committed so the demo laptop needs no npm. It must match the source.
+      - run: git diff --exit-code -- ../src/main/resources/static
+
+  headless:
+    name: Incident and matrix (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Create the demo branches locally
+        shell: bash
+        run: |
+          for b in main pr-482-minor-units split/1-expand split/2-migrate split/3-contract split/4-drop; do
+            git branch -f "$b" "origin/$b" 2>/dev/null || true
+          done
+          git branch --list
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+          cache-dependency-path: 'demo/**/pom.xml'
+      - name: Incident (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: demo\start.cmd --owd.run=incident --owd.open-browser=false
+      - name: Incident (macOS)
+        if: runner.os != 'Windows'
+        run: demo/start.sh --owd.run=incident --owd.open-browser=false
+      - name: Rollback matrix (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: demo\start.cmd --owd.run=matrix --owd.open-browser=false
+      - name: Rollback matrix (macOS)
+        if: runner.os != 'Windows'
+        run: demo/start.sh --owd.run=matrix --owd.open-browser=false
+      - name: Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: control-centre-logs-${{ matrix.os }}
+          path: .demo/cc/logs/
+          if-no-files-found: ignore

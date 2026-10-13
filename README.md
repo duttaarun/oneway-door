@@ -24,7 +24,8 @@ It runs in **GitHub Copilot**: VS Code agent mode, Copilot CLI and the Copilot c
 
 This repo includes Northwind Payments, a small invented payments system: a Spring Boot producer, a Kafka topic, a
 Spring Boot consumer that writes a Postgres ledger, and a nightly reconciliation job. Everything below happens for
-real when you run `demo/scripts/incident.sh`.
+real when you run act 2 in the demo Control Centre (`demo/start.sh` or `demo\start.cmd`), or `demo/scripts/incident.sh`
+with Docker.
 
 1. **PR #482** moves money from `double` pounds to `long` pence. Migration `V42` renames `ledger_entries.amount` to
    `amount_minor` and multiplies the values by 100. The `PaymentSettled` event swaps `amount` for `amountMinor`.
@@ -93,7 +94,8 @@ mix of old and new versions. After each stage it checks: both services healthy, 
 | `main` | `pr-482-minor-units` | **FAIL** | deploying the new ledger-service alone books 20 rows at £0.00 |
 
 PR #482 fails before anyone presses rollback. A new consumer reading old events books zero too. The door is one-way
-in both directions. Regenerate the table with `demo/scripts/rollback-matrix.sh` (about 4 minutes). It writes
+in both directions. Regenerate the table with **Run all** in act 5 of the Control Centre (about 2 minutes), or
+`demo/scripts/rollback-matrix.sh` with Docker (about 4 minutes). Both write
 [`docs/rollback-results.md`](docs/rollback-results.md).
 
 ---
@@ -130,6 +132,30 @@ Then ask Copilot: *"Review this PR for rollback safety"*, *"Can we roll back mai
 
 ## Run the demo
 
+### Without Docker: the Control Centre (Windows or macOS)
+
+You need **Java 21+ and git**. Nothing else: no Docker, no database, no Kafka install, no Maven, no npm.
+
+```bash
+demo/start.sh          # macOS / Linux
+```
+
+```bat
+demo\start.cmd
+```
+
+It builds itself the first time, then opens **http://localhost:7070**: a browser console with a live map of the
+system and the five acts of the talk. Behind it, one Java process runs a real PostgreSQL 16 and a real Kafka broker,
+builds each Northwind service from its git ref in a worktree, and runs them as child processes. Rollbacks really run
+the previous commit's code against today's database and topic. **Replay** mode plays back a recorded real run, for
+when the venue laptop misbehaves.
+
+Press **Prepare** once before the talk (it builds every branch, so nothing compiles on stage). Headless runs work too:
+`demo/start.sh --owd.run=incident` (or `matrix`, `prepare`) exits 0 when the result is as expected. Details:
+[`demo/control-centre/README.md`](demo/control-centre/README.md).
+
+### With Docker: the original scripts
+
 You need Docker Desktop (the images are multi-arch, so Apple Silicon is fine), Node 20+ and git. Java and Maven
 aren't needed on the host, because the builds run in containers.
 
@@ -164,6 +190,8 @@ demo/scripts/test.sh main        # Java unit tests (in a JDK 21 container)
   `pwsh` exists, including CI.
 - 15 repo tests check the SKILL.md rules, catalogue coverage, `applyTo` coverage, and that the plugin is in sync.
 - CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs all of it, plus each service's unit tests.
+- [`.github/workflows/laptop-demo.yml`](.github/workflows/laptop-demo.yml) runs the Control Centre's incident and
+  rollback matrix headless on Windows and macOS, and checks the committed UI bundle is up to date.
 
 ---
 
@@ -178,7 +206,7 @@ demo/scripts/test.sh main        # Java unit tests (in a JDK 21 container)
   workflows/               CI and copilot-setup-steps.yml for the cloud agent
 plugins/one-way-door/      generated plugin package (node tools/build-plugin.mjs)
 contracts/events/          PaymentSettled JSON Schema
-demo/                      docker-compose, three services, scripts
+demo/                      three services; control-centre/ (Java + React console, no Docker); docker-compose + scripts
 docs/                      copilot-formats.md, demo-script.md, copilot-test-checklist.md, rollback-results.md, progress.md
 tests/                     repo-level consistency tests
 ```

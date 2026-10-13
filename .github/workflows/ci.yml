@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [settlement-service, ledger-service, reconciliation-batch]
+        service: [settlement-service, ledger-service, reconciliation-batch, control-centre]
     defaults:
       run:
         working-directory: demo/${{ matrix.service }}
