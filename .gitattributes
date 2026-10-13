@@ -1,3 +1,6 @@
+# Text files keep Unix line endings on every platform. Windows would otherwise check out CRLF, and code that
+# reads frontmatter or compares files byte for byte (the tests, the plugin build) would then disagree.
+* text=auto eol=lf
 # Windows batch files need CRLF; shell scripts need LF, whatever the checkout settings.
 *.cmd text eol=crlf
 *.sh text eol=lf
