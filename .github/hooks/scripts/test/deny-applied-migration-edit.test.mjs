@@ -22,8 +22,9 @@ const hasPwsh = spawnSync('pwsh', ['-NoProfile', '-Command', 'exit 0']).status =
 let repo;
 let outside;
 before(() => {
-  repo = fs.mkdtempSync(path.join(os.tmpdir(), 'owd-hook-'));
-  outside = fs.mkdtempSync(path.join(os.tmpdir(), 'owd-nogit-'));
+  // realpath: macOS temp folders sit behind /private, and Windows may hand out 8.3 short names (RUNNER~1).
+  repo = fs.realpathSync.native(fs.mkdtempSync(path.join(os.tmpdir(), 'owd-hook-')));
+  outside = fs.realpathSync.native(fs.mkdtempSync(path.join(os.tmpdir(), 'owd-nogit-')));
   const git = (...args) => execFileSync('git', args, { cwd: repo, env: GIT_ENV });
   const write = (p, c) => { fs.mkdirSync(path.dirname(path.join(repo, p)), { recursive: true }); fs.writeFileSync(path.join(repo, p), c); };
   git('init', '-q', '-b', 'main');
@@ -86,6 +87,14 @@ for (const [name, runner] of runners) {
     test('VS Code shape with an absolute path is denied', () => {
       const d = decide(runner, vscode('Edit', { file_path: path.join(repo, MIG, 'V2__index.sql'), old_string: 'a', new_string: 'b' }));
       assert.equal(d.decision, 'deny');
+    });
+
+    test('Windows-style paths are denied: backslashes, other letter case, file URIs', () => {
+      const abs = path.join(repo, MIG, 'V1__init.sql');
+      assert.equal(decide(runner, vscode('Edit', { file_path: abs.replace(/\//g, '\\') })).decision, 'deny');
+      // Editors may spell the root differently from git (c: vs C:); the path inside the repo keeps its case.
+      assert.equal(decide(runner, vscode('Edit', { file_path: path.join(repo.toUpperCase(), MIG, 'V1__init.sql') })).decision, 'deny');
+      assert.equal(decide(runner, copilot('edit', { path: `file://${abs}` })).decision, 'deny');
     });
 
     test('a file list containing one applied migration is denied', () => {

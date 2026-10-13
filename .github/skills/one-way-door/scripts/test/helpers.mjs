@@ -10,7 +10,7 @@ const GIT_ENV = { ...process.env, GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOS
 
 /** Creates a temp repo on `main` with one commit holding `files`. */
 export function makeRepo(files = {}) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'owd-test-'));
+  const dir = fs.realpathSync.native(fs.mkdtempSync(path.join(os.tmpdir(), 'owd-test-')));
   const git = (...args) => execFileSync('git', args, { cwd: dir, encoding: 'utf8', env: GIT_ENV });
   git('init', '-q', '-b', 'main');
   git('config', 'user.email', 'test@example.invalid');

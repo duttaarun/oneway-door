@@ -50,7 +50,9 @@ This is your laptop for VS Code and Copilot CLI. For the cloud agent and code re
 
 **Windows warning.** For Copilot CLI, a preToolUse hook that crashes **denies every tool call**. If the hook's shell is
 missing, expect Copilot to be blocked from doing anything **(check)**. Copilot CLI on Windows already requires
-PowerShell 6 or later, so `pwsh` is normally there. If in doubt, leave the hook out: the skill doesn't need it.
+PowerShell 6 or later, so `pwsh` is normally there. The same applies if your organisation only allows **signed**
+PowerShell scripts (an `AllSigned` execution policy set by Group Policy): the hook's `.ps1` won't run. Check with
+`Get-ExecutionPolicy -List`. If in doubt, leave the hook out: the skill doesn't need it.
 
 ### 2.3 Copilot itself
 
@@ -370,7 +372,7 @@ fixed prompts and what a good answer looks like on each surface.
 | Script output has `"errors": ["unknown ref …"]` | The base branch isn't available locally | `git fetch origin main:main`, or pass `--base origin/main`. |
 | No merge base | Shallow clone | `git fetch --unshallow`. On the cloud agent, check `copilot-setup-steps.yml` is on the default branch. |
 | The comment says the scripts didn't run | Node isn't installed or isn't on PATH | Install Node 20+. The review still works, from the catalogue. |
-| **Every** tool call is denied (Copilot CLI, Windows) | The hook's shell is missing, and a crashing preToolUse hook denies everything | Install PowerShell 7, or remove `.github/hooks/one-way-door.json`. |
+| **Every** tool call is denied (Copilot CLI, Windows) | The hook's shell is missing, or policy blocks unsigned scripts, and a crashing preToolUse hook denies everything | Install PowerShell 7 and check `Get-ExecutionPolicy -List`, or remove `.github/hooks/one-way-door.json`. |
 | The hook never fires | `chat.useHooks` off, untrusted workspace, a device policy, or the plugin's `${PLUGIN_ROOT}` not expanded | Use the in-repo hook (option A). Check the "GitHub Copilot Chat Hooks" output in VS Code. |
 | The cloud agent ignores the setup steps | The file isn't on the default branch, or the job is named differently | Merge it to the default branch; keep the job named `copilot-setup-steps`. |
 

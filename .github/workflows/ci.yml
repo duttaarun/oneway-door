@@ -7,15 +7,22 @@ on:
 
 jobs:
   skill-and-hooks:
-    name: Skill, hook and plugin tests
-    runs-on: ubuntu-latest
+    name: Skill, hook and plugin tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Windows is where the PowerShell hook and Windows-style paths really get tested.
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
           node-version: 20
-      # The runner has bash and pwsh, so the hook tests cover both scripts here.
-      - run: node --test .github/skills/one-way-door/scripts/test/*.test.mjs .github/hooks/scripts/test/*.test.mjs tests/*.test.mjs
+      # Every runner has bash (Git Bash on Windows) and pwsh, so the hook tests cover both scripts.
+      # bash expands the globs; Node 20 doesn't.
+      - shell: bash
+        run: node --test .github/skills/one-way-door/scripts/test/*.test.mjs .github/hooks/scripts/test/*.test.mjs tests/*.test.mjs
 
   services:
     name: Unit tests (${{ matrix.service }})

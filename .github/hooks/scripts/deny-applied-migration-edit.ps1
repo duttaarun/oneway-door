@@ -90,8 +90,10 @@ try {
         $p = $p -replace '^file://', ''
         $r = $root -replace '\\', '/'
         $q = $p -replace '\\', '/'
+        $q = $q -replace '^/([A-Za-z]:/)', '$1'    # file:///C:/repo/... -> C:/repo/...
         foreach ($prefix in @("$r/", "/private$r/", (($r -replace '^/private', '') + '/'))) {
-            if ($q.StartsWith($prefix)) { return $q.Substring($prefix.Length) }
+            # Ignore case: Windows paths are case-insensitive, and editors may send c: where git says C:.
+            if ($q.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)) { return $q.Substring($prefix.Length) }
         }
         return ($q -replace '^\./', '')
     }

@@ -49,7 +49,7 @@ test('the marketplace entry points at the plugin', () => {
 });
 
 test('the plugin hook denies with PLUGIN_ROOT set and allows when it is missing', () => {
-  const repo = fs.mkdtempSync(path.join(os.tmpdir(), 'owd-plugin-hook-'));
+  const repo = fs.realpathSync.native(fs.mkdtempSync(path.join(os.tmpdir(), 'owd-plugin-hook-')));
   temps.push(repo);
   const git = (...args) => execFileSync('git', args, { cwd: repo, env: GIT_ENV });
   fs.mkdirSync(path.join(repo, 'db/migration'), { recursive: true });

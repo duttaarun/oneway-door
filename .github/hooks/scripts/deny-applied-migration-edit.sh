@@ -67,12 +67,17 @@ immutable_migration() {
 }
 
 relative() { # absolute, file:// or ./ path -> repo-relative path
-  local p="${1#file://}"
-  case "$p" in
-    "$root"/*) p="${p#"$root"/}" ;;
-    /private"$root"/*) p="${p#/private"$root"/}" ;;
-    /*) case "/private$p" in "$root"/*) p="${p#"${root#/private}"/}" ;; esac ;;
-  esac
+  local p="${1#file://}" lp prefix lprefix
+  # Windows: editors send C:\repo\... or c:/repo/..., git says C:/repo. File URIs look like /C:/repo/...
+  p="$(printf '%s' "$p" | tr '\\' '/')"
+  case "$p" in /[A-Za-z]:/*) p="${p#/}" ;; esac
+  # Compare without case: Windows and macOS paths are case-insensitive, and the editor's spelling of the root
+  # (c: or C:) need not match git's. macOS temp folders also appear with and without /private.
+  lp="$(printf '%s' "$p" | tr 'A-Z' 'a-z')"
+  for prefix in "$root/" "/private$root/" "${root#/private}/"; do
+    lprefix="$(printf '%s' "$prefix" | tr 'A-Z' 'a-z')"
+    case "$lp" in "$lprefix"*) p="${p:${#prefix}}"; break ;; esac
+  done
   printf '%s' "${p#./}"
 }
 
