@@ -56,31 +56,29 @@ Northwind Payments is invented. All names and amounts are demo data.
 
 ## 3. Get the code
 
-The demo needs the repository **with its git history**, not a zip download, plus six branches as **local** branches.
+The demo needs the repository **with its git history**, plus six **local** branches: `main`, `pr-482-minor-units`
+and `split/1-expand` to `split/4-drop`. Get the code either way:
+
+- **A zip**, such as GitHub's "Download ZIP" or a copy of the folder. A zip has no `.git` folder, so no branches.
+  Unzip it anywhere.
+- **A clone:** `git clone <repo-url> oneway-door`. A clone only creates `main` locally.
+
+Then run the restore script once, from anywhere:
 
 ```bash
-git clone <repo-url> oneway-door
-cd oneway-door
+sh demo/restore-branches.sh       # macOS or Linux ("sh" works even if the zip lost the executable bit)
 ```
 
-A fresh clone only creates `main` locally. Create the other five from the remote:
-
-macOS, Linux or Git Bash:
-
-```bash
-for b in pr-482-minor-units split/1-expand split/2-migrate split/3-contract split/4-drop; do
-  git branch --track "$b" "origin/$b"
-done
-git branch            # main plus the five above
+```bat
+demo\restore-branches.cmd         :: Windows
 ```
 
-Windows PowerShell:
+It needs only git. It creates the repository if there isn't one and keeps the files as they are. It then recreates
+each missing branch, with its history: from `origin` after a clone, or from `demo/branches.bundle` after a zip. It
+never moves a branch that already exists, so running it again is safe. It ends with a list of the branches.
 
-```powershell
-'pr-482-minor-units','split/1-expand','split/2-migrate','split/3-contract','split/4-drop' |
-  ForEach-Object { git branch --track $_ "origin/$_" }
-git branch
-```
+Keep `demo/branches.bundle` in the zip; the restore can't work without it. After changing a demo branch, rebuild it
+with `demo/make-branch-bundle.sh` and commit it.
 
 Stay on `main`. The Control Centre builds the other branches itself, in separate git worktrees, so your checkout is
 never switched.
@@ -336,7 +334,8 @@ The four-minute script is [docs/demo-script.md](docs/demo-script.md).
 |---|---|
 | `java` not found, or "unsupported class file version" | Install JDK 21+ (section 4). Check `java -version` and `JAVA_HOME`. |
 | First build fails while downloading | Check the network to Maven Central, or set up your mirror or proxy (section 5). Logs are in `.demo/cc/logs/build-*.log`. |
-| System check: branches missing | Create the local branches (section 3). |
+| System check: branches missing | Run `sh demo/restore-branches.sh` or `demo\restore-branches.cmd` (section 3). |
+| Restore says `branches.bundle` is missing | The zip left out `demo/branches.bundle`. Copy it from the original project. |
 | "Port … already in use" | Close whatever uses it, or move the Control Centre's ports with `OWD_PORT`, `OWD_PG_PORT` or `OWD_KAFKA_PORT`. 8081 and 8082 must be free. |
 | Map says "Postgres or Kafka did not start" | The laptop may block the Postgres binaries unpacked under `.demo/cc/pg-bin/`. Ask IT, or present with **Replay**: it needs nothing else. |
 | A service shows "failed to start" outside the incident | Open `.demo/cc/logs/<service>.log`. |

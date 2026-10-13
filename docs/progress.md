@@ -269,3 +269,29 @@ Gotchas:
 - In the TDD stylesheet, `table.t tr.sub td` outranks `.contents tr.sub td`. Contents spacing needs `table.t.contents`.
 - The screens' amounts differ from the recorded run's (£12,671.84 missing here, £12,708.11 in the recording). The pages
   say amounts are random each run.
+
+## Moving the project as a zip: restore the branches
+
+Why: the demo laptop may get the project as a zip. A zip has no `.git`, so no branches and no history. The review
+needs `main...pr-482-minor-units` (a merge base), and the Control Centre builds every demo branch from git.
+
+Done:
+- `demo/branches.bundle`: `main` and the six demo branches, with history, in one file (`demo/make-branch-bundle.sh`
+  rebuilds it).
+- `demo/restore-branches.sh` (macOS, Linux) and `demo/restore-branches.cmd` (Windows), git only. With no repository,
+  they create one, take `main`'s history from the bundle, keep the zip's files and commit any difference. Missing
+  branches come from `origin` after a clone, or from the bundle. Existing branches are never moved, so a second run
+  changes nothing.
+- `.github/workflows/restore-branches.yml` makes a "Download ZIP"-style archive, unzips it and restores on
+  `windows-latest` and `macos-latest`. It checks the branch tips against the bundle and that the tree is clean.
+- `DEMO.md` section 3 and TDD page 11 now use the restore script.
+
+Verified on this Mac: a zip with the executable bits stripped, an empty `git init`, a single-branch clone and a full
+clone. All six demo branch tips match the original commits. A second run adds no commit. A missing bundle stops with a
+clear message and exit 1. Windows: the workflow is the check.
+
+Gotchas:
+- Three `mvnw.cmd` files were committed with CRLF before `.gitattributes` existed. Any fresh `git add` rewrote them.
+  Renormalised once (`git add --renormalize .`).
+- The bundle can't contain the commit that adds it. Restoring therefore adds one commit on top of the bundled `main`
+  with whatever the zip has beyond it, which is at least the bundle itself.

@@ -1,0 +1,73 @@
+name: Restore branches from a zip
+
+# The project may travel as a zip, which has no .git folder. demo/restore-branches.sh and .cmd rebuild main and the
+# six demo branches from demo/branches.bundle. This makes the zip that "Download ZIP" gives, unzips it somewhere new
+# and restores from it, on the two laptops the demo targets.
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'demo/restore-branches.*'
+      - 'demo/branches.bundle'
+      - '.github/workflows/restore-branches.yml'
+
+jobs:
+  restore:
+    name: Restore on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v5
+      - name: Make the zip, with no .git, as "Download ZIP" does
+        shell: bash
+        run: git archive --format=zip -o "$RUNNER_TEMP/oneway-door.zip" HEAD
+      # Expand-Archive drops the executable bit on macOS, as many unzip tools do. The restore puts it back.
+      - name: Unzip it somewhere new
+        shell: pwsh
+        run: Expand-Archive -Path "$env:RUNNER_TEMP/oneway-door.zip" -DestinationPath "$env:RUNNER_TEMP/unzipped"
+      - name: Restore (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: call "%RUNNER_TEMP%\unzipped\demo\restore-branches.cmd"
+      - name: Restore (macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: sh "$RUNNER_TEMP/unzipped/demo/restore-branches.sh"
+      - name: Check the branches, the history and a clean working tree
+        shell: bash
+        working-directory: ${{ runner.temp }}/unzipped
+        run: |
+          set -e
+          git bundle list-heads demo/branches.bundle | while read -r sha ref; do
+            b="${ref#refs/heads/}"
+            if [ "$b" = main ]; then
+              git merge-base --is-ancestor "$sha" main     # main keeps the bundled history
+            else
+              test "$(git rev-parse "refs/heads/$b")" = "$sha"
+            fi
+            echo "ok $b"
+          done
+          git diff --name-only main...pr-482-minor-units | grep -q V3__amount_minor_units.sql
+          test -z "$(git status --porcelain)" || { git status --short; exit 1; }
+          test -x demo/start.sh || [ "$RUNNER_OS" = Windows ]
+      - name: Run it again, which changes nothing (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          cd /d "%RUNNER_TEMP%\unzipped"
+          for /f %%H in ('git rev-parse HEAD') do set "BEFORE=%%H"
+          call demo\restore-branches.cmd || exit /b 1
+          for /f %%H in ('git rev-parse HEAD') do set "AFTER=%%H"
+          if not "%BEFORE%"=="%AFTER%" exit /b 1
+      - name: Run it again, which changes nothing (macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        working-directory: ${{ runner.temp }}/unzipped
+        run: |
+          before=$(git rev-parse HEAD)
+          sh demo/restore-branches.sh
+          test "$before" = "$(git rev-parse HEAD)"

@@ -821,11 +821,10 @@ node .github/skills/one-way-door/scripts/schema-compat.mjs  --base main --head m
       </div>
       <div>
         <div class="label">Steps</div>
-        <div class="cmd"><span class="c"># 1. Get the code and the five demo branches</span>
+        <div class="cmd"><span class="c"># 1. Clone or unzip, then recreate the branches</span>
 git clone &lt;repo-url&gt; oneway-door &amp;&amp; cd oneway-door
-for b in pr-482-minor-units split/1-expand \
-  split/2-migrate split/3-contract split/4-drop; do
-  git branch --track "$b" "origin/$b"; done
+sh demo/restore-branches.sh  <span class="c"># macOS / Linux</span>
+demo\restore-branches.cmd    <span class="c"># Windows</span>
 
 <span class="c"># 2. Start (builds itself the first time)</span>
 demo/start.sh            <span class="c"># macOS / Linux</span>

@@ -2,3 +2,5 @@
 *.cmd text eol=crlf
 *.sh text eol=lf
 mvnw text eol=lf
+# A git bundle carries the demo branches inside a zip.
+*.bundle binary
