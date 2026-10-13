@@ -55,7 +55,7 @@ jobs:
       - name: Incident (Windows)
         if: runner.os == 'Windows'
         shell: cmd
-        run: demo\start.cmd --owd.run=incident --owd.open-browser=false
+        run: demo\start.cmd --owd.run=incident --owd.open-browser=false --logging.level.io.zonky=INFO
       - name: Incident (macOS)
         if: runner.os != 'Windows'
         run: demo/start.sh --owd.run=incident --owd.open-browser=false
