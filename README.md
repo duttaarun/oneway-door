@@ -140,6 +140,9 @@ use it. See [`docs/setup.md`](docs/setup.md).
 
 ## Run the demo
 
+The full guide is [`DEMO.md`](DEMO.md): what you need, installing Java, how Maven and the Node libraries are handled,
+starting the demo and each service, the day-before checklist and troubleshooting.
+
 ### Without Docker: the Control Centre (Windows or macOS)
 
 You need **Java 21+ and git**. Nothing else: no Docker, no database, no Kafka install, no Maven, no npm.

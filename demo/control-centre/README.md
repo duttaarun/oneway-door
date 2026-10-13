@@ -1,6 +1,6 @@
 # Demo Control Centre
 
-The One-Way Door demo, on a plain laptop. It needs **Java 21+ and git**: no Docker, no database or Kafka install, no
+The One-Way Door demo, on a plain laptop. For the full setup guide, start at [`DEMO.md`](../../DEMO.md). It needs **Java 21+ and git**: no Docker, no database or Kafka install, no
 Maven, no npm. It works on Windows and macOS.
 
 ```bash
