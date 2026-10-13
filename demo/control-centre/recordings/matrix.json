@@ -1,5 +1,5 @@
 {
-  "generated" : "2026-10-13 18:09 UTC",
+  "generated" : "2026-10-13 19:44 UTC",
   "results" : [ {
     "from" : "main",
     "to" : "split/1-expand",
@@ -19,7 +19,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£4986.44",
+      "recon" : "£4596.33",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -35,7 +35,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£9324.28",
+      "recon" : "£9941.93",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -51,7 +51,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£14630.49",
+      "recon" : "£14327.66",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -67,7 +67,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£18731.89",
+      "recon" : "£20146.61",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -83,7 +83,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£24490.84",
+      "recon" : "£24955.57",
       "ok" : true,
       "problems" : [ ]
     } ]
@@ -106,7 +106,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£3934.30",
+      "recon" : "£5126.35",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -122,7 +122,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£8391.05",
+      "recon" : "£10184.21",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -138,7 +138,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£13005.18",
+      "recon" : "£14428.92",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -154,7 +154,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£17935.28",
+      "recon" : "£19615.80",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -170,7 +170,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£23492.58",
+      "recon" : "£24597.08",
       "ok" : true,
       "problems" : [ ]
     } ]
@@ -193,7 +193,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£5589.91",
+      "recon" : "£5346.12",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -209,7 +209,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£10950.45",
+      "recon" : "£10921.06",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -225,7 +225,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£16574.02",
+      "recon" : "£15578.22",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -241,7 +241,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£20408.11",
+      "recon" : "£20992.19",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -257,7 +257,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£25960.46",
+      "recon" : "£25082.48",
       "ok" : true,
       "problems" : [ ]
     } ]
@@ -280,7 +280,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£4844.27",
+      "recon" : "£5160.49",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -296,7 +296,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£10847.29",
+      "recon" : "£9514.77",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -312,7 +312,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£15406.34",
+      "recon" : "£14424.41",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -328,7 +328,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£20397.93",
+      "recon" : "£20004.99",
       "ok" : true,
       "problems" : [ ]
     }, {
@@ -344,7 +344,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£26210.99",
+      "recon" : "£25037.93",
       "ok" : true,
       "problems" : [ ]
     } ]
@@ -367,7 +367,7 @@
       "zero" : 0,
       "dlt" : 0,
       "lag" : 0,
-      "recon" : "£5150.71",
+      "recon" : "£4482.74",
       "ok" : true,
       "problems" : [ ]
     }, {

@@ -226,3 +226,26 @@ Verified on this Mac (Docker Desktop not running):
 Not verified here: Windows. Its route uses `mvnw.cmd`, `cmd.exe` only for `.cmd` files, `ProcessHandle` and the
 graceful-stop endpoints, with no bash anywhere. `laptop-demo.yml` on `windows-latest` is the check once the repo is
 on GitHub.
+
+## Migration numbering: V42 → V3 (and the split's V42–V45 → V3–V6)
+
+Why: ledger-service on main has V1 and V2, so V42 implied 39 migrations that aren't in the repo. A judge would ask.
+Flyway only orders by version, so behaviour is unchanged.
+
+Done:
+- main: the skill's worked examples and pattern catalogue, the plugin copy, the scan-migrations test, the instructions test,
+  the hotfix (now `hotfix-reverse-v3.sql`, deleting history row `'3'`), the Docker scripts, the Control Centre and the
+  docs. `CLAUDE.md`'s demo story now says V3. Earlier entries in this log keep the old numbers as history.
+- Branches: rebuilt on the new main by cherry-picking each commit, renaming its migration file and fixing its message.
+  `pr-482-minor-units` adds `V3__amount_minor_units.sql`. The split adds `V3__add_amount_minor`, `V4__backfill_amount_minor`,
+  `V5__amount_minor_authoritative` and `V6__drop_amount`, as one stacked chain again.
+- Not changed: the pitch deck (by request). The proposal PDF never named the migration, so it needed nothing.
+- The explainer page artifact uses V3–V6 and the new recording's figures.
+
+Verified:
+- scan-migrations on `main...pr-482-minor-units`: the same 3 findings, at `V3__amount_minor_units.sql:3` and `:4`;
+  schema-compat: the same 5.
+- Unit tests green on all five branches (settlement 3–4, ledger 2–3; reconciliation-batch has none).
+- Node tests: 60 pass, 1 skipped (PowerShell). Headless incident reproduced and was re-recorded (Flyway: "3 - amount
+  minor units", 0.005 s; sent £22,405.89, booked £9,026.02, missing £13,379.87). Rollback matrix: 4 PASS, 1 FAIL,
+  as expected.
