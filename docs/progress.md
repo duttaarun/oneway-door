@@ -295,3 +295,24 @@ Gotchas:
   Renormalised once (`git add --renormalize .`).
 - The bundle can't contain the commit that adds it. Restoring therefore adds one commit on top of the bundled `main`
   with whatever the zip has beyond it, which is at least the bundle itself.
+
+## Windows: CI green, and the laptop demo runs on Windows
+
+The first push to GitHub showed two Windows failures that macOS never hit.
+
+Done:
+- **Line endings.** Git for Windows checks out CRLF, so the tests that read frontmatter, and the plugin check, which
+  compares files byte for byte, failed. `.gitattributes` now starts with `* text=auto eol=lf`; `.cmd` stays CRLF.
+  Reproduced on a Mac with a `core.autocrlf=true` clone: 6 failures before, 0 after.
+- **Postgres.** initdb drops administrator rights. When the JVM runs as an administrator, the data directory it
+  creates belongs to Administrators, so initdb failed with "could not change permissions ... Permission denied".
+  `EmbeddedInfra` now creates `pgdata` first on Windows and gives the signed-in user full control.
+- **Kafka.** Deleting a topic on Windows makes the broker rename open files. Windows refuses, and the broker takes
+  its log directory offline. On Windows a reset now empties the topics in place (`deleteRecords` to the end).
+  `KafkaStats` counts records as end minus start, which is the same where topics are recreated.
+- CI's incident steps pass `--logging.level.io.zonky=INFO`, so Postgres's own messages appear in the log.
+  `DEMO.md` troubleshooting says how to do the same on a laptop.
+
+Verified on GitHub Actions, `windows-latest` and `macos-latest`: incident reproduced (Windows: 50 rows at £0.00,
+£12,488.42 missing, empty DLT), rollback matrix 4 PASS and PR #482 FAIL; skill, hook and plugin tests on Windows,
+macOS and Ubuntu.
