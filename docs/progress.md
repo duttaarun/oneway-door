@@ -335,3 +335,12 @@ Gotchas:
   missing £12,708.11. The explainer artifact still shows an older run's figures.
 - Each slide's content block uses CSS `zoom` to fill the slide. The overflow check reads the zoomed block's box and
   flags text clipped inside code and error boxes.
+
+## TDD: the User story section is now two pages
+
+- 2.1 keeps the primary story, acceptance criteria and journey. The supporting stories now use the deck's cast and
+  pictures (Priya, Tom, Sam, Grace). The old personas (Sam as reviewer, Aisha, Tom in finance) are gone.
+- 2.2 is new: what the Northwind demo is, why PR #482 swaps a double for long pence, the cast of six, the Friday
+  timeline from 16:30 to 17:26, what went wrong, and a pointer to `onewaydoor-proposal-v2.pdf` for the full story.
+- The TDD is 22 pages; contents, cover and footers renumbered and checked. Small thumbnails
+  (`images/deck/thumbs/`) keep the PDF from carrying full-size pictures many times over.

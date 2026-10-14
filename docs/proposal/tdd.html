@@ -248,6 +248,23 @@
   .shots > div { min-width: 0; }
   .crop { overflow: hidden; border-radius: 3mm; border: 1px solid var(--line); }
   .crop img { display: block; width: 100%; }
+  .persona { grid-template-columns: 12mm 1fr; }
+  .persona .avatar { width: 12mm; height: 12mm; overflow: hidden; border: 0.35mm solid var(--black); }
+  .avatar img, .face img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; display: block; }
+  .face { width: 7.4mm; height: 7.4mm; border-radius: 50%; overflow: hidden; border: 0.3mm solid var(--black); flex: none; }
+  .cast { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2.4mm; }
+  .cast > div { border-radius: 3mm; padding: 2.4mm 2mm; text-align: center; }
+  .cast .face { width: 13mm; height: 13mm; margin: 0 auto 1.2mm; border-width: 0.35mm; }
+  .cast b { display: block; font-family: var(--head); font-size: 10pt; }
+  .cast span { display: block; font-size: 7.4pt; line-height: 1.3; color: var(--muted); }
+  table.tl { width: 100%; border-collapse: collapse; font-size: 8.3pt; }
+  table.tl th { text-align: left; font-size: 7.4pt; color: var(--white); background: var(--black); padding: 1.3mm 2mm; }
+  table.tl td { padding: 1.2mm 2mm; border-bottom: 1px solid var(--line); vertical-align: middle; line-height: 1.32; }
+  table.tl td.tm { font-family: var(--mono); font-weight: 600; font-size: 8pt; white-space: nowrap; }
+  table.tl td.who { white-space: nowrap; }
+  table.tl td.who > div { display: flex; align-items: center; gap: 1.6mm; font-weight: 700; }
+  table.tl td.sig { font-family: var(--mono); font-size: 7.1pt; }
+  table.tl td.sig.bad { color: var(--red); } table.tl td.sig.good { color: var(--green); }
   .quote { font-family: var(--mono); font-size: 7.4pt; line-height: 1.5; background: var(--grey); border-radius: 2.4mm; padding: 2.4mm 3mm; }
 </style>
 </head>
@@ -296,10 +313,10 @@
   <div class="toc">
     <div><small>Contents</small><b>Ten sections</b><span class="more">Page 2 ›</span></div>
     <div><small>01–02</small><b>Problem and story</b><span class="more">Page 3 ›</span></div>
-    <div><small>03–06</small><b>Skill, setup, demo</b><span class="more">Page 5 ›</span></div>
-    <div><small>07–10</small><b>Outcomes and limits</b><span class="more">Page 18 ›</span></div>
+    <div><small>03–06</small><b>Skill, setup, demo</b><span class="more">Page 6 ›</span></div>
+    <div><small>07–10</small><b>Outcomes and limits</b><span class="more">Page 19 ›</span></div>
   </div>
-    <div class="footer"><span>Technical design document</span><span>One-Way Door · Technical design</span><span>1 / 21</span></div>
+    <div class="footer"><span>Technical design document</span><span>One-Way Door · Technical design</span><span>1 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -309,27 +326,29 @@
 
     <table class="t contents">
       <tr><td class="no">01</td><td class="sec">Problem statement</td><td class="what">Why rollback fails, and why today's checks miss it</td><td class="pg">3</td></tr>
-      <tr><td class="no">02</td><td class="sec">User story</td><td class="what">Who it is for, the stories and the acceptance criteria</td><td class="pg">4</td></tr>
-      <tr><td class="no">03</td><td class="sec">Skill name and mission</td><td class="what">What the skill is, what it does, and how it works</td><td class="pg">5</td></tr>
-      <tr class="sub"><td></td><td class="sec">3.1 Name, mission and capabilities</td><td></td><td class="pg">5</td></tr>
-      <tr class="sub"><td></td><td class="sec">3.2 Components and design principles</td><td></td><td class="pg">6</td></tr>
-      <tr class="sub"><td></td><td class="sec">3.3 How it works</td><td></td><td class="pg">7</td></tr>
-      <tr><td class="no">04</td><td class="sec">Repository link</td><td class="what">Where the code lives (TBD), its layout, branches and quality gates</td><td class="pg">8</td></tr>
-      <tr><td class="no">05</td><td class="sec">Setup instructions</td><td class="what">The tech stack and installing it in VS Code, CLI, cloud agent and code review</td><td class="pg">9</td></tr>
-      <tr class="sub"><td></td><td class="sec">5.1 Tech stack and install options</td><td></td><td class="pg">9</td></tr>
-      <tr class="sub"><td></td><td class="sec">5.2 Setup by Copilot surface</td><td></td><td class="pg">10</td></tr>
-      <tr><td class="no">06</td><td class="sec">Demo instructions</td><td class="what">Architecture, running the live demo on a laptop, and its screens</td><td class="pg">11</td></tr>
-      <tr class="sub"><td></td><td class="sec">6.1 Set up and start</td><td></td><td class="pg">11</td></tr>
-      <tr class="sub"><td></td><td class="sec">6.2 Architecture: the demo system</td><td></td><td class="pg">12</td></tr>
-      <tr class="sub"><td></td><td class="sec">6.3 Architecture: the demo runtime</td><td></td><td class="pg">13</td></tr>
-      <tr class="sub"><td></td><td class="sec">6.4 Run the five acts</td><td></td><td class="pg">14</td></tr>
-      <tr class="sub"><td></td><td class="sec">6.5 Screens: the PR and the rollback</td><td></td><td class="pg">15</td></tr>
-      <tr class="sub"><td></td><td class="sec">6.6 Screens: £0.00, and the review</td><td></td><td class="pg">16</td></tr>
-      <tr class="sub"><td></td><td class="sec">6.7 Screens: the proof</td><td></td><td class="pg">17</td></tr>
-      <tr><td class="no">07</td><td class="sec">Before and after completions</td><td class="what">What Copilot says without the skill and with it, and what changes in the system</td><td class="pg">18</td></tr>
-      <tr><td class="no">08</td><td class="sec">Reuse statements</td><td class="what">What can be reused as it is, what to configure, and how to extend it</td><td class="pg">19</td></tr>
-      <tr><td class="no">09</td><td class="sec">Known limitations</td><td class="what">What it doesn't do yet, the impact, and the workaround</td><td class="pg">20</td></tr>
-      <tr><td class="no">10</td><td class="sec">Guardrails</td><td class="what">What the skill, scripts and hook will and won't do</td><td class="pg">21</td></tr>
+      <tr><td class="no">02</td><td class="sec">User story</td><td class="what">Who it is for, and the story the demo tells</td><td class="pg">4</td></tr>
+      <tr class="sub"><td></td><td class="sec">2.1 The user story and its criteria</td><td></td><td class="pg">4</td></tr>
+      <tr class="sub"><td></td><td class="sec">2.2 The demo story: cast and timeline</td><td></td><td class="pg">5</td></tr>
+      <tr><td class="no">03</td><td class="sec">Skill name and mission</td><td class="what">What the skill is, what it does, and how it works</td><td class="pg">6</td></tr>
+      <tr class="sub"><td></td><td class="sec">3.1 Name, mission and capabilities</td><td></td><td class="pg">6</td></tr>
+      <tr class="sub"><td></td><td class="sec">3.2 Components and design principles</td><td></td><td class="pg">7</td></tr>
+      <tr class="sub"><td></td><td class="sec">3.3 How it works</td><td></td><td class="pg">8</td></tr>
+      <tr><td class="no">04</td><td class="sec">Repository link</td><td class="what">Where the code lives (TBD), its layout, branches and quality gates</td><td class="pg">9</td></tr>
+      <tr><td class="no">05</td><td class="sec">Setup instructions</td><td class="what">The tech stack and installing it in VS Code, CLI, cloud agent and code review</td><td class="pg">10</td></tr>
+      <tr class="sub"><td></td><td class="sec">5.1 Tech stack and install options</td><td></td><td class="pg">10</td></tr>
+      <tr class="sub"><td></td><td class="sec">5.2 Setup by Copilot surface</td><td></td><td class="pg">11</td></tr>
+      <tr><td class="no">06</td><td class="sec">Demo instructions</td><td class="what">Architecture, running the live demo on a laptop, and its screens</td><td class="pg">12</td></tr>
+      <tr class="sub"><td></td><td class="sec">6.1 Set up and start</td><td></td><td class="pg">12</td></tr>
+      <tr class="sub"><td></td><td class="sec">6.2 Architecture: the demo system</td><td></td><td class="pg">13</td></tr>
+      <tr class="sub"><td></td><td class="sec">6.3 Architecture: the demo runtime</td><td></td><td class="pg">14</td></tr>
+      <tr class="sub"><td></td><td class="sec">6.4 Run the five acts</td><td></td><td class="pg">15</td></tr>
+      <tr class="sub"><td></td><td class="sec">6.5 Screens: the PR and the rollback</td><td></td><td class="pg">16</td></tr>
+      <tr class="sub"><td></td><td class="sec">6.6 Screens: £0.00, and the review</td><td></td><td class="pg">17</td></tr>
+      <tr class="sub"><td></td><td class="sec">6.7 Screens: the proof</td><td></td><td class="pg">18</td></tr>
+      <tr><td class="no">07</td><td class="sec">Before and after completions</td><td class="what">What Copilot says without the skill and with it, and what changes in the system</td><td class="pg">19</td></tr>
+      <tr><td class="no">08</td><td class="sec">Reuse statements</td><td class="what">What can be reused as it is, what to configure, and how to extend it</td><td class="pg">20</td></tr>
+      <tr><td class="no">09</td><td class="sec">Known limitations</td><td class="what">What it doesn't do yet, the impact, and the workaround</td><td class="pg">21</td></tr>
+      <tr><td class="no">10</td><td class="sec">Guardrails</td><td class="what">What the skill, scripts and hook will and won't do</td><td class="pg">22</td></tr>
     </table>
     <div class="sp2"></div>
     <div class="grid2">
@@ -346,25 +365,24 @@
           <li><span class="mono">docs/setup.md</span>: full setup guide, with sources</li>
           <li><span class="mono">DEMO.md</span> and <span class="mono">docs/demo-script.md</span>: running and presenting the demo</li>
           <li><span class="mono">docs/copilot-formats.md</span>: verified Copilot formats</li>
-          <li><span class="mono">One-Way-Door-proposal.pdf</span>: the hackathon proposal</li>
+          <li><span class="mono">onewaydoor-proposal-v2.pdf</span>: the full demo story</li>
         </ul>
       </div>
       <div class="box b-line">
         <h3>Terms used</h3>
         <dl class="glossary">
-          <dt>One-way door</dt><dd>A change that leaves state the previous release can't handle, so rollback doesn't restore service.</dd>
+          <dt>One-way door</dt><dd>A change that leaves state the previous release can't handle.</dd>
           <dt>Two-way door</dt><dd>A change that can be deployed and rolled back safely.</dd>
           <dt>Door closes</dt><dd>The deploy moment after which rollback is no longer safe.</dd>
           <dt>Rollback window</dt><dd>How long after deploy a rollback is still safe.</dd>
           <dt>Blast radius</dt><dd>Other code that reads the same table, column, topic or field.</dd>
           <dt>The split</dt><dd>Expand → migrate → contract → drop: the same change in steps that each roll back.</dd>
-          <dt>Surface</dt><dd>Where Copilot runs: VS Code, Copilot CLI, cloud agent, code review.</dd>
         </dl>
       </div>
     </div>
 
   </div>
-  <div class="footer"><span>Contents</span><span>One-Way Door · Technical design</span><span>2 / 21</span></div>
+  <div class="footer"><span>Contents</span><span>One-Way Door · Technical design</span><span>2 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -421,12 +439,12 @@
     </div>
 
   </div>
-  <div class="footer"><span>01 · Problem statement</span><span>One-Way Door · Technical design</span><span>3 / 21</span></div>
+  <div class="footer"><span>01 · Problem statement</span><span>One-Way Door · Technical design</span><span>3 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
   <div class="navbar"><span><small>01</small>Problem</span><span class="on"><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
-  <div class="intro"><div class="label">02 · User story</div><h2>Know before you merge whether you can roll back</h2></div>
+  <div class="intro"><div class="label">02 · User story · 2.1</div><h2>Know before you merge whether you can roll back</h2></div>
   <div class="body">
 
     <div class="statement">
@@ -437,10 +455,10 @@
     </div>
     <div class="label">Supporting stories</div>
     <div class="grid2">
-      <div class="persona"><div class="avatar" style="background:var(--green-bright)">P</div><div><h3>Priya</h3><div class="role">Payments engineer · author of PR #482</div><p>As the author, I want <em>a plain verdict and the reason, in my editor</em>, so that I can fix the change before anyone reviews it.</p></div></div>
-      <div class="persona"><div class="avatar" style="background:#A19FFF">S</div><div><h3>Sam</h3><div class="role">Tech lead · reviewer</div><p>As a reviewer, I want <em>every reader of a changed column or field, including ones outside the PR</em>, so that I review the blast radius, not just the diff.</p></div></div>
-      <div class="persona"><div class="avatar" style="background:#F5B2F2">A</div><div><h3>Aisha</h3><div class="role">On-call engineer · reliability</div><p>As on-call, I want <em>a safe rollback window for every release</em>, so that I know whether pressing rollback will help or hurt.</p></div></div>
-      <div class="persona"><div class="avatar" style="background:#FFB16A">T</div><div><h3>Tom</h3><div class="role">Finance systems · reconciliation owner</div><p>As the owner of a downstream job, I want <em>changes to data I read to be flagged before merge</em>, so that my totals never break or drift silently.</p></div></div>
+      <div class="persona"><div class="avatar" style="background:var(--mint)"><img src="images/deck/thumbs/priya.png" alt="Priya"></div><div><h3>Priya</h3><div class="role">Backend developer · author of PR #482</div><p>As the author, I want <em>a plain verdict and the reason, in my editor</em>, so that I can fix the change before anyone reviews it.</p></div></div>
+      <div class="persona"><div class="avatar" style="background:var(--lilac)"><img src="images/deck/thumbs/tom.png" alt="Tom"></div><div><h3>Tom</h3><div class="role">Tech lead · reviewer</div><p>As a reviewer, I want <em>every reader of a changed column or field, including ones outside the PR</em>, so that I review the blast radius, not just the diff.</p></div></div>
+      <div class="persona"><div class="avatar" style="background:var(--aqua)"><img src="images/deck/thumbs/sam.png" alt="Sam"></div><div><h3>Sam</h3><div class="role">On-call engineer</div><p>As on-call, I want <em>a safe rollback window for every release</em>, so that I know whether pressing rollback will help or hurt.</p></div></div>
+      <div class="persona"><div class="avatar" style="background:var(--orange)"><img src="images/deck/thumbs/grace.png" alt="Grace"></div><div><h3>Grace</h3><div class="role">Finance · owns the reconciliation</div><p>As the owner of a downstream job, I want <em>changes to data I read to be flagged before merge</em>, so that my totals never break or drift silently.</p></div></div>
     </div>
     <div class="ac">
       <div>
@@ -468,7 +486,70 @@
     </div>
 
   </div>
-  <div class="footer"><span>02 · User story</span><span>One-Way Door · Technical design</span><span>4 / 21</span></div>
+  <div class="footer"><span>02 · User story</span><span>One-Way Door · Technical design</span><span>4 / 22</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span class="on"><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">02 · User story · 2.2</div><h2>The demo story: a sensible refactor, then £0.00</h2></div>
+  <div class="body">
+
+    <p class="lead" style="font-size:9.6pt;margin-bottom:3mm">The demo tells the user story end to end, with real code. <b>Northwind Payments</b> is an invented UK company that settles card payments for small merchants. One pull request, PR #482, gets merged without anyone asking whether it can be rolled back.</p>
+    <div class="grid2">
+      <div class="box b-grey">
+        <h3>What the demo is</h3>
+        <ul>
+          <li><b>settlement-service</b>, the writer: turns each settlement into a <span class="mono">PaymentSettled</span> event on Kafka.</li>
+          <li><b>ledger-service</b>, the reader: books one row per event in Postgres <span class="mono">ledger_entries</span>.</li>
+          <li><b>reconciliation-batch</b>, finance's job: sums that table directly. Nobody remembers it.</li>
+          <li>All three are real Java 21 services, built from git and run for real on one laptop.</li>
+        </ul>
+      </div>
+      <div class="box b-orange">
+        <h3 style="color:var(--orange-d)">Why PR #482 swaps double for long</h3>
+        <ul>
+          <li>A <span class="mono">double</span> can't hold most decimals exactly: <span class="mono">0.1 + 0.2 = 0.30000000000000004</span>. Summed across millions of settlements, totals drift by pennies.</li>
+          <li>Card schemes send whole pence. A <span class="mono">long</span> is exact: <span class="mono">amountMinor = 26847</span> is £268.47.</li>
+          <li><b>The idea is right.</b> The trouble is shipping it in one deploy: Flyway V3 renames <span class="mono">amount</span> and rewrites every row in pence, and the event drops <span class="mono">amount</span> for <span class="mono">amountMinor</span>.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="sp2"></div>
+    <div class="label">The cast</div>
+    <div class="cast">
+      <div class="b-mint"><div class="face" style="background:var(--mint)"><img src="images/deck/thumbs/priya.png" alt=""></div><b>Priya</b><span>Developer. Raises PR #482.</span></div>
+      <div class="b-lilac"><div class="face" style="background:var(--lilac)"><img src="images/deck/thumbs/tom.png" alt=""></div><b>Tom</b><span>Tech lead. Reviews and approves it.</span></div>
+      <div class="b-aqua"><div class="face" style="background:var(--aqua)"><img src="images/deck/thumbs/sam.png" alt=""></div><b>Sam</b><span>On call. Presses rollback.</span></div>
+      <div class="b-orange"><div class="face" style="background:var(--orange)"><img src="images/deck/thumbs/grace.png" alt=""></div><b>Grace</b><span>Finance. Owns the reconciliation.</span></div>
+      <div class="b-pink"><div class="face" style="background:var(--pink)"><img src="images/deck/thumbs/dev.png" alt=""></div><b>Dev</b><span>DBA. Writes the hand hotfix.</span></div>
+      <div style="background:#FFF6D6"><div class="face" style="background:#FFF6D6"><img src="images/deck/thumbs/door-mascot.png" alt=""></div><b>Hinge</b><span>The skill. Asks "can we roll back?"</span></div>
+    </div>
+    <div class="sp2"></div>
+    <div class="label">The timeline: Friday, 16:30 to 17:26</div>
+    <table class="tl">
+      <tr><th style="width:9%">Time</th><th style="width:13%">Who</th><th>What happens</th><th style="width:30%">What everyone sees</th></tr>
+        <tr><td class="tm">16:30</td><td class="who"><div><div class="face" style="background:var(--mint)"><img src="images/deck/thumbs/priya.png" alt=""></div>Priya</div></td><td>v1 runs: settlements booked in pounds.</td><td class="sig good">10 rows, all correct</td></tr>
+        <tr><td class="tm">16:40</td><td class="who"><div><div class="face" style="background:var(--lilac)"><img src="images/deck/thumbs/tom.png" alt=""></div>Tom</div></td><td>PR #482 ships. Flyway V3 runs in 5 ms; settlement-service now sends <span class="mono">amountMinor</span>.</td><td class="sig good">tests were green</td></tr>
+        <tr><td class="tm">16:55</td><td class="who"><div><div class="face" style="background:var(--orange)"><img src="images/deck/thumbs/grace.png" alt=""></div>Grace</div></td><td>reconciliation-batch, not in the PR, still runs <span class="mono">SUM(amount)</span>.</td><td class="sig bad">column "amount" does not exist</td></tr>
+        <tr><td class="tm">16:58</td><td class="who"><div><div class="face" style="background:var(--aqua)"><img src="images/deck/thumbs/sam.png" alt=""></div>Sam</div></td><td>Sam rolls back <b>ledger-service only</b>. The old code won&#8217;t start on the new table.</td><td class="sig bad">missing column [amount]</td></tr>
+        <tr><td class="tm">17:00</td><td class="who"><div><div class="face" style="background:var(--aqua)"><img src="images/deck/thumbs/sam.png" alt=""></div>Sam</div></td><td>settlement-service is still v2. Fifty <span class="mono">amountMinor</span> events queue on Kafka.</td><td class="sig bad">backlog: 50 events</td></tr>
+        <tr><td class="tm">17:25</td><td class="who"><div><div class="face" style="background:var(--pink)"><img src="images/deck/thumbs/dev.png" alt=""></div>Dev</div></td><td>A hand-written hotfix reverses V3. v1 starts and drains the queue.</td><td class="sig good">ledger-service UP</td></tr>
+        <tr><td class="tm">17:26</td><td class="who"><div><div class="face" style="background:var(--orange)"><img src="images/deck/thumbs/grace.png" alt=""></div>Grace</div></td><td>Fifty settlements booked at <b>£0.00</b>. No exception, empty DLT, every dashboard green.</td><td class="sig bad">£12,708.11 missing</td></tr>
+    </table>
+    <div class="sp2"></div>
+    <div class="grid2">
+      <div class="box b-deep">
+        <h3>What went wrong</h3>
+        <p>Everyone watched the ledger. Nobody thought about <b>settlement-service</b>: it stayed on v2 after the rollback, and the v2 events already on Kafka can't be rolled back. Nor about <b>reconciliation-batch</b>, which reads the table but isn't in the PR.</p>
+      </div>
+      <div class="box b-mint">
+        <h3 style="color:var(--green-deep)">The full story</h3>
+        <p><b>onewaydoor-proposal-v2.pdf</b>, slides 3 to 14: the cast, why the PR was raised, the incident minute by minute, and why it booked £0.00 rather than failing. Section 6 shows how the demo runs.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer"><span>02 · User story</span><span>One-Way Door · Technical design</span><span>5 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -509,7 +590,7 @@
     <div class="quote">Rollback-safety review for pull requests, diffs and releases. Answers "if this goes wrong after deploy, can we roll back?" Use when reviewing a PR, checking deploy or release readiness, asking "is this safe to ship" or "can we roll back", or when a change touches database migrations (Flyway, Liquibase, EF Core), event or message schemas (Kafka, JSON Schema, Avro, Service Bus), serialised DTOs, caches, idempotency keys, partner webhooks or API versions. Classifies each change as one-way or two-way, says when the door closes and what breaks on rollback, gives a safe rollback window, finds other code that reads the same table, column or topic, and proposes an expand, migrate, contract, drop split it can generate as branches.</div>
 
   </div>
-  <div class="footer"><span>03 · Skill name and mission</span><span>One-Way Door · Technical design</span><span>5 / 21</span></div>
+  <div class="footer"><span>03 · Skill name and mission</span><span>One-Way Door · Technical design</span><span>6 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -550,7 +631,7 @@
 &lt;sub&gt;scan-migrations: n findings · schema-compat: n findings · checked base...head&lt;/sub&gt;</div>
 
   </div>
-  <div class="footer"><span>03 · Components and design</span><span>One-Way Door · Technical design</span><span>6 / 21</span></div>
+  <div class="footer"><span>03 · Components and design</span><span>One-Way Door · Technical design</span><span>7 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -599,7 +680,7 @@
     </div>
 
   </div>
-  <div class="footer"><span>03 · How it works</span><span>One-Way Door · Technical design</span><span>7 / 21</span></div>
+  <div class="footer"><span>03 · How it works</span><span>One-Way Door · Technical design</span><span>8 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -663,7 +744,7 @@ README.md  DEMO.md  LICENSE</div>
     </div>
 
   </div>
-  <div class="footer"><span>04 · Repository link</span><span>One-Way Door · Technical design</span><span>8 / 21</span></div>
+  <div class="footer"><span>04 · Repository link</span><span>One-Way Door · Technical design</span><span>9 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -713,7 +794,7 @@ copilot plugin install /path/to/plugins/one-way-door</div>
     </table>
 
   </div>
-  <div class="footer"><span>05 · Setup instructions</span><span>One-Way Door · Technical design</span><span>9 / 21</span></div>
+  <div class="footer"><span>05 · Setup instructions</span><span>One-Way Door · Technical design</span><span>10 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -776,7 +857,7 @@ node .github/skills/one-way-door/scripts/schema-compat.mjs  --base main --head m
     <p style="font-size:8.2pt;color:var(--muted);margin-top:1.6mm">Full guide with sources: <span class="mono">docs/setup.md</span> (checked against the live GitHub and VS Code docs on 13 October 2026).</p>
 
   </div>
-  <div class="footer"><span>05 · Setup instructions</span><span>One-Way Door · Technical design</span><span>10 / 21</span></div>
+  <div class="footer"><span>05 · Setup instructions</span><span>One-Way Door · Technical design</span><span>11 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -846,7 +927,7 @@ demo/start.sh --owd.run=prepare</div>
     <p style="font-size:8.2pt;color:var(--muted);margin-top:2mm">Stop with Ctrl+C: services, Kafka and Postgres stop in about 2 s. Full guide: <span class="mono">DEMO.md</span>.</p>
 
   </div>
-  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>11 / 21</span></div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>12 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -873,7 +954,7 @@ demo/start.sh --owd.run=prepare</div>
     </table>
 
   </div>
-  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>12 / 21</span></div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>13 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -896,7 +977,7 @@ demo/start.sh --owd.run=prepare</div>
     </table>
 
   </div>
-  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>13 / 21</span></div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>14 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -933,7 +1014,7 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     </div>
 
   </div>
-  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>14 / 21</span></div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>15 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -949,7 +1030,7 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     <div class="cap" style="width:84%;margin:1.2mm auto 0"><b>Act 2 · 17:00.</b> Rolled back, v1 ledger-service won't start: <span class="mono">missing column [amount]</span>. Reconciliation fails too. 50 events wait on Kafka; £12,671.84 is not booked yet.</div>
 
   </div>
-  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>15 / 21</span></div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>16 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -964,7 +1045,7 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     <div class="cap" style="width:84%;margin:1.2mm auto 0"><b>Act 3 · The review.</b> The skill's verdict, ONE-WAY with no safe window, beside the three things it predicted. The red lines are copied from act 2's run, not typed in.</div>
 
   </div>
-  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>16 / 21</span></div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>17 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -979,7 +1060,7 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     <div class="cap" style="width:90%;margin:1.2mm auto 0"><b>Act 5 · The rollback matrix.</b> Each split step deploys and rolls back cleanly. PR #482 fails at stage 2, before anyone presses rollback: a new consumer reading old events books £0.00 too.</div>
 
   </div>
-  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>17 / 21</span></div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>18 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -1037,7 +1118,7 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     </div>
 
   </div>
-  <div class="footer"><span>07 · Before and after completions</span><span>One-Way Door · Technical design</span><span>18 / 21</span></div>
+  <div class="footer"><span>07 · Before and after completions</span><span>One-Way Door · Technical design</span><span>19 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -1087,7 +1168,7 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     </div>
 
   </div>
-  <div class="footer"><span>08 · Reuse statements</span><span>One-Way Door · Technical design</span><span>19 / 21</span></div>
+  <div class="footer"><span>08 · Reuse statements</span><span>One-Way Door · Technical design</span><span>20 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -1117,7 +1198,7 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     </ul></div>
 
   </div>
-  <div class="footer"><span>09 · Known limitations</span><span>One-Way Door · Technical design</span><span>20 / 21</span></div>
+  <div class="footer"><span>09 · Known limitations</span><span>One-Way Door · Technical design</span><span>21 / 22</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -1161,7 +1242,7 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     </div>
 
   </div>
-  <div class="footer"><span>10 · Guardrails</span><span>One-Way Door · Technical design</span><span>21 / 21</span></div>
+  <div class="footer"><span>10 · Guardrails</span><span>One-Way Door · Technical design</span><span>22 / 22</span></div>
 </section>
 
 <script>
