@@ -316,3 +316,22 @@ Done:
 Verified on GitHub Actions, `windows-latest` and `macos-latest`: incident reproduced (Windows: 50 rows at £0.00,
 £12,488.42 missing, empty DLT), rollback matrix 4 PASS and PR #482 FAIL; skill, hook and plugin tests on Windows,
 macOS and Ubuntu.
+
+## Proposal v2: a pitch deck of the end-to-end story
+
+Done:
+- `docs/onewaydoor-proposal-v2.pdf`: 25 slides, 16:9, from `docs/proposal/proposal-v2.html`, built with
+  `python3 docs/proposal/build.py proposal-v2.html docs/onewaydoor-proposal-v2.pdf`. It covers everything in the
+  end-to-end explainer: the services, Flyway V3, the incident minute by minute, why £0.00, the review, the split,
+  the matrix and the laptop demo.
+- New on top of the explainer: why PR #482 swaps a double for long pence, and why nobody thought about
+  settlement-service (the writer stayed on v2 after the ledger rollback, and a topic is state like a table).
+- An invented cast tells the story: Priya (developer), Tom (reviewer), Sam (on call), Grace (finance), Dev (DBA)
+  and Hinge, the skill's mascot. Characters and scenes were drawn locally with Qwen-Image
+  (`docs/proposal/images/deck/`).
+
+Gotchas:
+- Figures come from the committed recording (`recordings/incident.json`): sent £19,358.63, booked £6,650.52,
+  missing £12,708.11. The explainer artifact still shows an older run's figures.
+- Each slide's content block uses CSS `zoom` to fill the slide. The overflow check reads the zoomed block's box and
+  flags text clipped inside code and error boxes.

@@ -1,0 +1,950 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>One-Way Door: hackathon proposal v2</title>
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+  @page { size: 13.333in 7.5in; margin: 0; }
+  :root {
+    --text: #1F1F1F; --muted: #5A5A5A; --line: #D8D8D8; --grey: #F3F3F1; --white: #FFFFFF; --black: #000000;
+    --green-bright: #11B67A; --green: #006A4D; --green-deep: #024731; --mint: #C7FFC6; --mint-2: #E6FBE8;
+    --lilac: #E4E3FF; --lilac-d: #4A47B8; --aqua: #D6F3F1; --aqua-d: #0E6B66; --orange: #FFE3CC; --orange-d: #8A4300;
+    --orange-b: #F07F2D; --pink: #FCE3FB; --pink-d: #8A1C4A; --red: #B00000; --red-l: #FDECEC; --yellow: #FFF6D6;
+    --head: 'GT Ultra Median', 'Source Serif 4', Georgia, serif;
+    --body: 'GT Ultra Standard', 'Source Sans 3', Arial, sans-serif;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { margin: 0; padding: 0; background: #BBBBBB; }
+  body { font-family: var(--body); color: var(--text); font-size: 17px; line-height: 1.38; }
+  .slide { width: 1280px; height: 720px; position: relative; overflow: hidden; background: var(--white);
+           break-after: page; page-break-after: always; }
+  .slide:last-child { break-after: auto; page-break-after: auto; }
+  h1, h2, h3 { font-family: var(--head); margin: 0; font-weight: 700; color: var(--black); }
+  h1 { font-size: 38px; line-height: 1.1; margin-bottom: 10px; }
+  h3 { font-size: 20px; line-height: 1.2; margin-bottom: 6px; }
+  p { margin: 0 0 8px; }
+  b { font-weight: 700; }
+  .mono, code { font-family: var(--mono); font-size: 0.86em; }
+  code { white-space: nowrap; }
+
+  /* chrome */
+  .bar { position: absolute; top: 0; left: 0; right: 0; height: 44px; background: var(--green-bright);
+         display: flex; align-items: center; justify-content: space-between; padding: 0 48px; }
+  .wm { font-family: var(--head); font-weight: 700; font-size: 18px; display: flex; align-items: center; gap: 10px; }
+  .wm i { display: inline-block; width: 13px; height: 19px; border: 3.4px solid #000; border-bottom: 0; border-radius: 9px 9px 0 0; }
+  .sec { font-size: 13.5px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+  .sec span { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #000; display: inline-block; }
+  .content { position: absolute; top: 44px; left: 0; right: 0; bottom: 40px; padding: 26px 48px 0; }
+  .foot { position: absolute; bottom: 0; left: 0; right: 0; height: 40px; display: flex; justify-content: space-between;
+          align-items: center; padding: 0 48px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); }
+  .kicker { font-size: 13.5px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--green); margin-bottom: 6px; }
+  .lead { font-size: 19px; color: #333; max-width: 1060px; margin-bottom: 16px; }
+  .small { font-size: 13.5px; color: var(--muted); }
+
+  /* building blocks */
+  .row { display: flex; gap: 18px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .grid2 > *, .grid3 > *, .grid4 > *, .row > * { min-width: 0; }
+  .card { border-radius: 18px; padding: 16px 18px; }
+  .card p, .card li { font-size: 15.5px; }
+  .card ul { margin: 0; padding-left: 20px; }
+  .card li { margin-bottom: 4px; }
+  .c-mint { background: var(--mint); } .c-lilac { background: var(--lilac); } .c-aqua { background: var(--aqua); }
+  .c-orange { background: var(--orange); } .c-pink { background: var(--pink); } .c-grey { background: var(--grey); }
+  .c-yellow { background: var(--yellow); } .c-red { background: var(--red-l); } .c-white { background: #fff; border: 1.5px solid var(--line); }
+  .c-deep { background: var(--green-deep); color: #fff; } .c-deep h3 { color: var(--mint); } .c-deep p, .c-deep li { color: #E6F5EE; }
+  .c-black { background: #111; color: #EEE; } .c-black h3 { color: var(--green-bright); }
+  .num { display: inline-flex; width: 30px; height: 30px; border-radius: 50%; background: #000; color: #fff; font-weight: 800;
+         align-items: center; justify-content: center; font-size: 15px; margin-right: 8px; flex: none; }
+  .tag { display: inline-block; font-size: 12.5px; font-weight: 800; padding: 3px 10px; border-radius: 20px; background: #000; color: #fff; }
+  .tag.g { background: var(--green-bright); color: #000; } .tag.o { background: var(--orange-b); color: #000; }
+  .tag.r { background: var(--red); } .tag.l { background: var(--lilac-d); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips span { font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 20px; background: #fff; border: 1.5px solid #000; }
+  .code { background: #0E1512; color: #E6F5EE; font-family: var(--mono); font-size: 13.2px; line-height: 1.55; border-radius: 12px;
+          padding: 12px 14px; white-space: pre; overflow: hidden; }
+  .code .c { color: #8FA39A; } .code .k { color: #7CF0B7; } .code .s { color: #FFB16A; } .code .x { color: #FF8A8A; }
+  .code .hl { background: #2B4A3D; border-radius: 4px; }
+  .err { font-family: var(--mono); font-size: 12.6px; line-height: 1.4; background: #2B0D0D; color: #FFB4B4; border-radius: 9px; padding: 7px 9px; }
+  .ok { font-family: var(--mono); font-size: 12.6px; background: #0D2B1E; color: #9DF5C8; border-radius: 9px; padding: 7px 9px; }
+
+  /* characters */
+  .av { width: 84px; height: 84px; border-radius: 50%; overflow: hidden; flex: none; border: 3px solid #fff;
+        box-shadow: 0 0 0 2px #000; background: var(--mint); }
+  .av img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; display: block; }
+  .av.s { width: 58px; height: 58px; } .av.xs { width: 44px; height: 44px; border-width: 2px; }
+  .av.lg { width: 120px; height: 120px; }
+  .bg-priya { background: var(--mint); } .bg-tom { background: var(--lilac); } .bg-sam { background: var(--aqua); }
+  .bg-grace { background: var(--orange); } .bg-dev { background: var(--pink); } .bg-hinge { background: var(--yellow); }
+  .bubble { position: relative; background: #fff; border: 2px solid #000; border-radius: 14px; padding: 7px 12px;
+            font-size: 15px; font-weight: 700; line-height: 1.3; }
+  .bubble.l::before { content: ''; position: absolute; left: -11px; top: 14px; border-width: 8px 11px 8px 0; border-style: solid;
+                      border-color: transparent #000 transparent transparent; }
+  .bubble.l::after { content: ''; position: absolute; left: -7px; top: 16px; border-width: 6px 8px 6px 0; border-style: solid;
+                     border-color: transparent #fff transparent transparent; }
+  .bubble.u::before { content: ''; position: absolute; left: 22px; top: -11px; border-width: 0 8px 11px 8px; border-style: solid;
+                      border-color: transparent transparent #000 transparent; }
+  .bubble.u::after { content: ''; position: absolute; left: 24px; top: -7px; border-width: 0 6px 8px 6px; border-style: solid;
+                     border-color: transparent transparent #fff transparent; }
+  .who { display: flex; align-items: center; gap: 14px; }
+  .who .name { font-family: var(--head); font-weight: 700; font-size: 19px; }
+  .who .role { font-size: 13.5px; color: var(--muted); font-weight: 600; }
+
+  /* timeline */
+  .tl { display: grid; gap: 14px; }
+  .tcard { border-radius: 18px; padding: 14px 15px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .time { font-family: var(--mono); font-weight: 600; background: #000; color: #fff; border-radius: 20px; padding: 2px 11px;
+          font-size: 15px; align-self: flex-start; }
+  .tcard h3 { font-size: 18.5px; margin: 0; }
+  .tcard p { font-size: 14.6px; margin: 0; }
+  .arrow { font-size: 30px; font-weight: 800; color: var(--green); display: flex; align-items: center; }
+
+  /* tables */
+  table.t { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.t th { text-align: left; background: #000; color: #fff; padding: 7px 9px; font-size: 13px; }
+  table.t td { padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.m { border-collapse: separate; border-spacing: 5px; width: 100%; font-size: 13px; }
+  table.m th { font-size: 12px; color: var(--muted); font-weight: 700; text-align: center; padding: 0 2px; }
+  table.m td { text-align: center; border-radius: 8px; padding: 6px 2px; font-weight: 800; }
+  table.m td.n { white-space: nowrap; text-align: left; font-family: var(--mono); font-weight: 600; font-size: 13px; background: none; padding-left: 0; }
+  table.m td.p { background: #C9F5D9; color: var(--green); } table.m td.f { background: #FDDADA; color: var(--red); }
+  table.m td small { display: block; font-size: 11px; font-weight: 600; }
+  table.m td.res { color: #fff; background: var(--green-bright); } table.m td.resf { color: #fff; background: var(--red); }
+
+  .shot { border-radius: 12px; overflow: hidden; border: 1.5px solid #000; display: block; }
+  .shot img { display: block; width: 100%; }
+  .cap { font-size: 13.5px; color: var(--muted); margin-top: 6px; }
+  .cap b { color: var(--text); }
+  .big { font-family: var(--head); font-weight: 700; }
+</style>
+</head>
+<body>
+<section class="slide">
+  <div style="position:absolute;left:0;top:0;bottom:0;width:520px;background:var(--green-deep);padding:56px 48px;color:#fff;display:flex;flex-direction:column">
+    <div class="wm" style="color:#fff;font-size:20px"><i style="border-color:#fff"></i>One-Way Door</div>
+    <div style="margin-top:auto">
+      <div class="kicker" style="color:var(--green-bright)">Hackathon proposal · v2</div>
+      <h1 style="color:#fff;font-size:62px;line-height:1.02;margin-bottom:18px">Know before you merge whether you can roll back.</h1>
+      <p style="font-size:19px;color:#CFEFDF;max-width:420px">A GitHub Copilot skill that reviews every pull request for rollback safety. Told through Northwind Payments, and the Friday afternoon a sensible refactor booked 50 settlements at £0.00.</p>
+    </div>
+    <div style="margin-top:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <div class="av xs bg-priya"><img src="images/deck/priya.png" alt=""></div>
+      <div class="av xs bg-tom"><img src="images/deck/tom.png" alt=""></div>
+      <div class="av xs bg-sam"><img src="images/deck/sam.png" alt=""></div>
+      <div class="av xs bg-grace"><img src="images/deck/grace.png" alt=""></div>
+      <div class="av xs bg-dev"><img src="images/deck/dev.png" alt=""></div>
+      <div class="av xs bg-hinge"><img src="images/deck/door-mascot.png" alt=""></div>
+      <div style="flex-basis:100%;font-size:13.5px;color:#9FD9BF;margin-top:6px">October 2026 · github.com/duttaarun/oneway-door</div>
+    </div>
+  </div>
+  <img class="bleed" src="images/deck/cover-doors.jpg" alt="A developer at a fork: a teal door that swings both ways, an orange door that only goes forward" style="position:absolute;left:520px;top:0;width:760px;height:720px;object-fit:cover;object-position:50% 50%">
+  <div class="bleed" style="position:absolute;left:560px;bottom:44px;display:flex;gap:12px">
+    <span class="tag" style="background:var(--aqua-d);font-size:15px;padding:6px 14px">⇄ Two-way door: roll back any time</span>
+    <span class="tag o" style="font-size:15px;padding:6px 14px">→ One-way door: no way back</span>
+  </div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#11B67A"></span>The idea</div></div>
+<div class="content">
+<div class="z" style="zoom:1.18">
+
+  <div class="kicker">The question no pipeline asks</div>
+  <h1 style="font-size:44px;max-width:1000px">“If this goes wrong after deploy, can we actually roll back?”</h1>
+  <p class="lead">Tests, CI and code review check new code against new data. Nobody checks whether the <b>old</b> code can still run against the data the new code leaves behind.</p>
+  <div class="row" style="align-items:stretch">
+    <div class="card c-aqua" style="flex:1">
+      <h3 style="color:var(--aqua-d)">⇄ Two-way door</h3>
+      <p>Ship it, roll it back, and the old code still works.</p>
+      <div class="chips"><span>a new nullable column</span><span>a new optional field</span><span>a new endpoint</span></div>
+    </div>
+    <div class="card c-orange" style="flex:1">
+      <h3 style="color:var(--orange-d)">→ One-way door</h3>
+      <p>It leaves state behind that the old code can't handle. Rollback doesn't restore service. Often it makes things worse.</p>
+      <div class="chips"><span>migrated tables</span><span>new-format events on a topic</span><span>rewritten cache entries</span><span>payloads sent to partners</span></div>
+    </div>
+    <div style="width:250px;display:flex;flex-direction:column;align-items:center;gap:8px">
+      <img src="images/deck/door-mascot.png" alt="Hinge, the One-Way Door skill's mascot" style="width:180px">
+      <div class="bubble u" style="font-size:14px">I ask this on every pull request.</div>
+    </div>
+  </div>
+  <div class="row" style="margin-top:18px;gap:10px">
+    <div class="card c-grey" style="flex:1;padding:10px 14px"><span class="big" style="font-size:28px">1</span> pull request</div>
+    <div class="card c-grey" style="flex:1;padding:10px 14px"><span class="big" style="font-size:28px">2</span> offline scripts</div>
+    <div class="card c-grey" style="flex:1;padding:10px 14px"><span class="big" style="font-size:28px">3</span> Java services</div>
+    <div class="card c-red" style="flex:1.2;padding:10px 14px"><span class="big" style="font-size:28px;color:var(--red)">50</span> rows at £0.00</div>
+    <div class="card c-mint" style="flex:1.2;padding:10px 14px"><span class="big" style="font-size:28px;color:var(--green)">4</span> safe PRs instead</div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>2 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#F07F2D"></span>Northwind Payments</div></div>
+<div class="content">
+<div class="z" style="zoom:1.15">
+
+  <div class="kicker">Meet Northwind Payments</div>
+  <h1>The team, and the Friday they'll remember</h1>
+  <p class="lead">Northwind settles card payments for small UK merchants. Every settlement becomes an event, then a ledger row, then part of finance's daily total.</p>
+  <div class="grid3">
+    <div class="card c-mint" style="display:flex;gap:14px;align-items:flex-start">
+      <div class="av  bg-priya"><img src="images/deck/priya.png" alt=""></div>
+      <div style="min-width:0"><div class="who" style="display:block"><div class="name">Priya</div><div class="role">Backend developer · raises PR #482</div></div>
+      <div class="bubble u" style="margin-top:12px;font-size:14.5px">Money as a double? Let&#8217;s store pence, properly.</div></div></div>
+    <div class="card c-lilac" style="display:flex;gap:14px;align-items:flex-start">
+      <div class="av  bg-tom"><img src="images/deck/tom.png" alt=""></div>
+      <div style="min-width:0"><div class="who" style="display:block"><div class="name">Tom</div><div class="role">Tech lead · reviews PR #482</div></div>
+      <div class="bubble u" style="margin-top:12px;font-size:14.5px">Tests are green. Approved.</div></div></div>
+    <div class="card c-aqua" style="display:flex;gap:14px;align-items:flex-start">
+      <div class="av  bg-sam"><img src="images/deck/sam.png" alt=""></div>
+      <div style="min-width:0"><div class="who" style="display:block"><div class="name">Sam</div><div class="role">On call this Friday</div></div>
+      <div class="bubble u" style="margin-top:12px;font-size:14.5px">If it goes wrong, I&#8217;ll roll it back.</div></div></div>
+    <div class="card c-orange" style="display:flex;gap:14px;align-items:flex-start">
+      <div class="av  bg-grace"><img src="images/deck/grace.png" alt=""></div>
+      <div style="min-width:0"><div class="who" style="display:block"><div class="name">Grace</div><div class="role">Finance · runs the reconciliation</div></div>
+      <div class="bubble u" style="margin-top:12px;font-size:14.5px">The ledger must match the bank, to the penny.</div></div></div>
+    <div class="card c-pink" style="display:flex;gap:14px;align-items:flex-start">
+      <div class="av  bg-dev"><img src="images/deck/dev.png" alt=""></div>
+      <div style="min-width:0"><div class="who" style="display:block"><div class="name">Dev</div><div class="role">Database administrator</div></div>
+      <div class="bubble u" style="margin-top:12px;font-size:14.5px">Who renamed my column?</div></div></div>
+    <div class="card c-yellow" style="display:flex;gap:14px;align-items:flex-start">
+      <div class="av  bg-hinge"><img src="images/deck/door-mascot.png" alt=""></div>
+      <div style="min-width:0"><div class="who" style="display:block"><div class="name">Hinge</div><div class="role">The One-Way Door skill</div></div>
+      <div class="bubble u" style="margin-top:12px;font-size:14.5px">Before you merge: can you roll back?</div></div></div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>3 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#F07F2D"></span>Northwind Payments</div></div>
+<div class="content">
+<div class="z" style="zoom:1.12">
+
+  <div class="kicker">The system</div>
+  <h1>Three services, one topic, one table</h1>
+  <div class="row" style="align-items:flex-start">
+    <div style="flex:0 0 71%"><div class="shot" style="border-color:var(--line)"><img src="images/lucid-demo-system.png" alt="settlement-service publishes PaymentSettled to Kafka; ledger-service consumes it and writes ledger_entries in PostgreSQL; reconciliation-batch reads the table directly"></div>
+      <div class="cap">Drawn in Lucidchart. All three services are real Java code, with their own tests and git history.</div></div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+      <div class="card c-mint" style="padding:12px 14px"><h3 style="font-size:17px">The writer</h3><p style="font-size:14.5px;margin:0"><b>settlement-service</b> turns each settlement into a <code>PaymentSettled</code> event on Kafka.</p></div>
+      <div class="card c-lilac" style="padding:12px 14px"><h3 style="font-size:17px">The reader</h3><p style="font-size:14.5px;margin:0"><b>ledger-service</b> books one row per event in <code>ledger_entries</code>, and owns that table.</p></div>
+      <div class="card c-pink" style="padding:12px 14px"><h3 style="font-size:17px">The reader nobody remembered</h3><p style="font-size:14.5px;margin:0"><b>reconciliation-batch</b>, finance's job, sums the table directly.</p></div>
+    </div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>4 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#F07F2D"></span>Northwind Payments</div></div>
+<div class="content">
+<div class="z" style="zoom:1.18">
+
+  <div class="kicker">The three services, before PR #482 (v1, on main)</div>
+  <h1>How a settlement becomes money in the ledger</h1>
+  <div class="grid3" style="align-items:stretch">
+    <div class="card c-mint" style="display:flex;flex-direction:column;gap:8px">
+      <div><span class="tag g">1 · The writer</span></div>
+      <h3>settlement-service</h3>
+      <p style="margin:0">Spring Boot · Java 21 · :8081. Takes <code>POST /settlements</code> and publishes <code>PaymentSettled</code>. It waits for Kafka's acknowledgement, so a 202 means the event is really there.</p>
+      <div class="code">record PaymentSettled(
+  UUID paymentId,
+  String merchantId,
+  String currency,
+  <span class="hl">double amount</span>,
+  Instant settledAt)</div>
+      <p class="small" style="margin:0"><b>The detail that matters:</b> no Java type header. Readers map the JSON onto their own class by field name.</p>
+    </div>
+    <div class="card c-lilac" style="display:flex;flex-direction:column;gap:8px">
+      <div><span class="tag l">2 · The reader</span></div>
+      <h3>ledger-service</h3>
+      <p style="margin:0">:8082 · Flyway · Hibernate. Consumes each event, skips duplicates, inserts one row. Flyway migrates at start-up; Hibernate checks the table matches the code.</p>
+      <div class="code"><span class="k">@KafkaListener</span>(
+  topics = <span class="s">"payments.settled"</span>)
+void on(PaymentSettled e) {
+  entries.save(
+    LedgerEntry.from(e));
+} <span class="c">// amount numeric(12,2)</span></div>
+      <p class="small" style="margin:0">Events that throw go to <code>payments.settled.DLT</code> after two retries.</p>
+    </div>
+    <div class="card c-pink" style="display:flex;flex-direction:column;gap:8px">
+      <div><span class="tag" style="background:var(--pink-d)">3 · Nobody remembered it</span></div>
+      <h3>reconciliation-batch</h3>
+      <p style="margin:0">Plain Java · JDBC · on demand. Finance's daily total, compared with the bank statement. It reads Postgres directly, not through ledger-service.</p>
+      <div class="code"><span class="k">SELECT</span> COUNT(*),
+  COALESCE(SUM(<span class="hl">amount</span>), 0)
+<span class="k">FROM</span> ledger_entries;</div>
+      <div class="who" style="gap:10px"><div class="av xs bg-grace"><img src="images/deck/grace.png" alt=""></div><p class="small" style="margin:0">Owned by Grace's finance team. Not in PR #482. No tests.</p></div>
+    </div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>5 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#A19FFF"></span>PR #482</div></div>
+<div class="content">
+<div class="z" style="zoom:1.19">
+
+  <div class="kicker">Why PR #482 was raised</div>
+  <h1>Why swap a <span class="mono" style="font-size:.85em">double</span> for whole pence?</h1>
+  <div class="row" style="align-items:flex-start;margin-bottom:14px">
+    <div class="av lg bg-priya"><img src="images/deck/priya.png" alt=""></div>
+    <div class="bubble l" style="font-size:19px;max-width:820px;margin-top:22px">A double can't hold 0.10 exactly. In a payments ledger, that's a bug waiting to happen. Let's store pence as a whole number, like the card schemes do.</div>
+  </div>
+  <div class="grid3">
+    <div class="card c-orange"><h3><span class="num">1</span>Doubles are binary fractions</h3>
+      <div class="code" style="margin:6px 0">0.1 + 0.2
+== <span class="x">0.30000000000000004</span></div>
+      <p>Most decimal amounts can't be stored exactly. Each one is very slightly wrong.</p></div>
+    <div class="card c-yellow"><h3><span class="num">2</span>Small errors add up</h3>
+      <p>Sum millions of settlements and totals can drift by pennies. Services round in different places. Finance must explain every penny.</p></div>
+    <div class="card c-mint"><h3><span class="num">3</span>Whole pence can't round</h3>
+      <div class="code" style="margin:6px 0"><span class="c">// before</span>
+double amount = 268.47;
+<span class="c">// after</span>
+long amountMinor = 26847;</div>
+      <p>Card schemes send amounts in minor units. An integer is exact.</p></div>
+  </div>
+  <div class="card c-deep" style="margin-top:14px;padding:12px 18px"><p style="font-size:18px;margin:0"><b style="color:var(--mint)">The idea is right.</b> The trouble is how it ships: the table, the event and both services, all in one deploy.</p></div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>6 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#A19FFF"></span>PR #482</div></div>
+<div class="content">
+<div class="z" style="zoom:1.22">
+
+  <div class="kicker">PR #482 · branch pr-482-minor-units</div>
+  <h1>One tidy pull request. Four changes at once.</h1>
+  <div class="row" style="align-items:flex-start">
+    <div class="grid2" style="flex:1">
+      <div class="card c-lilac"><h3><span class="num">1</span>Flyway V3 renames the column</h3>
+        <div class="code">ALTER TABLE ledger_entries
+  RENAME COLUMN amount
+  TO amount_minor;</div></div>
+      <div class="card c-lilac"><h3><span class="num">2</span>…and rewrites every row in pence</h3>
+        <div class="code">ALTER COLUMN amount_minor
+  TYPE bigint USING
+  (amount_minor * 100)::bigint;</div>
+        <p class="small" style="margin:6px 0 0">£268.47 becomes 26847. The old values are gone.</p></div>
+      <div class="card c-lilac"><h3><span class="num">3</span>The event swaps its field</h3>
+        <div class="code">PaymentSettled {
+  <span class="x">- double amount</span>
+  <span class="k">+ long amountMinor</span>
+}</div></div>
+      <div class="card c-lilac"><h3><span class="num">4</span>Both services change together</h3>
+        <p>settlement-service sends <code>amountMinor</code>. ledger-service reads it and writes <code>amount_minor</code>. One deploy.</p></div>
+    </div>
+    <div style="width:300px;display:flex;flex-direction:column;gap:12px">
+      <div class="card c-grey">
+        <div class="who"><div class="av s bg-tom"><img src="images/deck/tom.png" alt=""></div><div><div class="name" style="font-size:17px">Tom</div><div class="role">reviewer</div></div></div>
+        <div class="ok" style="margin-top:10px">✓ unit tests: all green<br>✓ builds<br>✓ 9 files changed</div>
+        <div class="tag g" style="margin-top:10px">Approved</div>
+      </div>
+      <div class="card c-red"><h3 style="font-size:17px;color:var(--red)">Not in the PR</h3>
+        <p style="margin:0">reconciliation-batch, which still reads <code>amount</code>. And no plan for events already on Kafka.</p></div>
+    </div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>7 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#A19FFF"></span>PR #482</div></div>
+<div class="content">
+<div class="z" style="zoom:1.27">
+
+  <div class="kicker">PR #482 · the review</div>
+  <h1>Tom's review was careful. It just didn't ask about yesterday.</h1>
+  <div class="row" style="align-items:stretch">
+    <div class="card c-mint" style="flex:1">
+      <div class="who" style="margin-bottom:12px"><div class="av s bg-tom"><img src="images/deck/tom.png" alt=""></div><h3 style="margin:0">What was checked</h3></div>
+      <ul style="list-style:none;padding:0">
+        <li>✅ It compiles</li><li>✅ Unit tests pass, on both services</li><li>✅ The migration runs on a clean database</li>
+        <li>✅ Both services agree on the new event</li><li>✅ The code reads well</li></ul>
+      <div class="bubble u" style="margin-top:10px">Looks good to me.</div>
+    </div>
+    <div class="card c-orange" style="flex:1.3">
+      <div class="who" style="margin-bottom:12px"><div class="av s bg-hinge"><img src="images/deck/door-mascot.png" alt=""></div><h3 style="margin:0">What nobody asked</h3></div>
+      <ul style="list-style:none;padding:0">
+        <li>❓ Can the <b>previous</b> release still run after V3?</li>
+        <li>❓ Who else reads <code>ledger_entries.amount</code>?</li>
+        <li>❓ What about the events already on <code>payments.settled</code>?</li>
+        <li>❓ If only ledger-service rolls back, what does <b>settlement-service</b> keep sending?</li>
+        <li>❓ How long after deploy is a rollback still safe?</li></ul>
+      <div class="bubble u" style="margin-top:10px">These are my questions. I ask them on every PR.</div>
+    </div>
+  </div>
+  <div class="card c-deep" style="margin-top:14px;padding:12px 18px"><p style="margin:0;font-size:17px">Every unasked question on the right is a moment that broke on Friday: <b style="color:var(--mint)">16:55, 16:58, 17:00 and 17:26.</b></p></div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>8 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#A19FFF"></span>PR #482</div></div>
+<div class="content">
+<div class="z" style="zoom:1.12">
+
+  <div class="kicker">PR #482 · Flyway and V3</div>
+  <h1>The migration that closes the door in 5 milliseconds</h1>
+  <div class="row" style="align-items:flex-start">
+    <div style="flex:1.15;display:flex;flex-direction:column;gap:10px">
+      <div class="code" style="font-size:13.6px"><span class="c">db/migration/V3__amount_minor_units.sql (lines 1–2 are comments)</span>
+<span class="hl">3  ALTER TABLE ledger_entries</span>
+<span class="hl">     RENAME COLUMN amount TO amount_minor;</span>
+<span class="hl">4  ALTER TABLE ledger_entries</span>
+<span class="hl">     ALTER COLUMN amount_minor TYPE bigint</span>
+<span class="hl">     USING (amount_minor * 100)::bigint;</span></div>
+      <div class="grid2">
+        <div class="card c-red" style="padding:12px 14px"><h3 style="font-size:16.5px">Line 3: rename</h3><p style="font-size:14px;margin:0">From this moment nothing called <code>amount</code> exists. Old ledger code and the reconciliation break.</p></div>
+        <div class="card c-red" style="padding:12px 14px"><h3 style="font-size:16.5px">Line 4: rewrite in place</h3><p style="font-size:14px;margin:0">Every past row becomes pence. Only a script that divides by exactly 100 can bring it back.</p></div>
+      </div>
+      <div class="card c-yellow" style="padding:10px 14px"><p style="margin:0;font-size:15px">In the recorded run, Flyway applied V3 in <b>0.005 seconds</b>, before ledger-service took its first event. That's the door closing.</p></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+      <h3 style="font-size:17px">What happens when ledger-service starts</h3>
+      <div class="card c-grey" style="padding:9px 12px"><span class="num">1</span>Flyway lists its <code>V…__….sql</code> files</div>
+      <div class="card c-grey" style="padding:9px 12px"><span class="num">2</span>It reads <code>flyway_schema_history</code></div>
+      <div class="card c-grey" style="padding:9px 12px"><span class="num">3</span>It runs what's new, each in a transaction</div>
+      <div class="card c-grey" style="padding:9px 12px"><span class="num">4</span>Hibernate checks the table matches the code</div>
+      <div class="card c-grey" style="padding:9px 12px"><span class="num">5</span>Only then does the Kafka listener start</div>
+      <div class="grid2" style="gap:8px">
+        <div class="card c-orange" style="padding:9px 12px"><p style="font-size:13.5px;margin:0"><b>It only goes forward.</b> No undo in the free edition, and none can un-mix events on Kafka.</p></div>
+        <div class="card c-mint" style="padding:9px 12px"><p style="font-size:13.5px;margin:0"><b>Expand first.</b> The safe route's V3 just adds <code>amount_minor</code>, nullable.</p></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>9 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#E5484D"></span>The incident</div></div>
+<div class="content">
+<div class="z" style="zoom:1.3">
+
+  <div class="kicker">The incident · act 2 of the demo · Friday 16:30 to 16:58</div>
+  <h1>Friday afternoon at Northwind, minute by minute</h1>
+  <div class="tl" style="grid-template-columns:repeat(4,1fr)">
+    <div class="tcard c-mint">
+      <div style="display:flex;align-items:center;justify-content:space-between"><span class="time">16:30</span><div class="av s bg-priya"><img src="images/deck/priya.png" alt=""></div></div>
+      <h3>v1 runs. Booked in pounds.</h3><p>settlement-service publishes <code>amount: 268.47</code>. ledger-service books it in <code>numeric(12,2)</code>. Ten settlements, all correct.</p><div class="ok">10 rows · £0.00 rows: 0</div><div class="bubble u" style="font-size:13.5px">Last change before the weekend.</div></div>
+    <div class="tcard c-lilac">
+      <div style="display:flex;align-items:center;justify-content:space-between"><span class="time">16:40</span><div class="av s bg-tom"><img src="images/deck/tom.png" alt=""></div></div>
+      <h3>PR #482 ships. Tests were green.</h3><p>Flyway runs V3 before the first event: every row rewritten in pence. settlement-service v2 now sends <code>amountMinor: 26847</code>, and no <code>amount</code>.</p><div class="bubble u" style="font-size:13.5px">Green. Ship it.</div></div>
+    <div class="tcard c-orange">
+      <div style="display:flex;align-items:center;justify-content:space-between"><span class="time">16:55</span><div class="av s bg-grace"><img src="images/deck/grace.png" alt=""></div></div>
+      <h3>The reconciliation breaks.</h3><p>Nobody touched reconciliation-batch. It still runs <code>SUM(amount)</code>.</p><div class="err">ERROR: column "amount" does not exist</div><div class="bubble u" style="font-size:13.5px">Where did my column go?</div></div>
+    <div class="tcard c-aqua">
+      <div style="display:flex;align-items:center;justify-content:space-between"><span class="time">16:58</span><div class="av s bg-sam"><img src="images/deck/sam.png" alt=""></div></div>
+      <h3>Roll back the ledger. It won&#8217;t start.</h3><p>Sam rolls back <b>ledger-service only</b>. The old code meets the new table. Hibernate stops it. Flyway can&#8217;t undo.</p><div class="err">Schema-validation: missing column [amount] in table [ledger_entries]</div><div class="bubble u" style="font-size:13.5px">Why won&#8217;t it start?</div></div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>10 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#E5484D"></span>The incident</div></div>
+<div class="content">
+<div class="z" style="zoom:1.1">
+
+  <div class="kicker">The incident · Friday 17:00 to 17:26</div>
+  <h1>The fix that made it quiet, not right</h1>
+  <div class="tl" style="grid-template-columns:1fr 1fr 1.25fr">
+    <div class="tcard c-aqua">
+      <div style="display:flex;align-items:center;justify-content:space-between"><span class="time">17:00</span><div class="av s bg-sam"><img src="images/deck/sam.png" alt=""></div></div>
+      <h3>Settlements keep coming.</h3><p><b>settlement-service is still v2.</b> Nobody rolled it back. Fifty <code>amountMinor</code> events queue on <code>payments.settled</code>, with no ledger to read them.</p><div class="err">backlog: 50 events · ledger-service: FAILED</div><div class="bubble u" style="font-size:13.5px">Why is the backlog growing?</div></div>
+    <div class="tcard c-pink">
+      <div style="display:flex;align-items:center;justify-content:space-between"><span class="time">17:25</span><div class="av s bg-dev"><img src="images/deck/dev.png" alt=""></div></div>
+      <h3>A hand-written hotfix.</h3><p><code>hotfix-reverse-v3.sql</code> renames the column back and divides by 100. Hibernate is happy. v1 starts and drains the fifty waiting events.</p><div class="ok">ledger-service: UP</div><div class="bubble u" style="font-size:13.5px">Reversed by hand. Under pressure.</div></div>
+    <div class="tcard c-red">
+      <div style="display:flex;align-items:center;justify-content:space-between"><span class="time" style="background:var(--red)">17:26</span><div class="av s bg-grace"><img src="images/deck/grace.png" alt=""></div></div>
+      <h3>Every dashboard is green.</h3>
+      <img src="images/deck/zero-receipt.jpg" alt="Three green dashboards and a receipt full of £0.00" style="width:100%;border-radius:12px;border:1.5px solid #000">
+      <p>Fifty settlements booked at <b>£0.00</b>. No exception. Nothing in the dead-letter topic. ledger-service healthy.</p>
+    </div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>11 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#E5484D"></span>The incident</div></div>
+<div class="content">
+<div class="z" style="zoom:1">
+
+  <div class="wide" style="position:absolute;inset:0;display:flex">
+    <div style="width:470px;background:#111;color:#fff;padding:30px 36px;display:flex;flex-direction:column;gap:10px">
+      <div class="kicker" style="color:#FF8A8A">17:26 · the quiet failure</div>
+      <div class="big" style="font-size:64px;line-height:1;color:#FF6B6B">£12,708.11</div>
+      <div style="font-size:20px;font-weight:700">missing, and nothing errored</div>
+      <table style="font-size:16px;color:#EEE;border-collapse:collapse;margin-top:6px">
+        <tr><td style="padding:3px 18px 3px 0">Settlements sent</td><td style="font-family:var(--mono)">£19,358.63</td></tr>
+        <tr><td style="padding:3px 18px 3px 0">Booked in the ledger</td><td style="font-family:var(--mono)">£6,650.52</td></tr>
+        <tr><td style="padding:3px 18px 3px 0">Booked at £0.00</td><td style="font-family:var(--mono);color:#FF8A8A">50 settlements</td></tr>
+        <tr><td style="padding:3px 18px 3px 0">Exceptions</td><td style="font-family:var(--mono)">0</td></tr>
+        <tr><td style="padding:3px 18px 3px 0">Dead-letter topic</td><td style="font-family:var(--mono)">0 records</td></tr>
+        <tr><td style="padding:3px 18px 3px 0">ledger-service</td><td style="font-family:var(--mono);color:#7CF0B7">UP</td></tr>
+      </table>
+      <div class="who" style="margin-top:auto"><div class="av s bg-grace"><img src="images/deck/grace.png" alt=""></div><div class="bubble l" style="color:#000;font-size:14.5px">The bank says one number. The ledger says another. Nothing told us.</div></div>
+      <p class="small" style="color:#AAA;margin:0">Figures from a recorded run of the demo.</p>
+    </div>
+    <img class="bleed" src="images/deck/zero-receipt.jpg" alt="Green dashboards and a receipt of £0.00 lines" style="flex:1;height:100%;object-fit:cover;object-position:40% 50%">
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>12 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#E5484D"></span>The incident</div></div>
+<div class="content">
+<div class="z" style="zoom:1.08">
+
+  <div class="kicker">The incident · what went wrong</div>
+  <h1>Everyone watched the ledger. Nobody thought about settlement&#8209;service.</h1>
+  <p class="lead">The plan was “roll back the service that broke”. But PR #482 changed two services, and the writer kept writing.</p>
+  <div class="row" style="align-items:center;gap:10px;margin-bottom:14px">
+    <div class="card c-mint" style="flex:1;padding:12px 14px;text-align:center"><b>settlement-service</b><br><span class="tag o">still v2</span><p class="small" style="margin:6px 0 0">never rolled back</p></div>
+    <div class="arrow">→</div>
+    <div class="card c-orange" style="flex:1.3;padding:12px 14px;text-align:center"><b>payments.settled</b><br><code>{"amountMinor": 26847}</code><p class="small" style="margin:6px 0 0">50 events, no <code>amount</code></p></div>
+    <div class="arrow">→</div>
+    <div class="card c-lilac" style="flex:1;padding:12px 14px;text-align:center"><b>ledger-service</b><br><span class="tag l">v1, rolled back</span><p class="small" style="margin:6px 0 0">expects <code>amount</code></p></div>
+    <div class="arrow">→</div>
+    <div class="card c-red" style="flex:.8;padding:12px 14px;text-align:center"><span class="big" style="font-size:30px;color:var(--red)">£0.00</span><p class="small" style="margin:0">× 50</p></div>
+  </div>
+  <div class="grid3">
+    <div class="card c-grey"><h3><span class="num">1</span>The writer kept writing</h3><p>settlement-service was never rolled back. From 16:58 every new settlement arrived in the new shape, and the old reader couldn't read it.</p></div>
+    <div class="card c-grey"><h3><span class="num">2</span>A topic is state, like a table</h3><p>Rolling back settlement-service too wouldn't help: the events already on Kafka stay v2. Rolling back code doesn't roll back data.</p></div>
+    <div class="card c-grey"><h3><span class="num">3</span>Old and new overlap</h3><p>In every deploy and rollback, old and new versions run side by side. The writer and reader must understand each other in every mix, not just at the end.</p></div>
+  </div>
+  <div class="who" style="margin-top:12px"><div class="av s bg-sam"><img src="images/deck/sam.png" alt=""></div><div class="bubble l">I rolled back the ledger. The settlements already sent didn't roll back with it.</div></div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>13 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#E5484D"></span>The incident</div></div>
+<div class="content">
+<div class="z" style="zoom:1.18">
+
+  <div class="kicker">The incident · why £0.00 and not an error</div>
+  <h1>A v2 event meets v1 code</h1>
+  <div class="row" style="align-items:center;gap:12px;margin-bottom:14px">
+    <div style="flex:1"><div class="small" style="font-weight:700;margin-bottom:4px">The v2 event on payments.settled</div>
+      <div class="code">{
+  "paymentId": "1d1c5a8e-…",
+  "merchantId": "merchant-0026",
+  "currency": "GBP",
+  <span class="x">"amountMinor": 26847</span>,  <span class="c">← ignored</span>
+  "settledAt": "17:12:30Z"
+}</div></div>
+    <div class="arrow">→</div>
+    <div style="flex:1.15"><div class="small" style="font-weight:700;margin-bottom:4px">What v1 ledger-service binds it to</div>
+      <div class="code">record PaymentSettled(
+  UUID paymentId,      <span class="c">← "1d1c5a8e…"</span>
+  String merchantId,   <span class="c">← "merchant-0026"</span>
+  String currency,     <span class="c">← "GBP"</span>
+  <span class="x">double amount,       ← missing: 0.0</span>
+  Instant settledAt)   <span class="c">← 17:12:30Z</span></div></div>
+    <div class="arrow">→</div>
+    <div class="card c-red" style="width:190px;text-align:center"><div class="small">ledger_entries row 80</div><div class="big" style="font-size:40px;color:var(--red)">£0.00</div><div class="small">should be £268.47</div></div>
+  </div>
+  <div class="grid3" style="gap:10px">
+    <div class="card c-lilac" style="padding:11px 14px"><p style="margin:0;font-size:14.5px"><b>It reads by field name.</b> No type header (<code>use.type.headers: false</code>), so any JSON maps onto v1's class.</p></div>
+    <div class="card c-lilac" style="padding:11px 14px"><p style="margin:0;font-size:14.5px"><b>Unknown fields are ignored.</b> Jackson's default. <code>amountMinor</code> is dropped without a word.</p></div>
+    <div class="card c-lilac" style="padding:11px 14px"><p style="margin:0;font-size:14.5px"><b>A missing double is 0.0.</b> A primitive keeps its default, and <code>BigDecimal.valueOf(0.0)</code> books £0.00.</p></div>
+    <div class="card c-orange" style="padding:11px 14px"><p style="margin:0;font-size:14.5px"><b>Nothing reaches the DLT.</b> Only records that throw go there. Nothing threw.</p></div>
+    <div class="card c-orange" style="padding:11px 14px"><p style="margin:0;font-size:14.5px"><b>The loud failure came first.</b> <code>ddl-auto=validate</code> refused the renamed table. The £0.00 is the quiet one.</p></div>
+    <div class="card c-orange" style="padding:11px 14px"><p style="margin:0;font-size:14.5px"><b>There's no undo.</b> V3 rewrote every value in place. Going back meant a hand-written script.</p></div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>14 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#11B67A"></span>The skill</div></div>
+<div class="content">
+<div class="z" style="zoom:1.19">
+
+  <div class="row" style="align-items:flex-start;gap:30px">
+    <div style="width:300px;flex:none;text-align:center">
+      <img src="images/deck/door-mascot.png" alt="Hinge" style="width:280px">
+      <div class="bubble u" style="text-align:left;font-size:16px">Ask me before you merge. I'll tell you which kind of door it is.</div>
+    </div>
+    <div style="flex:1">
+      <div class="kicker">The skill</div>
+      <h1>One-Way Door: a GitHub Copilot skill for rollback safety</h1>
+      <p class="lead">One folder in <code>.github/skills/one-way-door</code>. Copilot loads it when someone reviews a PR, checks a release, changes a migration or an event, or asks “can we roll back?”.</p>
+      <div class="grid2" style="gap:12px">
+        <div class="card c-mint"><h3><span class="num">1</span>Two-way or one-way</h3><p style="margin:0">Classifies every change: safe to roll back, or not.</p></div>
+        <div class="card c-aqua"><h3><span class="num">2</span>When the door closes</h3><p style="margin:0">For each one-way change: when it closes, what breaks on rollback, and the safe rollback window.</p></div>
+        <div class="card c-lilac"><h3><span class="num">3</span>The blast radius</h3><p style="margin:0">Other code that reads the same table, column, topic or field, even outside the PR.</p></div>
+        <div class="card c-orange"><h3><span class="num">4</span>A rollback-safe split</h3><p style="margin:0">Expand → migrate → contract → drop. It can generate the PRs.</p></div>
+      </div>
+      <div class="chips" style="margin-top:14px"><span>VS Code agent mode</span><span>Copilot CLI</span><span>Copilot cloud agent</span><span>Copilot code review</span></div>
+    </div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>15 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#11B67A"></span>The skill</div></div>
+<div class="content">
+<div class="z" style="zoom:1.18">
+
+  <div class="kicker">The skill · how it works</div>
+  <h1>Scripts check. Copilot judges.</h1>
+  <div class="row" style="gap:8px;margin-bottom:16px;align-items:stretch">
+    <div class="card c-grey" style="flex:1;padding:10px 12px"><span class="num">1</span><b>The PR goes up</b><p class="small" style="margin:4px 0 0">#482 against main</p></div>
+    <div class="arrow">›</div>
+    <div class="card c-grey" style="flex:1;padding:10px 12px"><span class="num">2</span><b>Someone asks</b><p class="small" style="margin:4px 0 0">“can we roll back?”</p></div>
+    <div class="arrow">›</div>
+    <div class="card c-yellow" style="flex:1;padding:10px 12px"><span class="num">3</span><b>The skill loads</b><p class="small" style="margin:4px 0 0">its description matches</p></div>
+    <div class="arrow">›</div>
+    <div class="card c-aqua" style="flex:1;padding:10px 12px"><span class="num">4</span><b>Scripts check</b><p class="small" style="margin:4px 0 0">offline, JSON out</p></div>
+    <div class="arrow">›</div>
+    <div class="card c-lilac" style="flex:1;padding:10px 12px"><span class="num">5</span><b>Copilot judges</b><p class="small" style="margin:4px 0 0">readers, old code</p></div>
+    <div class="arrow">›</div>
+    <div class="card c-mint" style="flex:1;padding:10px 12px"><span class="num">6</span><b>The verdict</b><p class="small" style="margin:4px 0 0">as a PR comment</p></div>
+  </div>
+  <div class="grid2">
+    <div class="card c-white">
+      <h3>What's in the folder</h3>
+      <table class="t">
+        <tr><td><code>SKILL.md</code></td><td>The instructions. Its description is what makes Copilot load it.</td></tr>
+        <tr><td><code>patterns.md</code></td><td>24 one-way patterns, each with its safe split.</td></tr>
+        <tr><td><code>output-format.md</code></td><td>The exact shape of the PR comment.</td></tr>
+        <tr><td><code>scan-migrations.mjs</code></td><td>Destructive DDL in Flyway, Liquibase and EF migrations.</td></tr>
+        <tr><td><code>schema-compat.mjs</code></td><td>Event schema diff, checked from the old reader's side.</td></tr>
+      </table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card c-deep"><h3>Around it</h3><ul>
+        <li>A path rule for migrations and event contracts</li>
+        <li>A hook that stops Copilot editing migrations already on main</li>
+        <li>A plugin for one-step install</li></ul></div>
+      <div class="card c-grey"><h3 style="font-size:17px">Built to be trusted</h3>
+        <div class="chips"><span>offline</span><span>Node 20+ standard library</span><span>JSON out</span><span>always exit 0</span><span>never changes code unasked</span></div></div>
+    </div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>16 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#11B67A"></span>The skill</div></div>
+<div class="content">
+<div class="z" style="zoom:1.08">
+
+  <div class="kicker">The skill · the review · act 3 of the demo</div>
+  <h1>What Copilot says before anyone merges</h1>
+  <div class="row" style="align-items:flex-start">
+    <div class="card c-white" style="flex:1.35;padding:14px 16px">
+      <div class="small" style="border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:8px"><b>GitHub Copilot</b> commented on PR #482 · used <code>.github/skills/one-way-door</code></div>
+      <h3 style="font-size:19px">One-way door check</h3>
+      <p style="margin:4px 0 8px"><span class="tag r">Verdict: ONE-WAY</span> · Safe rollback window: <b>none</b> (closes when V3 runs at ledger-service start-up)</p>
+      <ol style="margin:0 0 8px;padding-left:20px;font-size:14.3px">
+        <li><b>Column renamed and converted to pence in place.</b> If rolled back: v1 fails start-up on schema validation.</li>
+        <li><b>Event field <code>amount</code> replaced by <code>amountMinor</code>.</b> Rolling back doesn't remove events already on the topic.</li>
+        <li><b>A missing <code>amount</code> silently becomes £0.00.</b> Nothing reaches the DLT.</li></ol>
+      <table class="t" style="font-size:13px"><tr><th>Blast radius: reader</th><th>Uses</th><th>Breaks when</th></tr>
+        <tr><td>reconciliation-batch (not in this PR)</td><td><code>SUM(amount)</code></td><td>V3 runs</td></tr>
+        <tr><td>ledger-service</td><td><code>amount</code> / <code>amount_minor</code></td><td>rollback</td></tr>
+        <tr><td>ledger-service consumer</td><td><code>PaymentSettled.amount</code></td><td>rollback with a v2 backlog</td></tr></table>
+      <p class="small" style="margin:8px 0 0"><b>Suggested split:</b> expand → migrate → contract → drop. Reply “generate the split”.<br>scan-migrations: 3 findings · schema-compat: 5 findings · checked main...pr-482-minor-units</p>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+      <h3 style="font-size:18px">It predicted the incident</h3>
+      <div class="card c-white" style="padding:11px 13px;display:flex;gap:12px;align-items:center"><div class="av s bg-sam"><img src="images/deck/sam.png" alt=""></div>
+      <div style="min-width:0"><div class="small" style="font-weight:800;color:var(--green)">PREDICTED · seen at 16:58</div>
+      <b>The old ledger won&#8217;t start</b><div class="err" style="margin-top:5px">Schema-validation: missing column [amount]</div></div></div>
+      <div class="card c-white" style="padding:11px 13px;display:flex;gap:12px;align-items:center"><div class="av s bg-grace"><img src="images/deck/grace.png" alt=""></div>
+      <div style="min-width:0"><div class="small" style="font-weight:800;color:var(--green)">PREDICTED · seen at 16:55</div>
+      <b>reconciliation-batch breaks, though it isn&#8217;t in the PR</b><div class="err" style="margin-top:5px">column "amount" does not exist</div></div></div>
+      <div class="card c-white" style="padding:11px 13px;display:flex;gap:12px;align-items:center"><div class="av s bg-dev"><img src="images/deck/dev.png" alt=""></div>
+      <div style="min-width:0"><div class="small" style="font-weight:800;color:var(--green)">PREDICTED · seen at 17:26</div>
+      <b>Settlements booked at £0.00, silently</b><div class="err" style="margin-top:5px">50 rows at £0.00 · DLT 0 · ledger UP</div></div></div>
+    </div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>17 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#9DE7DE"></span>The safe route</div></div>
+<div class="content">
+<div class="z" style="zoom:1.05">
+
+  <div class="kicker">The safe route · act 4 of the demo</div>
+  <h1>Same destination. Four deploys. Each one reversible.</h1>
+  <p class="lead">The split ends exactly where PR #482 does: the same table, the same event. It keeps old and new side by side until nobody needs the old one.</p>
+  <div class="grid4" style="align-items:stretch">
+    <div class="card c-mint" style="display:flex;flex-direction:column;gap:7px">
+      <div><span class="num">1</span><b style="font-size:19px;font-family:var(--head)">Expand</b></div>
+      <div class="small" style="font-weight:800;color:#000">add the new</div>
+      <p style="margin:0;font-size:14px"><b>Table:</b> V3 adds <code>amount_minor</code>, nullable. The ledger writes both.</p>
+      <p style="margin:0;font-size:14px"><b>Event:</b> settlement-service sends <code>amount</code> and <code>amountMinor</code>.</p>
+      <p style="margin:0;font-size:14px"><b>Readers:</b> reconciliation unchanged: <code>SUM(amount)</code>.</p>
+      <div class="ok" style="margin-top:auto;font-family:var(--body);font-size:13.5px">⇄ Roll back: old code ignores the new column and field.</div></div>
+    <div class="card c-aqua" style="display:flex;flex-direction:column;gap:7px">
+      <div><span class="num">2</span><b style="font-size:19px;font-family:var(--head)">Migrate</b></div>
+      <div class="small" style="font-weight:800;color:#000">copy the old data</div>
+      <p style="margin:0;font-size:14px"><b>Table:</b> V4 backfills <code>amount_minor</code> and checks every row agrees.</p>
+      <p style="margin:0;font-size:14px"><b>Event:</b> still sends both.</p>
+      <p style="margin:0;font-size:14px"><b>Readers:</b> reconciliation also reports any mismatch.</p>
+      <div class="ok" style="margin-top:auto;font-family:var(--body);font-size:13.5px">⇄ Roll back: both columns are there and correct.</div></div>
+    <div class="card c-lilac" style="display:flex;flex-direction:column;gap:7px">
+      <div><span class="num">3</span><b style="font-size:19px;font-family:var(--head)">Contract</b></div>
+      <div class="small" style="font-weight:800;color:#000">switch the readers</div>
+      <p style="margin:0;font-size:14px"><b>Table:</b> V5: the ledger reads only <code>amountMinor</code>; a trigger keeps <code>amount</code> filled.</p>
+      <p style="margin:0;font-size:14px"><b>Event:</b> still sends both. No <code>amount</code>? To the DLT, not £0.00.</p>
+      <p style="margin:0;font-size:14px"><b>Readers:</b> reconciliation sums <code>amount_minor</code>.</p>
+      <div class="ok" style="margin-top:auto;font-family:var(--body);font-size:13.5px">⇄ Roll back: <code>amount</code> is still kept up to date.</div></div>
+    <div class="card c-orange" style="display:flex;flex-direction:column;gap:7px">
+      <div><span class="num">4</span><b style="font-size:19px;font-family:var(--head)">Drop</b></div>
+      <div class="small" style="font-weight:800;color:#000">remove the old</div>
+      <p style="margin:0;font-size:14px"><b>Table:</b> V6 drops <code>amount</code> and the trigger.</p>
+      <p style="margin:0;font-size:14px"><b>Event:</b> settlement-service sends <code>amountMinor</code> only.</p>
+      <p style="margin:0;font-size:14px"><b>Readers:</b> nobody reads <code>amount</code> any more.</p>
+      <div class="ok" style="margin-top:auto;font-family:var(--body);font-size:13.5px">⇄ Safe because nothing uses the old any more.</div></div>
+  </div>
+  <div class="row" style="margin-top:14px;gap:12px">
+    <div class="card c-red" style="flex:1;padding:10px 16px"><b>PR #482:</b> one deploy, and no way back.</div>
+    <div class="card c-deep" style="flex:1;padding:10px 16px"><b style="color:var(--mint)">The split:</b> four deploys, with a way back at every step.</div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>18 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#C7FFC6"></span>The proof</div></div>
+<div class="content">
+<div class="z" style="zoom:1.15">
+
+  <div class="kicker">The proof · act 5 of the demo</div>
+  <h1>Every step rolls back cleanly. PR #482 doesn't.</h1>
+  <div class="row" style="align-items:flex-start;gap:24px">
+    <div style="flex:1.25">
+      <table class="m"><tr><th style="text-align:left">old → new</th><th>1 · baseline</th><th>2 · deploy ledger</th><th>3 · deploy settlement</th><th>4 · roll back ledger</th><th>5 · roll back settlement</th><th>result</th></tr>
+      <tr><td class="n">main → split 1</td><td class="p">✓<small>20/20</small></td><td class="p">✓<small>40/40</small></td><td class="p">✓<small>60/60</small></td><td class="p">✓<small>80/80</small></td><td class="p">✓<small>100/100</small></td><td class="res">PASS</td></tr><tr><td class="n">split 1 → split 2</td><td class="p">✓<small>20/20</small></td><td class="p">✓<small>40/40</small></td><td class="p">✓<small>60/60</small></td><td class="p">✓<small>80/80</small></td><td class="p">✓<small>100/100</small></td><td class="res">PASS</td></tr><tr><td class="n">split 2 → split 3</td><td class="p">✓<small>20/20</small></td><td class="p">✓<small>40/40</small></td><td class="p">✓<small>60/60</small></td><td class="p">✓<small>80/80</small></td><td class="p">✓<small>100/100</small></td><td class="res">PASS</td></tr><tr><td class="n">split 3 → split 4</td><td class="p">✓<small>20/20</small></td><td class="p">✓<small>40/40</small></td><td class="p">✓<small>60/60</small></td><td class="p">✓<small>80/80</small></td><td class="p">✓<small>100/100</small></td><td class="res">PASS</td></tr><tr><td class="n">main → PR #482</td><td class="p">✓<small>20/20</small></td><td class="f">✗<small>20 at £0</small></td><td class="f">✗<small>20 at £0</small></td><td class="f">✗<small>20 at £0</small></td><td class="f">✗<small>20 at £0</small></td><td class="resf">FAIL</td></tr></table>
+      <div class="card c-red" style="margin-top:12px;padding:10px 14px"><p style="margin:0;font-size:15px"><b>PR #482 fails at stage 2, before anyone presses rollback:</b> the new ledger reading old events books zero too.</p></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+      <div class="card c-mint"><h3 style="font-size:17px">Each row, for real</h3><p style="margin:0;font-size:14.5px">A fresh database on the old version, then five stages. After each, 20 settlements and six checks:</p>
+        <div class="chips" style="margin-top:8px"><span>both services healthy</span><span>every settlement booked once</span><span>nothing at £0.00</span><span>DLT empty</span><span>no backlog</span><span>reconciliation = money sent</span></div></div>
+      <div class="card c-grey"><h3 style="font-size:17px">Why five stages?</h3><p style="margin:0;font-size:14.5px">A real deploy is never instant: old and new run side by side (stages 2 and 4). A real rollback only rolls back code: the database keeps the new migration (stages 4 and 5). A step passes only if every mix works.</p></div>
+    </div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>19 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#FFB16A"></span>The demo</div></div>
+<div class="content">
+<div class="z" style="zoom:1.08">
+
+  <div class="row" style="align-items:flex-start;gap:26px">
+    <div style="flex:0 0 46%"><div class="shot" style="border-color:var(--line)"><img src="images/lucid-demo-runtime.png" alt="The Control Centre runs Postgres, Kafka, a builder and a runner in one Java process; the three services run as child processes"></div></div>
+    <div style="flex:1">
+      <div class="kicker">The demo</div>
+      <h1>The whole story, live</h1>
+      <p style="font-size:16.5px">No Docker. One Java process starts a real Postgres and a real Kafka, builds each service from its git branch, and runs them side by side. The browser shows it all.</p>
+      <table class="t" style="margin:8px 0 12px">
+        <tr><th>Act</th><th>What you see</th><th>Time</th></tr>
+        <tr><td><b>1 · The PR</b></td><td>The V3 migration; tests go green</td><td>0:35</td></tr>
+        <tr><td><b>2 · The incident</b></td><td>Seven steps, ending at £0.00</td><td>1:10</td></tr>
+        <tr><td><b>3 · The review</b></td><td>Copilot's verdict beside the real errors</td><td>1:00</td></tr>
+        <tr><td><b>4 · The split</b></td><td>Expand, migrate, contract, drop</td><td>0:35</td></tr>
+        <tr><td><b>5 · The proof</b></td><td>The rollback matrix, run live</td><td>0:40</td></tr>
+      </table>
+      <div class="grid2" style="gap:10px">
+        <div class="card c-orange" style="padding:10px 14px"><p style="margin:0;font-size:14.5px"><b>Needs Java 21+ and git.</b> Tested on Windows and macOS.</p><div class="code" style="margin-top:6px;font-size:12.5px">demo/start.sh       # macOS
+demo\start.cmd      # Windows</div></div>
+        <div class="card c-lilac" style="padding:10px 14px"><p style="margin:0;font-size:14.5px"><b>Replay mode</b> plays a recorded real run if the venue laptop misbehaves.</p></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>20 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#FFB16A"></span>The demo</div></div>
+<div class="content">
+<div class="z" style="zoom:1.1">
+
+  <div class="kicker">The demo · the Control Centre, live</div>
+  <h1>What the audience sees</h1>
+  <div class="grid2" style="gap:22px">
+    <div><div class="shot"><img src="images/cc-act2-zero.png" alt="Act 2 at 17:26: £12,671.84 missing, 50 rows at £0.00"></div>
+      <div class="cap" style="font-size:16px"><b>Act 2 · 17:26.</b> A live run: the map, the seven steps under it, and £12,671.84 missing with every service UP. Amounts are random each run.</div></div>
+    <div><div class="shot"><img src="images/cc-act5-proof.png" alt="Act 5: a live rollback test, split 2 to split 3, five stages all green"></div>
+      <div class="cap" style="font-size:16px"><b>Act 5 · the proof.</b> One row run live: deploy ledger, deploy settlement, roll each back. Six checks after every stage. PASS in about 20 seconds.</div></div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>21 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#FFB16A"></span>The demo</div></div>
+<div class="content">
+<div class="z" style="zoom:1.18">
+
+  <div class="kicker">The demo · under the hood</div>
+  <h1>One click, traced: “Roll back” at 16:58</h1>
+  <div class="row" style="align-items:flex-start;gap:24px">
+    <div style="flex:1;display:flex;flex-direction:column;gap:9px">
+      <div class="card c-grey" style="padding:10px 14px"><span class="num">1</span>You press <b>Run step 4</b>. The browser sends <code>POST /api/incident/next</code>.</div>
+      <div class="card c-grey" style="padding:10px 14px"><span class="num">2</span>The Control Centre queues it on one scenario thread, so two clicks can never race.</div>
+      <div class="card c-grey" style="padding:10px 14px"><span class="num">3</span>The builder finds main's ledger-service jar in its cache, built once from a git worktree.</div>
+      <div class="card c-grey" style="padding:10px 14px"><span class="num">4</span>The runner stops ledger-service v2 through <code>/actuator/shutdown</code>. Its Kafka consumer leaves cleanly.</div>
+      <div class="card c-red" style="padding:10px 14px"><span class="num">5</span>It starts the v1 jar on the same Postgres and Kafka. Hibernate validates: <b>APPLICATION FAILED TO START</b>.</div>
+      <div class="card c-grey" style="padding:10px 14px"><span class="num">6</span>The runner reads the root cause from the log and streams it to the browser. The map turns ledger-service red.</div>
+    </div>
+    <div style="width:330px;display:flex;flex-direction:column;gap:12px;align-items:center">
+      <div class="av lg bg-sam"><img src="images/deck/sam.png" alt=""></div>
+      <div class="bubble u" style="font-size:15.5px">It's not a mock. The rollback really runs the previous commit's code against today's data.</div>
+      <div class="card c-mint" style="padding:10px 14px"><p style="margin:0;font-size:14.5px"><b>No faking:</b> every rollback builds the previous git ref and runs it against the current database and topic.</p></div>
+    </div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>22 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#11B67A"></span>The skill</div></div>
+<div class="content">
+<div class="z" style="zoom:1.28">
+
+  <div class="kicker">Where it plugs in</div>
+  <h1>One folder, every Copilot surface</h1>
+  <div class="grid4" style="margin-bottom:16px">
+    <div class="card c-mint"><div class="tag g">VS Code</div><h3 style="margin-top:8px">Agent mode</h3><p style="margin:0">Ask before you push: “can we roll back main...my-branch?”</p></div>
+    <div class="card c-aqua"><div class="tag" style="background:var(--aqua-d)">Terminal</div><h3 style="margin-top:8px">Copilot CLI</h3><p style="margin:0">The same skill, or <code>/one-way-door</code>.</p></div>
+    <div class="card c-lilac"><div class="tag l">GitHub</div><h3 style="margin-top:8px">Cloud agent</h3><p style="margin:0">Reviews the PR on GitHub, using the folder in the repo.</p></div>
+    <div class="card c-orange"><div class="tag o">GitHub</div><h3 style="margin-top:8px">Code review</h3><p style="margin:0">Copilot code review can use repository skills on every PR.</p></div>
+  </div>
+  <div class="card c-deep">
+    <h3>Guardrails: what it will and won't do</h3>
+    <div class="grid3" style="gap:10px;margin-top:6px">
+      <p style="margin:0">✓ Reviews. It never changes code unless asked.</p>
+      <p style="margin:0">✓ Offline: git and Node only. No servers, accounts or network calls.</p>
+      <p style="margin:0">✓ Scripts always exit 0. Findings are data, not errors.</p>
+      <p style="margin:0">✓ The hook only blocks edits to migrations already on main.</p>
+      <p style="margin:0">✓ The hook fails open. A broken hook never blocks your work.</p>
+      <p style="margin:0">✓ Readers it can't see are assumed to exist.</p>
+    </div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>23 / 25</span></div>
+</section>
+<section class="slide" style="">
+<div class="bar"><div class="wm"><i></i>One-Way Door</div><div class="sec"><span style="background:#11B67A"></span>The skill</div></div>
+<div class="content">
+<div class="z" style="zoom:1.3">
+
+  <div class="kicker">Before and after</div>
+  <h1>Same question, same PR. Two very different answers.</h1>
+  <p class="lead" style="font-size:17px">“Review pr-482-minor-units against main. If this goes wrong after deploy, can we roll back?”</p>
+  <div class="grid2" style="align-items:stretch">
+    <div class="card c-grey">
+      <div class="tag" style="background:#888">Without the skill · illustrative</div>
+      <div class="card c-white" style="margin-top:10px"><p style="margin:0;font-size:15.5px">“This looks like a clean refactor. Consider adding a down migration. To roll back, revert the commit and redeploy.”</p></div>
+      <ul style="margin-top:12px">
+        <li>No mention of reconciliation-batch</li><li>No mention of events already on Kafka</li><li>“Revert and redeploy” is exactly what failed at 16:58</li></ul>
+    </div>
+    <div class="card c-mint">
+      <div class="tag g">With the skill · from the worked example</div>
+      <div class="card c-white" style="margin-top:10px"><p style="margin:0;font-size:15.5px"><b style="color:var(--red)">ONE-WAY.</b> No safe window. The old ledger won't start; reconciliation-batch breaks; a v2 backlog books £0.00 silently. Split it into four PRs.</p></div>
+      <ul style="margin-top:12px">
+        <li>Names the reader outside the PR</li><li>Explains the £0.00 before it happens</li><li>Offers a route that keeps a way back</li></ul>
+    </div>
+  </div>
+
+</div>
+</div>
+<div class="foot"><span>One-Way Door · hackathon proposal v2</span><span>Northwind Payments and its people are invented</span><span>24 / 25</span></div>
+</section>
+<section class="slide" style="background:var(--green-deep)">
+  <div style="position:absolute;inset:0;padding:56px 64px;display:flex;gap:40px;color:#fff">
+    <div style="flex:1;display:flex;flex-direction:column">
+      <div class="wm" style="color:#fff;font-size:20px"><i style="border-color:#fff"></i>One-Way Door</div>
+      <h1 style="color:#fff;font-size:54px;line-height:1.05;margin-top:auto">Every merge is a door.<br><span style="color:var(--green-bright)">Know which kind before you walk through it.</span></h1>
+      <p style="font-size:19px;color:#CFEFDF;max-width:640px">Copy one folder into a repo, or install it once as a Copilot plugin. It needs git and Node 20+. No servers, no accounts, no network calls.</p>
+      <div class="code" style="font-size:16px;max-width:700px">cp -R .github/skills/one-way-door your-repo/.github/skills/</div>
+      <p style="margin-top:14px;color:#9FD9BF;font-size:16px">github.com/duttaarun/oneway-door</p>
+      <div style="margin-top:auto;display:flex;gap:10px;align-items:center">
+        <div class="av s bg-priya"><img src="images/deck/priya.png" alt=""></div>
+        <div class="av s bg-tom"><img src="images/deck/tom.png" alt=""></div>
+        <div class="av s bg-sam"><img src="images/deck/sam.png" alt=""></div>
+        <div class="av s bg-grace"><img src="images/deck/grace.png" alt=""></div>
+        <div class="av s bg-dev"><img src="images/deck/dev.png" alt=""></div>
+        <span style="font-size:13px;color:#9FD9BF;margin-left:10px">Northwind Payments, its people and its amounts are invented for this demo. Figures come from a recorded run of the demo Control Centre.</span>
+      </div>
+    </div>
+    <div style="width:330px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+      <div class="bubble" style="color:#000;font-size:18px;text-align:center">Before you merge: can you roll back?</div>
+      <img src="images/deck/door-mascot.png" alt="Hinge" style="width:300px">
+    </div>
+  </div>
+</section>
+<script>
+  // Flags content that runs past a slide's footer or right edge, or text clipped in a box (read by build.py).
+  window.addEventListener('load', function () {
+    document.fonts.ready.then(function () {
+      var bad = [];
+      document.querySelectorAll('.slide').forEach(function (s, i) {
+        var r = s.getBoundingClientRect();
+        var limit = r.bottom - (s.querySelector('.foot') ? 40 : 0);
+        var boxes = s.querySelectorAll('.z');
+        var els = boxes.length ? boxes : s.querySelectorAll('.content *, .slide > div *');
+        els.forEach(function (el) {
+          if (el.closest('.bleed') || el.closest('.foot') || el.closest('.bar')) return;
+          var b = el.getBoundingClientRect();
+          if (b.width === 0 || b.height === 0) return;
+          var down = b.bottom - limit, right = el.classList.contains('wide') ? 0 : b.right - (r.right - 24);
+          if (down > 1 || right > 1) bad.push((i + 1) + ':' + (el.className || el.tagName) + ':' + Math.ceil(Math.max(down, right)) + 'px');
+        });
+        s.querySelectorAll('.code, .err, .ok').forEach(function (el) {
+          if (el.scrollWidth > el.clientWidth + 1) bad.push((i + 1) + ':clipped ' + el.className + ':' + (el.scrollWidth - el.clientWidth) + 'px');
+        });
+      });
+      var uniq = bad.filter(function (v, k) { return bad.indexOf(v) === k; });
+      document.body.setAttribute('data-overflow', uniq.length ? uniq.slice(0, 30).join(' ') : 'none');
+    });
+  });
+</script>
+</body>
+</html>
