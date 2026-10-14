@@ -322,7 +322,7 @@
     <div><small>03–06</small><b>Skill, setup, demo</b><span class="more">Page 6 ›</span></div>
     <div><small>07–10</small><b>Outcomes and limits</b><span class="more">Page 19 ›</span></div>
   </div>
-    <div class="footer"><span>Technical design document</span><span>One-Way Door · Technical design</span><span>1 / 22</span></div>
+    <div class="footer"><span>Technical design document</span><span>One-Way Door · Technical design</span><span>1 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -353,8 +353,10 @@
       <tr class="sub"><td></td><td class="sec">6.7 Screens: the proof</td><td></td><td class="pg">18</td></tr>
       <tr><td class="no">07</td><td class="sec">Before and after completions</td><td class="what">What Copilot says without the skill and with it, and what changes in the system</td><td class="pg">19</td></tr>
       <tr><td class="no">08</td><td class="sec">Reuse statements</td><td class="what">What can be reused as it is, what to configure, and how to extend it</td><td class="pg">20</td></tr>
-      <tr><td class="no">09</td><td class="sec">Known limitations</td><td class="what">What it doesn't do yet, the impact, and the workaround</td><td class="pg">21</td></tr>
-      <tr><td class="no">10</td><td class="sec">Guardrails</td><td class="what">What the skill, scripts and hook will and won't do</td><td class="pg">22</td></tr>
+      <tr><td class="no">09</td><td class="sec">Known limitations</td><td class="what">What it doesn't do yet, the workaround, and what's next</td><td class="pg">21</td></tr>
+      <tr class="sub"><td></td><td class="sec">9.1 Limitations and mitigations</td><td></td><td class="pg">21</td></tr>
+      <tr class="sub"><td></td><td class="sec">9.2 Future scope: other repositories</td><td></td><td class="pg">22</td></tr>
+      <tr><td class="no">10</td><td class="sec">Guardrails</td><td class="what">What the skill, scripts and hook will and won't do</td><td class="pg">23</td></tr>
     </table>
     <div class="sp2"></div>
     <div class="grid2">
@@ -378,9 +380,7 @@
         <h3>Terms used</h3>
         <dl class="glossary">
           <dt>One-way door</dt><dd>A change that leaves state the previous release can't handle.</dd>
-          <dt>Two-way door</dt><dd>A change that can be deployed and rolled back safely.</dd>
           <dt>Door closes</dt><dd>The deploy moment after which rollback is no longer safe.</dd>
-          <dt>Rollback window</dt><dd>How long after deploy a rollback is still safe.</dd>
           <dt>Blast radius</dt><dd>Other code that reads the same table, column, topic or field.</dd>
           <dt>The split</dt><dd>Expand → migrate → contract → drop: the same change in steps that each roll back.</dd>
         </dl>
@@ -388,7 +388,7 @@
     </div>
 
   </div>
-  <div class="footer"><span>Contents</span><span>One-Way Door · Technical design</span><span>2 / 22</span></div>
+  <div class="footer"><span>Contents</span><span>One-Way Door · Technical design</span><span>2 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -459,7 +459,7 @@
     </div>
 
   </div>
-  <div class="footer"><span>01 · Problem statement</span><span>One-Way Door · Technical design</span><span>3 / 22</span></div>
+  <div class="footer"><span>01 · Problem statement</span><span>One-Way Door · Technical design</span><span>3 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -506,7 +506,7 @@
     </div>
 
   </div>
-  <div class="footer"><span>02 · User story</span><span>One-Way Door · Technical design</span><span>4 / 22</span></div>
+  <div class="footer"><span>02 · User story</span><span>One-Way Door · Technical design</span><span>4 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -569,7 +569,7 @@
     </div>
 
   </div>
-  <div class="footer"><span>02 · User story</span><span>One-Way Door · Technical design</span><span>5 / 22</span></div>
+  <div class="footer"><span>02 · User story</span><span>One-Way Door · Technical design</span><span>5 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -610,7 +610,7 @@
     <div class="quote">Rollback-safety review for pull requests, diffs and releases. Answers "if this goes wrong after deploy, can we roll back?" Use when reviewing a PR, checking deploy or release readiness, asking "is this safe to ship" or "can we roll back", or when a change touches database migrations (Flyway, Liquibase, EF Core), event or message schemas (Kafka, JSON Schema, Avro, Service Bus), serialised DTOs, caches, idempotency keys, partner webhooks or API versions. Classifies each change as one-way or two-way, says when the door closes and what breaks on rollback, gives a safe rollback window, finds other code that reads the same table, column or topic, and proposes an expand, migrate, contract, drop split it can generate as branches.</div>
 
   </div>
-  <div class="footer"><span>03 · Skill name and mission</span><span>One-Way Door · Technical design</span><span>6 / 22</span></div>
+  <div class="footer"><span>03 · Skill name and mission</span><span>One-Way Door · Technical design</span><span>6 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -651,7 +651,7 @@
 &lt;sub&gt;scan-migrations: n findings · schema-compat: n findings · checked base...head&lt;/sub&gt;</div>
 
   </div>
-  <div class="footer"><span>03 · Components and design</span><span>One-Way Door · Technical design</span><span>7 / 22</span></div>
+  <div class="footer"><span>03 · Components and design</span><span>One-Way Door · Technical design</span><span>7 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -700,7 +700,7 @@
     </div>
 
   </div>
-  <div class="footer"><span>03 · How it works</span><span>One-Way Door · Technical design</span><span>8 / 22</span></div>
+  <div class="footer"><span>03 · How it works</span><span>One-Way Door · Technical design</span><span>8 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -764,7 +764,7 @@ README.md  DEMO.md  LICENSE</div>
     </div>
 
   </div>
-  <div class="footer"><span>04 · Repository link</span><span>One-Way Door · Technical design</span><span>9 / 22</span></div>
+  <div class="footer"><span>04 · Repository link</span><span>One-Way Door · Technical design</span><span>9 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -814,7 +814,7 @@ copilot plugin install /path/to/plugins/one-way-door</div>
     </table>
 
   </div>
-  <div class="footer"><span>05 · Setup instructions</span><span>One-Way Door · Technical design</span><span>10 / 22</span></div>
+  <div class="footer"><span>05 · Setup instructions</span><span>One-Way Door · Technical design</span><span>10 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -877,7 +877,7 @@ node .github/skills/one-way-door/scripts/schema-compat.mjs  --base main --head m
     <p style="font-size:8.2pt;color:var(--muted);margin-top:1.6mm">Full guide with sources: <span class="mono">docs/setup.md</span> (checked against the live GitHub and VS Code docs on 13 October 2026).</p>
 
   </div>
-  <div class="footer"><span>05 · Setup instructions</span><span>One-Way Door · Technical design</span><span>11 / 22</span></div>
+  <div class="footer"><span>05 · Setup instructions</span><span>One-Way Door · Technical design</span><span>11 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -947,7 +947,7 @@ demo/start.sh --owd.run=prepare</div>
     <p style="font-size:8.2pt;color:var(--muted);margin-top:2mm">Stop with Ctrl+C: services, Kafka and Postgres stop in about 2 s. Full guide: <span class="mono">DEMO.md</span>.</p>
 
   </div>
-  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>12 / 22</span></div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>12 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -974,7 +974,7 @@ demo/start.sh --owd.run=prepare</div>
     </table>
 
   </div>
-  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>13 / 22</span></div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>13 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -997,7 +997,7 @@ demo/start.sh --owd.run=prepare</div>
     </table>
 
   </div>
-  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>14 / 22</span></div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>14 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -1034,7 +1034,7 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     </div>
 
   </div>
-  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>15 / 22</span></div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>15 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -1050,7 +1050,7 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     <div class="cap" style="width:84%;margin:1.2mm auto 0"><b>Act 2 · 17:00.</b> Rolled back, v1 ledger-service won't start: <span class="mono">missing column [amount]</span>. Reconciliation fails too. 50 events wait on Kafka; £12,671.84 is not booked yet.</div>
 
   </div>
-  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>16 / 22</span></div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>16 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -1065,7 +1065,7 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     <div class="cap" style="width:84%;margin:1.2mm auto 0"><b>Act 3 · The review.</b> The skill's verdict, ONE-WAY with no safe window, beside the three things it predicted. The red lines are copied from act 2's run, not typed in.</div>
 
   </div>
-  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>17 / 22</span></div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>17 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -1080,7 +1080,7 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     <div class="cap" style="width:90%;margin:1.2mm auto 0"><b>Act 5 · The rollback matrix.</b> Each split step deploys and rolls back cleanly. PR #482 fails at stage 2, before anyone presses rollback: a new consumer reading old events books £0.00 too.</div>
 
   </div>
-  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>18 / 22</span></div>
+  <div class="footer"><span>06 · Demo instructions</span><span>One-Way Door · Technical design</span><span>18 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -1138,7 +1138,7 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     </div>
 
   </div>
-  <div class="footer"><span>07 · Before and after completions</span><span>One-Way Door · Technical design</span><span>19 / 22</span></div>
+  <div class="footer"><span>07 · Before and after completions</span><span>One-Way Door · Technical design</span><span>19 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -1188,18 +1188,18 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     </div>
 
   </div>
-  <div class="footer"><span>08 · Reuse statements</span><span>One-Way Door · Technical design</span><span>20 / 22</span></div>
+  <div class="footer"><span>08 · Reuse statements</span><span>One-Way Door · Technical design</span><span>20 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
   <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span class="on"><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
-  <div class="intro"><div class="label">09 · Known limitations</div><h2>What it doesn't do yet, and what to do about it</h2></div>
+  <div class="intro"><div class="label">09 · Known limitations · 9.1</div><h2>What it doesn't do yet, and what to do about it</h2></div>
   <div class="body">
 
     <table class="t">
       <tr><th style="width:4%">#</th><th style="width:30%">Limitation</th><th style="width:31%">Impact</th><th>Mitigation</th></tr>
       <tr><td>1</td><td>Scripts cover SQL (Postgres, MySQL, SQL Server dialects), Liquibase, EF Core and JSON Schema only</td><td style="font-weight:400">Avro, Protobuf, caches and external contracts get no mechanical check</td><td style="font-weight:400">The catalogue and Copilot's judgement cover them; add scripts with the same contract</td></tr>
-      <tr><td>2</td><td>One repository at a time</td><td style="font-weight:400">Readers in other repos are missed</td><td style="font-weight:400">Planned <span class="mono">find-readers</span> across related repos; it will assume unreachable repos read the data</td></tr>
+      <tr><td>2</td><td>One repository at a time</td><td style="font-weight:400">Readers in other repos are missed</td><td style="font-weight:400">Future scope: search related repos, and assume unreachable ones read the data (section 9.2)</td></tr>
       <tr><td>3</td><td>Judgement comes from a language model</td><td style="font-weight:400">Answers can vary; it may miss a reader or over-flag</td><td style="font-weight:400">Scripts anchor the facts; fixed format; humans still review</td></tr>
       <tr><td>4</td><td>Reads code and diffs, not runtime state</td><td style="font-weight:400">Doesn't know deploy order, flags or data volumes unless told</td><td style="font-weight:400">Say them in the prompt; the window uses "until &lt;event&gt;" when order holds the door open</td></tr>
       <tr><td>5</td><td>Copilot code review uses skills "when relevant"</td><td style="font-weight:400">May not pick the skill; running scripts or hooks there is undocumented</td><td style="font-weight:400">Ask <span class="mono">@copilot</span> (cloud agent) for the full review</td></tr>
@@ -1218,7 +1218,48 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     </ul></div>
 
   </div>
-  <div class="footer"><span>09 · Known limitations</span><span>One-Way Door · Technical design</span><span>21 / 22</span></div>
+  <div class="footer"><span>09 · Known limitations</span><span>One-Way Door · Technical design</span><span>21 / 23</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
+  <div class="navbar"><span><small>01</small>Problem</span><span><small>02</small>User story</span><span><small>03</small>Skill</span><span><small>04</small>Repository</span><span><small>05</small>Setup</span><span><small>06</small>Demo</span><span><small>07</small>Before/after</span><span><small>08</small>Reuse</span><span class="on"><small>09</small>Limits</span><span><small>10</small>Guardrails</span></div>
+  <div class="intro"><div class="label">09 · Known limitations · 9.2</div><h2>Future scope: readers in other repositories</h2></div>
+  <div class="body">
+
+    <p class="lead" style="font-size:9.6pt;margin-bottom:3mm">Today the skill finds readers with <span class="mono">git grep</span> in one repository. Real data is often read elsewhere: a finance job, a report, a partner adapter. Limitation 2 is the biggest gap, and this is the plan to close it.</p>
+    <div class="label">What gets built</div>
+    <table class="t">
+      <tr><th style="width:4%">#</th><th style="width:25%">Change</th><th>What it does</th></tr>
+      <tr><td>1</td><td>Related-repos config</td><td style="font-weight:400"><span class="mono">.github/one-way-door.json</span> lists each related repo: GitHub name, local path if cloned, and the <b>deployed ref</b>, because the readers that matter are the ones running today. JSON, so the scripts stay standard-library Node.</td></tr>
+      <tr><td>2</td><td><span class="mono">find-readers.mjs</span></td><td style="font-weight:400">Takes the tables, columns, topics and fields the other scripts extract, with snake_case and camelCase variants, and searches each cloned repo at its deployed ref. Offline, deterministic, JSON out: per repo, searched or unreachable, the ref, and every hit.</td></tr>
+      <tr><td>3</td><td>Copilot searches the rest</td><td style="font-weight:400"><span class="mono">SKILL.md</span> tells Copilot to use its own GitHub code search for repos that aren't cloned, where it has access. The scripts never call the network.</td></tr>
+      <tr><td>4</td><td>Unreachable means a reader</td><td style="font-weight:400">If a related repo can't be searched, a change to shared data can't be TWO-WAY. The blast radius lists the repo as “unknown, assumed to read”, and the split keeps the old field until someone confirms.</td></tr>
+      <tr><td>5</td><td>Coverage in the verdict</td><td style="font-weight:400">One line in <span class="mono">output-format.md</span>, for example: <i>Searched 2 of 3 related repos at their deployed refs; partner-adapter unreachable, assumed to read.</i></td></tr>
+      <tr><td>6</td><td>Cross-repo split</td><td style="font-weight:400">Each step names its repo, its owner (from <span class="mono">CODEOWNERS</span>) and its ordering rule: a reader's switch must be live before the drop ships. A new “split ownership” pattern in <span class="mono">patterns.md</span>.</td></tr>
+      <tr><td>7</td><td>Tests and docs</td><td style="font-weight:400">Fixture tests with temporary repos: a reader in another repo, an unreachable repo, name variants, a deployed ref behind <span class="mono">main</span>. Then <span class="mono">setup.md</span>, the README and this page.</td></tr>
+    </table>
+    <div class="sp"></div>
+    <div class="grid2">
+      <div class="box b-orange">
+        <h3 style="color:var(--orange-d)">The safety rule: what it can't see, it assumes</h3>
+        <p>Not knowing is treated as risk, never as all clear. It's the same principle as the hook. A skill that said TWO-WAY because it couldn't open finance's repository would be worse than no skill at all.</p>
+      </div>
+      <div class="box b-grey">
+        <h3>What each Copilot surface can reach</h3>
+        <ul>
+          <li><b>VS Code and Copilot CLI:</b> related repos cloned side by side, or GitHub search when signed in.</li>
+          <li><b>Cloud agent and code review:</b> the token usually reads only the current repo, so others show as unreachable, unless an org admin grants wider read access.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="sp2"></div>
+    <div class="box b-mint">
+      <h3 style="color:var(--green-deep)">In the demo</h3>
+      <p>Move reconciliation-batch into its own repository, <span class="mono">northwind-finance</span>. The verdict then reports “checked 2 of 2 related repos, <span class="mono">SUM(amount)</span> found in northwind-finance”. With that repo missing, it shows the cautious verdict. An earlier, larger multi-repo demo plan is in <span class="mono">docs/multi-repo-plan.md</span>.</p>
+    </div>
+
+  </div>
+  <div class="footer"><span>09 · Known limitations</span><span>One-Way Door · Technical design</span><span>22 / 23</span></div>
 </section>
 <section class="page">
   <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Technical design document · v1.0</div></div>
@@ -1262,7 +1303,7 @@ demo/start.sh --owd.run=matrix</div><p style="margin-top:1.4mm">Exit 0 = reprodu
     </div>
 
   </div>
-  <div class="footer"><span>10 · Guardrails</span><span>One-Way Door · Technical design</span><span>22 / 22</span></div>
+  <div class="footer"><span>10 · Guardrails</span><span>One-Way Door · Technical design</span><span>23 / 23</span></div>
 </section>
 
 <script>

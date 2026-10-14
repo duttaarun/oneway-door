@@ -351,3 +351,15 @@ Slide 19 of `onewaydoor-proposal-v2.pdf` (now 26 slides) shows what each split s
 no change, then a mismatch check (split 2), then the switch to `amount_minor` (split 3), then nothing to do at the
 drop. It also says how the rollback test deploys and rolls it back with ledger-service, gives finance's two ordering
 rules, and notes that the skill finds it only because it lives in the same repository.
+
+## Future scope: readers in other repositories
+
+Recorded as future scope, not built:
+- Deck slide 26 (27 slides): one PR, three related repos (searched, a reader found, unreachable and assumed to
+  read), the coverage line, and the five things to build.
+- TDD 9.2 (23 pages): the seven changes (related-repos config with deployed refs, `find-readers.mjs`, Copilot's own
+  GitHub search for repos not cloned, unreachable means a reader, coverage in the verdict, a cross-repo split with
+  owners and ordering, tests and docs), the safety rule, what each Copilot surface can reach, and the
+  `northwind-finance` demo idea. Limitation 2 points to it.
+- Decided in the plan: config is JSON, not YAML, so the scripts stay standard-library Node; the scripts stay
+  offline and Copilot covers repos that aren't cloned.
