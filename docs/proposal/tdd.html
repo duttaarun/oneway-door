@@ -265,6 +265,12 @@
   table.tl td.who > div { display: flex; align-items: center; gap: 1.6mm; font-weight: 700; }
   table.tl td.sig { font-family: var(--mono); font-size: 7.1pt; }
   table.tl td.sig.bad { color: var(--red); } table.tl td.sig.good { color: var(--green); }
+  .grid4 .card { padding: 3mm 3.2mm; }
+  .grid4 .card p { font-size: 8.4pt; line-height: 1.35; }
+  .grid4 .card p.sm { font-size: 7.8pt; color: var(--muted); margin-top: 1.2mm; }
+  .grid4 .card p.old { font-size: 8.2pt; color: var(--red); font-weight: 600; margin-top: 1.6mm; }
+  .ex { font-family: var(--mono); font-size: 6.9pt; line-height: 1.35; background: var(--grey); border-radius: 1.4mm; padding: 0.9mm 1.6mm; margin-top: 1.4mm; overflow-wrap: anywhere; }
+  .ex.bad { background: #FDECEC; color: var(--red); }
   .quote { font-family: var(--mono); font-size: 7.4pt; line-height: 1.5; background: var(--grey); border-radius: 2.4mm; padding: 2.4mm 3mm; }
 </style>
 </head>
@@ -392,50 +398,64 @@
 
     <div class="statement">
       <div class="label">Problem statement</div>
-      <p>Engineers can't tell, before they merge, whether the previous release can still run against the state the new
-      release leaves behind. Tests, CI and code review all check new code against new state. When the old code can't cope,
-      rollback fails loudly, or worse, appears to work while it quietly corrupts data.</p>
+      <p>Rollback is every team's first response to a bad release, yet nobody checks that it works. When a release
+      changes stored data or a message format, the old code may not run against what the release leaves behind.
+      Teams find out mid-incident, and nothing before merge checks for it.</p>
     </div>
-    <div class="label">Where one-way doors hide (the four buckets the skill checks)</div>
+    <div class="label">How a rollback goes wrong</div>
+    <div class="flowstrip">
+      <div class="n">Release N ships<small>it changes a schema, an event or a format</small></div><span class="a">›</span>
+      <div class="n g">New state is written<small>tables migrated, events published, caches filled</small></div><span class="a">›</span>
+      <div class="n">An incident<small>related or not, the plan is to roll back</small></div><span class="a">›</span>
+      <div class="n x">Roll back to N−1<small>the code goes back; the state stays</small></div><span class="a">›</span>
+      <div class="n" style="background:var(--red);color:#fff;border-color:var(--red)">Old code, new state<small style="color:#FFD6D6">fails, errors, or silently misreads</small></div>
+    </div>
+    <div class="label">Four kinds of one-way change</div>
     <div class="grid4">
-      <div class="card"><span class="pill" style="background:var(--lilac);color:var(--lilac-d)">Data</span><p>Columns renamed, dropped, retyped or converted in place. Migrations edited after they ran.</p></div>
-      <div class="card"><span class="pill" style="background:var(--aqua);color:var(--aqua-d)">Messages</span><p>Event fields removed, renamed or retyped. Consumers that read a missing number as zero.</p></div>
-      <div class="card"><span class="pill" style="background:var(--orange);color:var(--orange-d)">State</span><p>Cache entries and idempotency keys rewritten in a format the old code can't read.</p></div>
-      <div class="card"><span class="pill" style="background:var(--pink);color:var(--pink-d)">External</span><p>Webhook payloads sent, queues deleted, API versions removed. Redeploying can't recall them.</p></div>
+      <div class="card"><span class="pill" style="background:var(--lilac);color:var(--lilac-d)">Databases</span>
+        <p><b>Change:</b> a column renamed, dropped or retyped; values converted in place; a required column added.</p>
+        <p class="old">Old code fails its schema check at start-up, or queries a column that's gone.</p></div>
+      <div class="card"><span class="pill" style="background:var(--aqua);color:var(--aqua-d)">Events and messages</span>
+        <p><b>Change:</b> a field removed, renamed or retyped; its units or meaning changed.</p>
+        <p class="old">Old consumers read the missing field as zero or null, or drop the message.</p></div>
+      <div class="card"><span class="pill" style="background:var(--orange);color:var(--orange-d)">Caches and stored state</span>
+        <p><b>Change:</b> a new serialisation format, new keys, rewritten idempotency records.</p>
+        <p class="old">Old code can't read the entries: misses, errors or work done twice.</p></div>
+      <div class="card"><span class="pill" style="background:var(--pink);color:var(--pink-d)">External contracts</span>
+        <p><b>Change:</b> webhooks sent in a new shape, API versions retired, queues or topics deleted.</p>
+        <p class="old">A redeploy can't take back what partners have already received.</p></div>
     </div>
-    <div class="two-col">
-      <div>
-        <div class="label">Why today's checks miss it</div>
-        <div class="miss">
-          <div class="row"><div class="k">1</div><div><b>Tests run new code against new state.</b><span>Rollback creates the opposite combination, old code against new state, and nothing exercises it.</span></div></div>
-          <div class="row"><div class="k">2</div><div><b>Migrations only go forward.</b><span>Flyway and its peers have no undo. Going back means a hand-written script under pressure.</span></div></div>
-          <div class="row"><div class="k">3</div><div><b>Reviewers see the diff, not the readers.</b><span>The job that breaks is often not in the PR at all.</span></div></div>
-          <div class="row"><div class="k">4</div><div><b>The worst failures are silent.</b><span>A missing field becomes 0.0; no exception, nothing in the dead-letter queue.</span></div></div>
-        </div>
-      </div>
-      <div class="stakes">
-        <h3>Evidence: the £0.00 settlement, reproduced</h3>
+    <div class="label" style="margin-top:3mm">Why today's safeguards miss it: they all look forward</div>
+    <table class="t">
+      <tr><th style="width:26%">Safeguard</th><th style="width:31%">What it checks</th><th>What it never sees</th></tr>
+      <tr><td>Unit and integration tests</td><td style="font-weight:400">new code against a fresh database</td><td class="r" style="font-weight:600">old code against data the new code wrote</td></tr>
+      <tr><td>CI/CD pipelines</td><td style="font-weight:400">deploying forward</td><td class="r" style="font-weight:600">deploying back after the state has changed</td></tr>
+      <tr><td>Migration tools</td><td style="font-weight:400">applying changes in order</td><td class="r" style="font-weight:600">undoing them: most only go forward</td></tr>
+      <tr><td>Code review</td><td style="font-weight:400">the lines in the diff</td><td class="r" style="font-weight:600">other services and jobs that read the same data</td></tr>
+      <tr><td>Monitoring and alerts</td><td style="font-weight:400">errors and exceptions</td><td class="r" style="font-weight:600">wrong values that raise no error</td></tr>
+    </table>
+    <div class="two-col" style="margin-top:3mm">
+      <div class="stakes" style="background:#FDECEC;padding:3.4mm 4.4mm">
+        <h3 style="color:var(--red)">Why it matters</h3>
         <ul>
-          <li><b>The change:</b> PR #482 moves money from <span class="mono">double</span> pounds to <span class="mono">long</span> pence. Migration V3 renames and converts the column in place. Tests are green.</li>
-          <li><b>The rollback:</b> the old ledger won't start (<span class="mono">missing column [amount]</span>). After a hand hotfix it books the queued events.</li>
-          <li><b>The result</b> (recorded run, 13 Oct 2026): <b>50 settlements booked at £0.00, £12,708.11 missing</b>, dead-letter topic empty, every service healthy. Finance's reconciliation, not in the PR, broke first.</li>
+          <li><b>Rollback fails</b> just when it's needed most.</li>
+          <li><b>Recovery needs hand-written data fixes,</b> under pressure.</li>
+          <li><b>Silent failures corrupt data</b> for days before anyone notices.</li>
+          <li><b>Teams stop trusting rollback</b> altogether.</li>
+        </ul>
+      </div>
+      <div class="stakes" style="padding:3.4mm 4.4mm">
+        <h3>What teams need, before merge</h3>
+        <ul>
+          <li>Is the change <b>two-way or one-way</b>?</li>
+          <li><b>When does the door close,</b> and what breaks then?</li>
+          <li><b>Who else reads</b> the data it changes?</li>
+          <li><b>How can it be split</b> so each step can be undone?</li>
         </ul>
       </div>
     </div>
-    <div class="label" style="margin-top:4mm">Scope</div>
-    <div class="grid2">
-      <div class="box b-mint"><h3 style="color:var(--green-deep)">In scope</h3><ul>
-        <li>Reviewing a pull request or diff for rollback safety, before merge, inside GitHub Copilot.</li>
-        <li>Database migrations, event schemas, caches, idempotency keys and external contracts.</li>
-        <li>Finding other readers in the same repository, and proposing a safe split.</li>
-        <li>Blocking agent edits to migrations that have already shipped.</li>
-      </ul></div>
-      <div class="box b-grey"><h3>Out of scope (this version)</h3><ul>
-        <li>Readers in other repositories (planned: see section 9).</li>
-        <li>Running the rollback itself in production, or changing deploy pipelines.</li>
-        <li>Runtime data: the skill reads code and diffs, not live databases or topics.</li>
-        <li>Replacing human review: it informs the reviewer; it doesn't approve.</li>
-      </ul></div>
+    <div class="box b-grey" style="margin-top:3mm;padding:2.6mm 4.4mm">
+      <p style="font-size:8.2pt;margin:0"><b style="color:var(--green)">In scope:</b> changes reviewed before merge in GitHub Copilot, and readers in the same repository. <b>Out:</b> other repositories (section 9), running rollbacks, live data, approving PRs. The demo shows it end to end (section 2.2).</p>
     </div>
 
   </div>
