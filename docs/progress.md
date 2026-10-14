@@ -344,3 +344,10 @@ Gotchas:
   timeline from 16:30 to 17:26, what went wrong, and a pointer to `onewaydoor-proposal-v2.pdf` for the full story.
 - The TDD is 22 pages; contents, cover and footers renumbered and checked. Small thumbnails
   (`images/deck/thumbs/`) keep the PDF from carrying full-size pictures many times over.
+
+## Deck: a slide on reconciliation-batch in the split
+
+Slide 19 of `onewaydoor-proposal-v2.pdf` (now 26 slides) shows what each split step does to reconciliation-batch:
+no change, then a mismatch check (split 2), then the switch to `amount_minor` (split 3), then nothing to do at the
+drop. It also says how the rollback test deploys and rolls it back with ledger-service, gives finance's two ordering
+rules, and notes that the skill finds it only because it lives in the same repository.
