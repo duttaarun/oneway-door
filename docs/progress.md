@@ -363,3 +363,15 @@ Recorded as future scope, not built:
   `northwind-finance` demo idea. Limitation 2 points to it.
 - Decided in the plan: config is JSON, not YAML, so the scripts stay standard-library Node; the scripts stay
   offline and Copilot covers repos that aren't cloned.
+
+## Condensed proposal v3: five A4 pages
+
+`docs/onewaydoor-proposal_condensed_v3.pdf`, from `docs/proposal/proposal-condensed-v3.html`, built with
+`python3 docs/proposal/build.py proposal-condensed-v3.html docs/onewaydoor-proposal_condensed_v3.pdf`.
+Two pages of problem, three of solution, in the original proposal's A4 format with the deck's pictures:
+1. At a glance: the cover picture, the problem statement, four key numbers, the solution, the cast.
+2. The problem: how rollbacks go wrong, four kinds of one-way change, why safeguards miss it, why it matters,
+   and the same goal done as a one-way and a two-way door.
+3. The story: the Northwind system, why double became long, PR #482's four changes, the Friday timeline, why £0.00.
+4. The skill: how it works, the verdict on PR #482, the three predictions, the folder, where it runs, guardrails.
+5. The safe route: the four-step split with finance's job, the rollback matrix, the live demo, future scope.

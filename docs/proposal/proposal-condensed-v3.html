@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>One-Way Door: condensed proposal v3</title>
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --text: #1F1F1F; --muted: #555555; --line: #D8D8D8; --grey: #F1F1F1; --white: #FFFFFF; --black: #000000;
+    --green-bright: #11B67A; --green: #006A4D; --green-mid: #00864F; --green-deep: #024731; --neon: #0BE248; --mint: #C7FFC6;
+    --lilac: #E4E3FF; --lilac-d: #4A47B8; --aqua: #D6F3F1; --aqua-d: #0E6B66; --orange: #FFE3CC; --orange-d: #8A4300;
+    --pink: #FCE3FB; --pink-d: #8A1C4A; --red: #B00000;
+    --head: 'GT Ultra Median', 'Source Serif 4', Georgia, serif;
+    --body: 'GT Ultra Standard', 'Source Sans 3', Arial, sans-serif;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { margin: 0; padding: 0; background: #CCCCCC; }
+  body { font-family: var(--body); color: var(--text); font-size: 9.6pt; line-height: 1.45; }
+  .page { width: 210mm; height: 297mm; position: relative; overflow: hidden; background: var(--white); break-after: page; page-break-after: always; }
+  .page:last-child { break-after: auto; page-break-after: auto; }
+  h1, h2, h3 { font-family: var(--head); margin: 0; color: var(--black); font-weight: 600; }
+  p { margin: 0 0 2mm; }
+  b { font-weight: 700; }
+  .mono { font-family: var(--mono); }
+
+  /* ---------- site-style header ---------- */
+  .topbar { height: 12mm; background: var(--green-bright); padding: 0 14mm; display: flex; align-items: center; justify-content: space-between; }
+  .wordmark { font-family: var(--head); font-weight: 700; font-size: 13pt; color: var(--black); display: flex; align-items: center; gap: 2.4mm; }
+  .wordmark i { display: inline-block; width: 3.6mm; height: 5.4mm; border: 0.9mm solid var(--black); border-bottom: 0; border-radius: 2.4mm 2.4mm 0 0; }
+  .topbar .meta-r { font-size: 8pt; font-weight: 600; color: var(--black); }
+  .navbar { height: 8.6mm; background: var(--black); padding: 0 14mm; display: flex; align-items: stretch; gap: 7mm; }
+  .navbar span { color: var(--white); font-size: 8.2pt; font-weight: 600; display: flex; align-items: center; border-bottom: 1mm solid transparent; padding-top: 1mm; }
+  .navbar span.on { border-bottom-color: var(--green-bright); }
+  .navbar span small { color: #9B9B9B; font-weight: 400; margin-right: 1.4mm; font-size: 7.4pt; }
+
+  /* ---------- section intro ---------- */
+  .intro { background: var(--grey); padding: 5.4mm 14mm 5mm; }
+  .intro .label { font-size: 8.4pt; font-weight: 700; color: var(--green); margin-bottom: 1mm; }
+  .intro h2 { font-size: 21pt; line-height: 1.15; }
+  .body { padding: 6mm 14mm 0; }
+  .label { font-size: 8.4pt; font-weight: 700; color: var(--green); margin-bottom: 1.6mm; }
+  .lead { font-size: 10.6pt; line-height: 1.45; margin-bottom: 4mm; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+  .card { background: var(--white); border: 1px solid var(--line); border-radius: 3.5mm; padding: 3.6mm 4mm; }
+  .card h3 { font-size: 11.4pt; margin-bottom: 1.2mm; }
+  .card p { font-size: 9pt; line-height: 1.4; margin: 0; }
+  .pill { display: inline-block; font-size: 7.6pt; font-weight: 700; padding: 0.7mm 2.6mm; border-radius: 10mm; margin-bottom: 2mm; }
+  .more { font-weight: 700; color: var(--black); text-decoration: underline; text-underline-offset: 0.6mm; font-size: 8.8pt; }
+  .footer { position: absolute; left: 14mm; right: 14mm; bottom: 7mm; display: flex; justify-content: space-between; font-size: 7.6pt; color: var(--muted); border-top: 1px solid var(--line); padding-top: 2.2mm; }
+
+  /* ---------- cover ---------- */
+  .hero { background: var(--green-deep); height: 140mm; position: relative; overflow: hidden; padding: 16mm 14mm 0; color: var(--white); }
+  .hero .tag { display: inline-block; background: var(--white); color: var(--black); font-size: 8.4pt; font-weight: 700; padding: 1.4mm 4mm; border-radius: 10mm; }
+  .hero h1 { color: var(--white); font-size: 44pt; line-height: 1.02; margin-top: 7mm; font-weight: 600; }
+  .hero .sub { font-size: 14pt; line-height: 1.35; margin-top: 5mm; max-width: 98mm; color: #E6F5EE; }
+  .hero .cta { display: inline-block; margin-top: 7mm; background: var(--white); color: var(--black); font-weight: 700; font-size: 9.4pt; padding: 2.4mm 6mm; border-radius: 10mm; }
+  .doors { position: absolute; right: 14mm; bottom: 0; width: 82mm; height: 96mm; }
+  .door { position: absolute; bottom: 0; width: 17mm; height: 46mm; border-radius: 8.5mm 8.5mm 0 0; }
+  .door .knob { position: absolute; right: 2.4mm; top: 25mm; width: 2.2mm; height: 2.2mm; border-radius: 50%; background: rgba(0,0,0,.35); }
+  .door.a { left: 0; background: var(--green-bright); }
+  .door.b { left: 21mm; background: var(--green-mid); }
+  .door.c { left: 42mm; background: var(--mint); }
+  .door.open { left: 63mm; width: 19mm; height: 62mm; border-radius: 9.5mm 9.5mm 0 0; border: 1.6mm solid var(--neon); border-bottom: 0; overflow: hidden; }
+  .door.open .glow { position: absolute; inset: 0; background: linear-gradient(180deg, #F2FFF1 0%, var(--mint) 100%); }
+  .door.open .leaf { position: absolute; left: 0; bottom: 0; width: 7mm; height: 64mm; background: var(--neon); transform: skewY(-16deg); transform-origin: left bottom; }
+  .ring { position: absolute; right: -30mm; top: -34mm; width: 92mm; height: 92mm; border-radius: 50%; border: 9mm solid var(--green-mid); opacity: .55; }
+  .oneway { position: absolute; right: 14mm; bottom: 66mm; font-size: 8pt; font-weight: 700; color: var(--neon); letter-spacing: .02em; }
+  .cover-main { padding: 7mm 14mm 0; display: grid; grid-template-columns: 1.5fr 1fr; gap: 8mm; }
+  .meta { display: grid; grid-template-columns: auto 1fr; gap: 1.2mm 4mm; font-size: 8.8pt; margin-top: 3mm; }
+  .meta dt { color: var(--muted); }
+  .meta dd { margin: 0; font-weight: 600; }
+  .stat { background: var(--grey); border-radius: 3.5mm; padding: 3mm 4mm; margin-bottom: 2.6mm; }
+  .stat .n { font-family: var(--head); font-weight: 700; font-size: 17pt; line-height: 1.1; color: var(--green); }
+  .stat .t { font-size: 8.4pt; line-height: 1.3; margin-top: .6mm; }
+  .toc { padding: 3mm 14mm 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+  .toc div { background: var(--grey); border-radius: 3.5mm; padding: 3mm 3.6mm; }
+  .toc small { display: block; color: var(--green); font-weight: 700; font-size: 7.8pt; }
+  .toc b { display: block; font-family: var(--head); font-size: 10.6pt; margin: .6mm 0 1.4mm; }
+
+  /* ---------- problem ---------- */
+  .statement { background: var(--green-deep); color: var(--white); border-radius: 3.5mm; padding: 4.6mm 6mm; margin-bottom: 4.4mm; }
+  .statement .label { color: var(--mint); }
+  .statement p { font-family: var(--head); font-size: 12pt; line-height: 1.4; margin: 0; }
+  .two-col { display: grid; grid-template-columns: 1.12fr 1fr; gap: 6mm; margin-top: 4.4mm; }
+  .miss .row { display: grid; grid-template-columns: 8mm 1fr; gap: 3mm; align-items: start; margin-bottom: 2.4mm; }
+  .miss .k { width: 7mm; height: 7mm; border-radius: 50%; background: var(--green); color: var(--white); font-weight: 700; font-size: 9.4pt; display: flex; align-items: center; justify-content: center; }
+  .miss b { display: block; font-size: 9.6pt; }
+  .miss span { font-size: 9pt; color: var(--muted); }
+  .stakes { background: var(--mint); border-radius: 3.5mm; padding: 4.2mm 5mm; }
+  .stakes h3 { font-size: 12pt; color: var(--green-deep); margin-bottom: 1.6mm; }
+  .stakes ul { margin: 0; padding-left: 4mm; }
+  .stakes li { margin-bottom: 1.4mm; font-size: 8.8pt; line-height: 1.38; }
+  .cost { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .cost div { background: var(--black); color: #EDEDED; border-radius: 3.5mm; padding: 3.4mm 4mm; font-size: 8.8pt; line-height: 1.4; }
+  .cost b { display: block; font-family: var(--head); font-size: 11.2pt; margin-bottom: .8mm; color: var(--green-bright); }
+
+  /* ---------- stories ---------- */
+  .scenario { background: var(--grey); border-radius: 3.5mm; padding: 4mm 5mm; margin-bottom: 5mm; }
+  .scenario h3 { font-size: 12pt; margin-bottom: 1mm; }
+  .scenario h3 span { font-family: var(--body); font-weight: 400; font-size: 8.8pt; color: var(--muted); }
+  .flowstrip { display: flex; align-items: center; gap: 1.6mm; margin: 2.4mm 0 3mm; }
+  .flowstrip .n { flex: 1; border-radius: 2.4mm; padding: 1.8mm 2mm; font-size: 8pt; font-weight: 700; text-align: center; line-height: 1.2; background: var(--white); border: 1px solid var(--line); }
+  .flowstrip .n small { display: block; font-weight: 400; font-size: 7pt; color: var(--muted); }
+  .flowstrip .n.g { background: var(--green); color: var(--white); border-color: var(--green); }
+  .flowstrip .n.g small { color: #D7F0E5; }
+  .flowstrip .n.x { background: var(--black); color: var(--white); border-color: var(--black); }
+  .flowstrip .n.x small { color: #BDBDBD; }
+  .flowstrip .a { font-weight: 700; color: var(--muted); }
+  .persona { background: var(--white); border: 1px solid var(--line); border-radius: 3.5mm; padding: 3.6mm 4mm; display: grid; grid-template-columns: 10mm 1fr; gap: 3mm; }
+  .avatar { width: 10mm; height: 10mm; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--head); font-weight: 700; font-size: 12pt; color: var(--black); }
+  .persona h3 { font-size: 11pt; }
+  .persona .role { font-size: 7.8pt; color: var(--muted); margin-bottom: 1.2mm; }
+  .persona p { font-size: 9.2pt; line-height: 1.45; margin: 0; }
+  .persona em { font-style: normal; font-weight: 700; color: var(--green); }
+  .ac { margin-top: 5mm; display: grid; grid-template-columns: 1.1fr 1fr; gap: 5mm; }
+  .ac ol { margin: 0; padding-left: 5mm; }
+  .ac li { font-size: 9pt; line-height: 1.45; margin-bottom: 2mm; }
+  .ac li b { color: var(--green); }
+  table.journey { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 8.7pt; }
+  table.journey th { text-align: left; font-size: 7.8pt; padding: 1.8mm 2mm; color: var(--white); background: var(--black); font-weight: 700; }
+  table.journey th:first-child { border-radius: 2mm 0 0 0; } table.journey th:last-child { border-radius: 0 2mm 0 0; }
+  table.journey td { padding: 1.8mm 2mm; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.3; }
+  table.journey td.bad { color: var(--red); }
+  table.journey td.good { color: var(--green); font-weight: 700; }
+  table.journey td.stage { font-weight: 700; }
+
+  /* ---------- solution ---------- */
+  .code { background: var(--black); color: #E8E8E8; border-radius: 3.5mm; padding: 4mm 4.4mm; font-family: var(--mono); font-size: 7.3pt; line-height: 1.62; }
+  .code .f { color: var(--green-bright); } .code .c { color: #9B9B9B; } .code .k { color: var(--mint); } .code .y { color: #FFB16A; }
+  .code .v { display: inline-block; background: #F54269; color: var(--black); font-weight: 600; padding: .2mm 2mm; border-radius: 1.4mm; }
+  .steps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2mm; margin: 0 0 4.4mm; }
+  .step { border-radius: 3mm; padding: 2.6mm 2.6mm; min-height: 22mm; }
+  .step .i { font-family: var(--head); font-weight: 700; font-size: 15pt; line-height: 1; color: var(--green); }
+  .step .t { font-size: 8pt; line-height: 1.3; font-weight: 600; margin-top: 1.4mm; }
+  .split { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.2mm; }
+  .split div { background: var(--grey); border-radius: 3mm; padding: 2.6mm 3mm; font-size: 8.3pt; line-height: 1.35; }
+  .split b { display: block; font-family: var(--head); font-size: 10pt; margin-bottom: .6mm; }
+  .principles { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8mm 4mm; font-size: 8.8pt; line-height: 1.35; }
+  .principles div:before { content: "› "; color: var(--green); font-weight: 700; }
+  .ext { background: var(--green-deep); color: var(--white); border-radius: 3.5mm; padding: 3.6mm 4.4mm; }
+  .ext h3 { color: var(--mint); font-size: 11pt; margin-bottom: 1.2mm; }
+  .ext p { font-size: 8.8pt; margin: 0; color: #E6F5EE; }
+  .surfaces { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .surfaces div { background: var(--white); border: 1px solid var(--line); border-radius: 3.5mm; padding: 3.4mm 4mm; font-size: 8.8pt; line-height: 1.4; }
+  .surfaces b { display: block; font-family: var(--head); font-size: 11pt; margin-bottom: .8mm; }
+  .surfaces .how { font-family: var(--mono); font-size: 7.2pt; color: var(--green); margin-top: 1.6mm; display: block; }
+
+  /* ---------- evidence ---------- */
+  table.proof { width: 100%; border-collapse: collapse; font-size: 9pt; }
+  table.proof th { text-align: left; font-size: 7.8pt; color: var(--muted); padding: 1.2mm 2mm; border-bottom: 2px solid var(--black); }
+  table.proof td { padding: 1.6mm 2mm; border-bottom: 1px solid var(--line); }
+  table.proof td.pass { color: var(--green); font-weight: 700; }
+  table.proof td.fail { color: var(--red); font-weight: 700; }
+  .bigstats { display: grid; grid-template-columns: 1fr 1fr; gap: 2.6mm; }
+  .bigstats div { background: var(--grey); border-radius: 3.5mm; padding: 2.8mm 3.4mm; }
+  .bigstats .n { font-family: var(--head); font-weight: 700; font-size: 18pt; line-height: 1.1; color: var(--green); }
+  .bigstats .t { font-size: 8.2pt; line-height: 1.3; margin-top: .6mm; }
+  .list-tight { margin: 0; padding-left: 4mm; font-size: 8.8pt; line-height: 1.4; }
+  .list-tight li { margin-bottom: 1.2mm; }
+  .road { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .road div { border-radius: 3.5mm; padding: 3.4mm 4mm; }
+  .road h3 { font-size: 11pt; margin-bottom: 1.2mm; }
+  .road ul { margin: 0; padding-left: 4mm; font-size: 8.6pt; line-height: 1.38; }
+  .road li { margin-bottom: .8mm; }
+  .ask { margin-top: 4.6mm; background: var(--green-deep); color: var(--white); border-radius: 3.5mm; padding: 5mm 6mm; display: grid; grid-template-columns: 1fr auto; gap: 6mm; align-items: center; }
+  .ask h3 { font-size: 15pt; color: var(--white); margin-bottom: 1.2mm; }
+  .ask p { font-size: 9.2pt; margin: 0; color: #E6F5EE; }
+  .ask .cta { background: var(--white); color: var(--black); font-weight: 700; font-size: 9pt; padding: 2.4mm 5mm; border-radius: 10mm; white-space: nowrap; }
+
+  /* ---------- condensed v3 ---------- */
+  .navbar { gap: 6mm; }
+  .body { padding: 5mm 14mm 0; }
+  .ptitle { font-family: var(--head); font-size: 19pt; line-height: 1.12; margin: 0 0 1.4mm; font-weight: 700; }
+  .kick { font-size: 8pt; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--green); margin-bottom: 1mm; }
+  .lead { font-size: 9.6pt; line-height: 1.42; margin-bottom: 3mm; }
+  .sp { height: 3mm; } .sp2 { height: 2mm; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .grid2 > *, .grid3 > *, .grid4 > *, .row > * { min-width: 0; }
+  .row { display: flex; gap: 4mm; }
+  .box { border-radius: 3.2mm; padding: 3mm 3.6mm; }
+  .box h3 { font-size: 10.6pt; margin-bottom: 1mm; }
+  .box p, .box li { font-size: 8.5pt; line-height: 1.38; }
+  .box p { margin: 0 0 1mm; } .box p:last-child { margin-bottom: 0; }
+  .box ul, .box ol { margin: 0; padding-left: 4.2mm; }
+  .box li { margin-bottom: .8mm; }
+  .b-grey { background: var(--grey); } .b-mint { background: var(--mint); } .b-lilac { background: var(--lilac); }
+  .b-aqua { background: var(--aqua); } .b-orange { background: var(--orange); } .b-pink { background: var(--pink); }
+  .b-red { background: #FDECEC; } .b-yellow { background: #FFF6D6; }
+  .b-line { border: 1px solid var(--line); background: var(--white); }
+  .b-deep { background: var(--green-deep); color: var(--white); } .b-deep h3 { color: var(--mint); } .b-deep p, .b-deep li { color: #E6F5EE; }
+  .card { padding: 2.8mm 3.2mm; border-radius: 3.2mm; }
+  .card p { font-size: 8.3pt; line-height: 1.35; }
+  .card p.old { color: var(--red); font-weight: 600; margin-top: 1.2mm; font-size: 8.1pt; }
+  .pill { font-size: 7.3pt; margin-bottom: 1.4mm; }
+  .mono { font-family: var(--mono); font-size: .9em; }
+  .code { border-radius: 2.6mm; padding: 2.4mm 3mm; font-size: 7pt; line-height: 1.5; white-space: pre; overflow: hidden; }
+  .code .x { color: #FF8A8A; } .code .hl { background: #2B4A3D; border-radius: .8mm; }
+  .err { font-family: var(--mono); font-size: 6.8pt; line-height: 1.35; background: #2B0D0D; color: #FFB4B4; border-radius: 1.6mm; padding: 1mm 1.8mm; }
+  .okk { font-family: var(--mono); font-size: 6.8pt; background: #0D2B1E; color: #9DF5C8; border-radius: 1.6mm; padding: 1mm 1.8mm; }
+  table.t { width: 100%; border-collapse: collapse; font-size: 8.2pt; }
+  table.t th { text-align: left; font-size: 7.3pt; color: var(--white); background: var(--black); padding: 1.2mm 2mm; font-weight: 700; }
+  table.t th:first-child { border-radius: 1.6mm 0 0 0; } table.t th:last-child { border-radius: 0 1.6mm 0 0; }
+  table.t td { padding: 1.1mm 2mm; border-bottom: 1px solid var(--line); vertical-align: middle; line-height: 1.3; }
+  table.t td.k { font-weight: 700; }
+  table.t td.r { color: var(--red); font-weight: 700; } table.t td.g { color: var(--green); font-weight: 700; }
+  table.t td.tm { font-family: var(--mono); font-weight: 600; white-space: nowrap; }
+  .face { width: 7mm; height: 7mm; border-radius: 50%; overflow: hidden; border: .3mm solid #000; flex: none; display: inline-block; vertical-align: middle; }
+  .face img, .avl img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; display: block; }
+  .avl { width: 15mm; height: 15mm; border-radius: 50%; overflow: hidden; border: .4mm solid #000; flex: none; }
+  .who { display: flex; align-items: center; gap: 2mm; font-weight: 700; }
+  .bubble { position: relative; background: #fff; border: .35mm solid #000; border-radius: 2.6mm; padding: 1.6mm 2.6mm; font-size: 8.4pt; font-weight: 700; line-height: 1.3; }
+  .bubble.l::before { content: ''; position: absolute; left: -2.3mm; top: 2.6mm; border-width: 1.6mm 2.3mm 1.6mm 0; border-style: solid; border-color: transparent #000 transparent transparent; }
+  .bubble.l::after { content: ''; position: absolute; left: -1.6mm; top: 2.9mm; border-width: 1.3mm 1.8mm 1.3mm 0; border-style: solid; border-color: transparent #fff transparent transparent; }
+  .fig { border: 1px solid var(--line); border-radius: 2.6mm; overflow: hidden; background: #fff; }
+  .fig img { display: block; width: 100%; }
+  .cap { font-size: 7.3pt; color: var(--muted); line-height: 1.3; margin-top: .9mm; }
+  .cap b { color: var(--text); }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.6mm; }
+  .stats div { border-radius: 3mm; padding: 2.4mm 3mm; background: var(--grey); }
+  .stats b { display: block; font-family: var(--head); font-size: 17pt; line-height: 1.05; }
+  .stats span { font-size: 7.8pt; line-height: 1.3; display: block; margin-top: .6mm; }
+  .cast { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2mm; }
+  .cast > div { border-radius: 2.6mm; padding: 1.8mm 1.6mm; text-align: center; }
+  .cast .avl { width: 10.5mm; height: 10.5mm; margin: 0 auto .8mm; }
+  .cast b { display: block; font-family: var(--head); font-size: 9pt; }
+  .cast span { display: block; font-size: 6.9pt; line-height: 1.25; color: var(--muted); }
+  .flowstrip { margin: 1.4mm 0 2.6mm; }
+  .flowstrip .n { padding: 1.5mm 1.6mm; font-size: 7.6pt; }
+  .flowstrip .n small { font-size: 6.7pt; }
+  .num { display: inline-flex; width: 4.6mm; height: 4.6mm; border-radius: 50%; background: #000; color: #fff; font-weight: 800; font-size: 7.4pt;
+         align-items: center; justify-content: center; margin-right: 1.4mm; vertical-align: 0.2mm; flex: none; }
+  .tag { display: inline-block; font-size: 7pt; font-weight: 800; padding: .5mm 2mm; border-radius: 6mm; background: #000; color: #fff; }
+  .tag.g { background: var(--green-bright); color: #000; } .tag.r { background: var(--red); } .tag.o { background: #F07F2D; color: #000; }
+  table.m { border-collapse: separate; border-spacing: .9mm; width: 100%; font-size: 7.2pt; }
+  table.m th { font-size: 6.6pt; color: var(--muted); font-weight: 700; text-align: center; line-height: 1.15; }
+  table.m td { text-align: center; border-radius: 1.4mm; padding: 1mm .4mm; font-weight: 800; }
+  table.m td.n { text-align: left; font-family: var(--mono); font-weight: 600; font-size: 7pt; white-space: nowrap; background: none; }
+  table.m td.p { background: #C9F5D9; color: var(--green); } table.m td.f { background: #FDDADA; color: var(--red); }
+  table.m td.res { background: var(--green-bright); color: #fff; } table.m td.resf { background: var(--red); color: #fff; }
+  /* cover */
+  .hero3 { position: relative; height: 94mm; background: var(--green-deep); overflow: hidden; }
+  .hero3 .txt { position: absolute; left: 14mm; top: 8mm; width: 92mm; color: #fff; }
+  .hero3 .txt .tagw { display: inline-block; background: #fff; color: #000; font-size: 8pt; font-weight: 700; padding: 1.2mm 3.6mm; border-radius: 10mm; }
+  .hero3 h1 { color: #fff; font-size: 28pt; line-height: 1.04; margin: 4mm 0 3mm; font-weight: 700; }
+  .hero3 .sub { font-size: 10.4pt; line-height: 1.4; color: #E6F5EE; }
+  .hero3 img.pic { position: absolute; right: 0; top: 0; width: 98mm; height: 94mm; object-fit: cover; object-position: 50% 50%; }
+  .hero3 .chips { position: absolute; right: 6mm; bottom: 6mm; display: flex; gap: 2mm; }
+  .hero3 .chips span { font-size: 7.4pt; font-weight: 800; padding: 1.2mm 3mm; border-radius: 6mm; }
+</style>
+</head>
+<body>
+
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Hackathon proposal · condensed v3</div></div>
+  <div class="navbar"><span class="on"><small>1</small>At a glance</span><span><small>2</small>The problem</span><span><small>3</small>The story</span><span><small>4</small>The skill</span><span><small>5</small>The safe route</span></div>
+  <div class="hero3">
+    <div class="txt">
+      <span class="tagw">Hackathon proposal · condensed v3</span>
+      <h1>Know before you merge whether you can roll back.</h1>
+      <div class="sub">One-Way Door is a GitHub Copilot skill. On every pull request it answers the question no pipeline asks: <b style="color:#fff">if this goes wrong after deploy, can we actually roll back?</b></div>
+    </div>
+    <img class="pic" src="images/deck/cover-doors.jpg" alt="A developer at a fork between a door that swings both ways and one that only goes forward">
+    <div class="chips"><span style="background:var(--aqua-d);color:#fff">⇄ Two-way door: roll back any time</span><span style="background:#F07F2D">→ One-way door: no way back</span></div>
+  </div>
+  <div class="body">
+
+    <div class="statement" style="margin-bottom:2.6mm;padding:3.6mm 5mm">
+      <div class="label">The problem</div>
+      <p>Rollback is every team's first response to a bad release, yet nobody checks that it works. When a release changes stored data or a message format, the old code may not run against what the release leaves behind. Teams find out mid-incident, and nothing before merge checks for it.</p>
+    </div>
+    <div class="stats">
+      <div><b>1</b><span>sensible refactor: money from a double to whole pence. Tests green, review approved.</span></div>
+      <div style="background:#FDECEC"><b style="color:var(--red)">50</b><span>settlements booked at £0.00 after the rollback. No exception, nothing in the dead-letter topic.</span></div>
+      <div style="background:#FDECEC"><b style="color:var(--red)">£12,708</b><span>missing from the ledger, with every dashboard green. Finance's job broke first.</span></div>
+      <div style="background:var(--mint)"><b style="color:var(--green)">4</b><span>small PRs instead, each one proven to roll back cleanly. Same end state.</span></div>
+    </div>
+    <div class="sp"></div>
+    <div class="grid2" style="grid-template-columns:1.25fr 1fr;align-items:start">
+      <div>
+        <div class="label">The solution, in one folder</div>
+        <div class="box b-grey">
+          <ul>
+            <li><b>Classifies every change</b> in a PR as two-way (safe to roll back) or one-way.</li>
+            <li><b>For each one-way change:</b> when the door closes, what breaks on rollback, and the safe rollback window.</li>
+            <li><b>Finds the blast radius:</b> other code that reads the same table, column, topic or field, even outside the PR.</li>
+            <li><b>Proposes a rollback-safe split</b> (expand → migrate → contract → drop), and generates it on request.</li>
+          </ul>
+          <p style="margin-top:1mm;font-size:8pt;color:var(--muted)">VS Code, Copilot CLI, the cloud agent and code review. Offline: git and Node only.</p>
+        </div>
+      </div>
+      <div>
+        <div class="label">Proven live, not mocked</div>
+        <div class="box b-deep">
+          <p>An invented payments company, <b>Northwind</b>, runs three real Java services, Kafka and Postgres on one laptop. One PR is merged, rolled back, and books £0.00. The skill predicts each failure before merge, and its split passes a five-stage rollback test at every step.</p>
+        </div>
+      </div>
+    </div>
+    <div class="sp2"></div>
+    <div class="label">The people in the story</div>
+    <div class="cast">
+      <div class="b-mint"><div class="avl" style="background:var(--mint)"><img src="images/deck/thumbs/priya.png" alt=""></div><b>Priya</b><span>Developer. Raises PR #482.</span></div>
+      <div class="b-lilac"><div class="avl" style="background:var(--lilac)"><img src="images/deck/thumbs/tom.png" alt=""></div><b>Tom</b><span>Tech lead. Approves it.</span></div>
+      <div class="b-aqua"><div class="avl" style="background:var(--aqua)"><img src="images/deck/thumbs/sam.png" alt=""></div><b>Sam</b><span>On call. Presses rollback.</span></div>
+      <div class="b-orange"><div class="avl" style="background:var(--orange)"><img src="images/deck/thumbs/grace.png" alt=""></div><b>Grace</b><span>Finance. Owns the reconciliation.</span></div>
+      <div class="b-pink"><div class="avl" style="background:var(--pink)"><img src="images/deck/thumbs/dev.png" alt=""></div><b>Dev</b><span>DBA. Writes the hotfix.</span></div>
+      <div class="b-yellow"><div class="avl" style="background:#FFF6D6"><img src="images/deck/thumbs/door-mascot.png" alt=""></div><b>Hinge</b><span>The skill. Asks first.</span></div>
+    </div>
+
+  </div>
+  <div class="footer"><span>One-Way Door · condensed proposal v3</span><span>Northwind Payments and its people are invented</span><span>1 / 5</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Hackathon proposal · condensed v3</div></div>
+  <div class="navbar"><span><small>1</small>At a glance</span><span class="on"><small>2</small>The problem</span><span><small>3</small>The story</span><span><small>4</small>The skill</span><span><small>5</small>The safe route</span></div>
+  <div class="body">
+
+    <div class="kick">The problem</div>
+    <div class="ptitle">Rollback is the safety net nobody tests</div>
+    <p class="lead">Code rolls back; state doesn't. A release that changes a table, an event or a stored format leaves data behind, and the previous version has to live with it. Nobody checks, before merge, that it can.</p>
+    <div class="label">How a rollback goes wrong</div>
+    <div class="flowstrip">
+      <div class="n">Release N ships<small>it changes a schema, an event or a format</small></div><span class="a">›</span>
+      <div class="n g">New state is written<small>tables migrated, events published, caches filled</small></div><span class="a">›</span>
+      <div class="n">An incident<small>related or not, the plan is to roll back</small></div><span class="a">›</span>
+      <div class="n x">Roll back to N−1<small>the code goes back; the state stays</small></div><span class="a">›</span>
+      <div class="n" style="background:var(--red);color:#fff;border-color:var(--red)">Old code, new state<small style="color:#FFD6D6">fails, errors, or silently misreads</small></div>
+    </div>
+    <div class="label">Four kinds of one-way change</div>
+    <div class="grid4">
+      <div class="card"><span class="pill" style="background:var(--lilac);color:var(--lilac-d)">Databases</span>
+        <p><b>Change:</b> a column renamed, dropped or retyped; values converted in place.</p>
+        <p class="old">Old code fails its schema check, or queries a column that's gone.</p></div>
+      <div class="card"><span class="pill" style="background:var(--aqua);color:var(--aqua-d)">Events and messages</span>
+        <p><b>Change:</b> a field removed, renamed or retyped; its units changed.</p>
+        <p class="old">Old consumers read the missing field as zero or null, silently.</p></div>
+      <div class="card"><span class="pill" style="background:var(--orange);color:var(--orange-d)">Caches and state</span>
+        <p><b>Change:</b> a new serialisation format, new keys, rewritten idempotency records.</p>
+        <p class="old">Old code can't read them: misses, errors, or work done twice.</p></div>
+      <div class="card"><span class="pill" style="background:var(--pink);color:var(--pink-d)">External contracts</span>
+        <p><b>Change:</b> webhooks in a new shape, API versions retired, topics deleted.</p>
+        <p class="old">A redeploy can't take back what partners already received.</p></div>
+    </div>
+    <div class="sp"></div>
+    <div class="label">Why today's safeguards miss it: they all look forward</div>
+    <table class="t">
+      <tr><th style="width:26%">Safeguard</th><th style="width:31%">What it checks</th><th>What it never sees</th></tr>
+      <tr><td class="k">Unit and integration tests</td><td>new code against a fresh database</td><td class="r">old code against data the new code wrote</td></tr>
+      <tr><td class="k">CI/CD pipelines</td><td>deploying forward</td><td class="r">deploying back after the state has changed</td></tr>
+      <tr><td class="k">Migration tools</td><td>applying changes in order</td><td class="r">undoing them: most only go forward</td></tr>
+      <tr><td class="k">Code review</td><td>the lines in the diff</td><td class="r">other services and jobs that read the same data</td></tr>
+      <tr><td class="k">Monitoring and alerts</td><td>errors and exceptions</td><td class="r">wrong values that raise no error</td></tr>
+    </table>
+    <div class="sp"></div>
+    <div class="grid2" style="grid-template-columns:1fr 1fr;align-items:stretch">
+      <div class="fig" style="position:relative">
+        <img src="images/deck/zero-receipt.jpg" alt="Three green dashboards beside a receipt of £0.00 lines" style="height:100%;object-fit:cover">
+        <div style="position:absolute;left:2.4mm;bottom:2.4mm;right:2.4mm;background:rgba(0,0,0,.72);color:#fff;border-radius:2mm;padding:1.6mm 2.4mm;font-size:7.8pt;font-weight:700">The worst failures are quiet: every dashboard green, every line £0.00.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2.6mm">
+        <div class="box b-red"><h3 style="color:var(--red)">Why it matters</h3><ul>
+          <li><b>Rollback fails</b> just when it's needed most.</li>
+          <li><b>Recovery needs hand-written data fixes,</b> under pressure.</li>
+          <li><b>Silent failures corrupt data</b> for days before anyone notices.</li>
+          <li><b>Teams stop trusting rollback</b> altogether.</li></ul></div>
+        <div class="box b-mint"><h3 style="color:var(--green-deep)">What teams need, before merge</h3><ul>
+          <li>Is the change <b>two-way or one-way</b>?</li>
+          <li><b>When does the door close,</b> and what breaks then?</li>
+          <li><b>Who else reads</b> the data it changes?</li>
+          <li><b>How can it be split</b> so each step can be undone?</li></ul></div>
+      </div>
+    </div>
+    <div class="sp"></div>
+    <div class="label">Same goal, two kinds of door</div>
+    <table class="t">
+      <tr><th style="width:22%">Goal</th><th style="width:39%">One-way: in one release</th><th>Two-way: in steps</th></tr>
+      <tr><td class="k">Rename a column</td><td class="r">rename it in place</td><td class="g">add the new column, copy, switch readers, then drop</td></tr>
+      <tr><td class="k">Change units</td><td class="r">convert every row in place</td><td class="g">write both units; switch readers; drop the old</td></tr>
+      <tr><td class="k">Replace an event field</td><td class="r">remove the old field, add the new one</td><td class="g">send both; move every consumer; then stop the old</td></tr>
+      <tr><td class="k">Change a cache format</td><td class="r">write only the new format</td><td class="g">read both formats first; write the new one later</td></tr>
+    </table>
+
+  </div>
+  <div class="footer"><span>One-Way Door · condensed proposal v3</span><span>Northwind Payments and its people are invented</span><span>2 / 5</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Hackathon proposal · condensed v3</div></div>
+  <div class="navbar"><span><small>1</small>At a glance</span><span><small>2</small>The problem</span><span class="on"><small>3</small>The story</span><span><small>4</small>The skill</span><span><small>5</small>The safe route</span></div>
+  <div class="body">
+
+    <div class="kick">The problem, made real</div>
+    <div class="ptitle">Northwind Payments: a sensible refactor, then £0.00</div>
+    <div class="grid2" style="grid-template-columns:1.32fr 1fr;align-items:start">
+      <div>
+        <div class="fig"><img src="images/lucid-demo-system.png" alt="settlement-service publishes to Kafka; ledger-service writes ledger_entries in Postgres; reconciliation-batch reads the table directly"></div>
+        <div class="cap"><b>The system.</b> The writer (settlement-service), the reader (ledger-service) and finance's job nobody remembered (reconciliation-batch). Real Java 21 services.</div>
+      </div>
+      <div>
+        <div class="row" style="gap:2.4mm;align-items:flex-start"><div class="avl" style="background:var(--mint)"><img src="images/deck/priya.png" alt=""></div><div class="bubble l">A double can't hold 0.10 exactly. Let's store whole pence, like the card schemes do.</div></div>
+        <div class="sp2"></div>
+        <div class="box b-orange"><h3 style="color:var(--orange-d)">Why PR #482 swaps double for long</h3>
+          <div class="code" style="margin:1mm 0 1.4mm">0.1 + 0.2 == <span class="x">0.30000000000000004</span>
+<span class="c">// before</span> double amount = 268.47;
+<span class="c">// after </span> long amountMinor = 26847;</div>
+          <p>Summed over millions of settlements, totals drift by pennies. A <span class="mono">long</span> in pence is exact. <b>The idea is right; shipping it in one deploy isn't.</b></p></div>
+      </div>
+    </div>
+    <div class="sp2"></div>
+    <div class="label">One PR, four changes at once (tests green, approved by Tom)</div>
+    <div class="grid4">
+      <div class="box b-lilac"><p><span class="num">1</span><b>Flyway V3</b> renames <span class="mono">amount</span> to <span class="mono">amount_minor</span>.</p></div>
+      <div class="box b-lilac"><p><span class="num">2</span>It <b>rewrites every row</b> in pence: £268.47 → 26847.</p></div>
+      <div class="box b-lilac"><p><span class="num">3</span>The event swaps <span class="mono">amount</span> for <span class="mono">amountMinor</span>.</p></div>
+      <div class="box b-red"><p><span class="num">4</span><b>Not in the PR:</b> finance's <span class="mono">SUM(amount)</span> job.</p></div>
+    </div>
+    <div class="sp2"></div>
+    <div class="label">Friday at Northwind, 16:30 to 17:26</div>
+    <table class="t">
+      <tr><th style="width:8%">Time</th><th style="width:12%">Who</th><th>What happens</th><th style="width:30%">What everyone sees</th></tr>
+      <tr><td class="tm">16:30</td><td style="white-space:nowrap"><span class="who" style="font-weight:700"><span class="face" style="background:var(--mint)"><img src="images/deck/thumbs/priya.png" alt=""></span>Priya</span></td><td>v1 runs: settlements booked in pounds.</td><td class="g" style="font-family:var(--mono);font-size:7pt">10 rows, all correct</td></tr>
+      <tr><td class="tm">16:40</td><td style="white-space:nowrap"><span class="who" style="font-weight:700"><span class="face" style="background:var(--lilac)"><img src="images/deck/thumbs/tom.png" alt=""></span>Tom</span></td><td>PR #482 ships. V3 runs in 5 ms; settlement-service sends <span class="mono">amountMinor</span>.</td><td class="g" style="font-family:var(--mono);font-size:7pt">tests were green</td></tr>
+      <tr><td class="tm">16:55</td><td style="white-space:nowrap"><span class="who" style="font-weight:700"><span class="face" style="background:var(--orange)"><img src="images/deck/thumbs/grace.png" alt=""></span>Grace</span></td><td>reconciliation-batch, not in the PR, still runs <span class="mono">SUM(amount)</span>.</td><td class="r" style="font-family:var(--mono);font-size:7pt">column "amount" does not exist</td></tr>
+      <tr><td class="tm">16:58</td><td style="white-space:nowrap"><span class="who" style="font-weight:700"><span class="face" style="background:var(--aqua)"><img src="images/deck/thumbs/sam.png" alt=""></span>Sam</span></td><td>Sam rolls back <b>ledger-service only</b>. The old code won&#8217;t start.</td><td class="r" style="font-family:var(--mono);font-size:7pt">missing column [amount]</td></tr>
+      <tr><td class="tm">17:00</td><td style="white-space:nowrap"><span class="who" style="font-weight:700"><span class="face" style="background:var(--aqua)"><img src="images/deck/thumbs/sam.png" alt=""></span>Sam</span></td><td>settlement-service is still v2. Fifty <span class="mono">amountMinor</span> events queue on Kafka.</td><td class="r" style="font-family:var(--mono);font-size:7pt">backlog: 50 events</td></tr>
+      <tr><td class="tm">17:25</td><td style="white-space:nowrap"><span class="who" style="font-weight:700"><span class="face" style="background:var(--pink)"><img src="images/deck/thumbs/dev.png" alt=""></span>Dev</span></td><td>A hand-written hotfix reverses V3. v1 starts and drains the queue.</td><td class="g" style="font-family:var(--mono);font-size:7pt">ledger-service UP</td></tr>
+      <tr><td class="tm">17:26</td><td style="white-space:nowrap"><span class="who" style="font-weight:700"><span class="face" style="background:var(--orange)"><img src="images/deck/thumbs/grace.png" alt=""></span>Grace</span></td><td>Fifty settlements booked at <b>£0.00</b>. No exception, empty DLT, all green.</td><td class="r" style="font-family:var(--mono);font-size:7pt">£12,708.11 missing</td></tr>
+    </table>
+    <div class="sp2"></div>
+    <div class="grid2" style="grid-template-columns:1.05fr 1fr;align-items:stretch">
+      <div class="box b-grey"><h3>Why £0.00 and not an error</h3>
+        <div class="code" style="margin:1mm 0 1.2mm">record PaymentSettled(…,
+  <span class="x">double amount</span>, …)   <span class="c">← missing: 0.0</span>
+<span class="c">// "amountMinor": 26847 → ignored</span></div>
+        <p>The old ledger reads by field name. Jackson ignores the unknown field; the missing <span class="mono">double</span> stays 0.0. Nothing throws, so nothing reaches the dead-letter topic.</p></div>
+      <div class="box b-deep"><h3>What went wrong</h3>
+        <p>Everyone watched the ledger. <b style="color:#fff">Nobody thought about settlement-service:</b> it stayed on v2, and the events already on Kafka can't be rolled back. Nor about <b style="color:#fff">reconciliation-batch</b>, which reads the table but isn't in the PR.</p></div>
+    </div>
+
+  </div>
+  <div class="footer"><span>One-Way Door · condensed proposal v3</span><span>Northwind Payments and its people are invented</span><span>3 / 5</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Hackathon proposal · condensed v3</div></div>
+  <div class="navbar"><span><small>1</small>At a glance</span><span><small>2</small>The problem</span><span><small>3</small>The story</span><span class="on"><small>4</small>The skill</span><span><small>5</small>The safe route</span></div>
+  <div class="body">
+
+    <div class="row" style="align-items:center;gap:5mm">
+      <img src="images/deck/door-mascot.png" alt="Hinge, the skill's mascot" style="width:30mm;flex:none">
+      <div>
+        <div class="kick">The solution</div>
+        <div class="ptitle">One-Way Door: a GitHub Copilot skill for rollback safety</div>
+        <p class="lead" style="margin:0">One folder, <span class="mono">.github/skills/one-way-door</span>. Copilot loads it when someone reviews a PR, checks a release, changes a migration or an event, or asks “can we roll back?”. <b>Scripts check the mechanical facts; Copilot does the judgement.</b></p>
+      </div>
+    </div>
+    <div class="sp2"></div>
+    <div class="label">How it works</div>
+    <div class="flowstrip">
+      <div class="n">1 · The PR goes up<small>PR #482 against main</small></div><span class="a">›</span>
+      <div class="n">2 · Someone asks<small>“can we roll back?”</small></div><span class="a">›</span>
+      <div class="n" style="background:#FFF6D6">3 · The skill loads<small>its description matches</small></div><span class="a">›</span>
+      <div class="n" style="background:var(--aqua)">4 · Scripts check<small>migrations and schemas, offline</small></div><span class="a">›</span>
+      <div class="n" style="background:var(--lilac)">5 · Copilot judges<small>readers, old code vs new state</small></div><span class="a">›</span>
+      <div class="n g">6 · The verdict<small>as a PR comment</small></div>
+    </div>
+    <div class="grid2" style="grid-template-columns:1.2fr 1fr;align-items:start">
+      <div class="box b-line" style="padding:3mm 3.4mm">
+        <div style="font-size:7.3pt;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:1mm;margin-bottom:1.6mm"><b style="color:#000">GitHub Copilot</b> commented on PR #482 · used <span class="mono">.github/skills/one-way-door</span></div>
+        <h3 style="font-size:10.6pt;margin-bottom:1mm">One-way door check</h3>
+        <p style="font-size:8.3pt;margin:0 0 1.4mm"><span class="tag r">Verdict: ONE-WAY</span> · Safe rollback window: <b>none</b>, closes when V3 runs at ledger-service start-up.</p>
+        <ol style="margin:0 0 1.6mm;padding-left:4.4mm;font-size:8pt;line-height:1.35">
+          <li><b>Column renamed and converted in place.</b> If rolled back, v1 fails its schema check.</li>
+          <li><b><span class="mono">amount</span> replaced by <span class="mono">amountMinor</span>.</b> Rollback doesn't remove events already on the topic.</li>
+          <li><b>A missing <span class="mono">amount</span> silently becomes £0.00.</b> Nothing reaches the DLT.</li></ol>
+        <table class="t" style="font-size:7.6pt"><tr><th>Blast radius: reader</th><th>Uses</th><th>Breaks when</th></tr>
+          <tr><td class="k">reconciliation-batch <span style="color:var(--red)">(not in this PR)</span></td><td class="mono">SUM(amount)</td><td>V3 runs</td></tr>
+          <tr><td class="k">ledger-service</td><td class="mono">amount_minor</td><td>rollback</td></tr>
+          <tr><td class="k">ledger-service consumer</td><td class="mono">.amount</td><td>rollback, with a v2 backlog</td></tr></table>
+        <p style="font-size:7.6pt;color:var(--muted);margin:1.4mm 0 0"><b style="color:#000">Suggested split:</b> expand → migrate → contract → drop. scan-migrations: 3 findings · schema-compat: 5 findings.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2.2mm">
+        <div class="label" style="margin:0">It predicted every failure on Friday</div>
+        <div class="box b-line" style="display:flex;gap:2.4mm;align-items:center;padding:2.2mm 2.8mm"><div class="avl" style="background:var(--aqua)"><img src="images/deck/thumbs/sam.png" alt=""></div><div style="min-width:0"><div style="font-size:6.9pt;font-weight:800;color:var(--green)">PREDICTED · seen at 16:58</div><div style="font-size:8.3pt;font-weight:700;margin:.4mm 0 .8mm">The old ledger won&#8217;t start</div><div class="err">missing column [amount]</div></div></div>
+        <div class="box b-line" style="display:flex;gap:2.4mm;align-items:center;padding:2.2mm 2.8mm"><div class="avl" style="background:var(--orange)"><img src="images/deck/thumbs/grace.png" alt=""></div><div style="min-width:0"><div style="font-size:6.9pt;font-weight:800;color:var(--green)">PREDICTED · seen at 16:55</div><div style="font-size:8.3pt;font-weight:700;margin:.4mm 0 .8mm">Finance&#8217;s job breaks, though it isn&#8217;t in the PR</div><div class="err">column "amount" does not exist</div></div></div>
+        <div class="box b-line" style="display:flex;gap:2.4mm;align-items:center;padding:2.2mm 2.8mm"><div class="avl" style="background:var(--pink)"><img src="images/deck/thumbs/dev.png" alt=""></div><div style="min-width:0"><div style="font-size:6.9pt;font-weight:800;color:var(--green)">PREDICTED · seen at 17:26</div><div style="font-size:8.3pt;font-weight:700;margin:.4mm 0 .8mm">Settlements booked at £0.00, silently</div><div class="err">50 rows at £0.00 · DLT 0 · UP</div></div></div>
+        <div class="fig"><img src="images/cc-act3-review.png" alt="The Control Centre's review act: the verdict beside the real errors"></div>
+        <div class="cap"><b>Act 3 of the live demo:</b> each finding beside the real error from the run.</div>
+      </div>
+    </div>
+    <div class="sp2"></div>
+    <div class="grid3">
+      <div class="box b-grey"><h3>What's in the folder</h3><ul>
+        <li><span class="mono">SKILL.md</span>: the instructions.</li>
+        <li><span class="mono">patterns.md</span>: 24 one-way patterns, each with its safe split.</li>
+        <li><span class="mono">scan-migrations.mjs</span>, <span class="mono">schema-compat.mjs</span>: offline checks, JSON out.</li>
+        <li>A path rule, a hook guarding shipped migrations, a plugin.</li></ul></div>
+      <div class="box b-mint"><h3 style="color:var(--green-deep)">Where it runs</h3><ul>
+        <li><b>VS Code</b> agent mode, before you push.</li>
+        <li><b>Copilot CLI</b>, or <span class="mono">/one-way-door</span>.</li>
+        <li><b>Cloud agent</b> on the PR on GitHub.</li>
+        <li><b>Code review</b>, which can use repository skills.</li></ul></div>
+      <div class="box b-deep"><h3>Guardrails</h3><ul>
+        <li>Reviews only; never changes code unasked.</li>
+        <li>No servers, accounts or network calls.</li>
+        <li>The hook fails open: it never blocks your work.</li>
+        <li>Readers it can't see are assumed to exist.</li></ul></div>
+    </div>
+
+  </div>
+  <div class="footer"><span>One-Way Door · condensed proposal v3</span><span>Northwind Payments and its people are invented</span><span>4 / 5</span></div>
+</section>
+<section class="page">
+  <div class="topbar"><div class="wordmark"><i></i>One-Way Door</div><div class="meta-r">Hackathon proposal · condensed v3</div></div>
+  <div class="navbar"><span><small>1</small>At a glance</span><span><small>2</small>The problem</span><span><small>3</small>The story</span><span><small>4</small>The skill</span><span class="on"><small>5</small>The safe route</span></div>
+  <div class="body">
+
+    <div class="kick">The solution, proven</div>
+    <div class="ptitle">Same destination. Four deploys. Each one reversible.</div>
+    <p class="lead" style="margin-bottom:2.4mm">The split ends exactly where PR #482 does, but keeps old and new side by side until nobody needs the old one. This time finance's job moves with the ledger.</p>
+    <div class="grid4" style="align-items:stretch">
+      <div class="box b-mint" style="display:flex;flex-direction:column;gap:1mm"><p style="margin:0"><span class="num">1</span><b style="font-family:var(--head);font-size:10pt">Expand</b></p><p style="font-size:7.9pt"><b>Table:</b> add nullable <span class="mono">amount_minor</span>; write both.</p><p style="font-size:7.9pt"><b>Event:</b> send both fields.</p><p style="font-size:7.9pt"><b>Finance:</b> unchanged, <span class="mono">SUM(amount)</span>.</p><div class="okk" style="margin-top:auto;font-family:var(--body);font-size:7.4pt">⇄ old code ignores the new column</div></div>
+      <div class="box b-aqua" style="display:flex;flex-direction:column;gap:1mm"><p style="margin:0"><span class="num">2</span><b style="font-family:var(--head);font-size:10pt">Migrate</b></p><p style="font-size:7.9pt"><b>Table:</b> backfill; check every row agrees.</p><p style="font-size:7.9pt"><b>Event:</b> still both.</p><p style="font-size:7.9pt"><b>Finance:</b> also flags any mismatch.</p><div class="okk" style="margin-top:auto;font-family:var(--body);font-size:7.4pt">⇄ both columns correct</div></div>
+      <div class="box b-lilac" style="display:flex;flex-direction:column;gap:1mm"><p style="margin:0"><span class="num">3</span><b style="font-family:var(--head);font-size:10pt">Contract</b></p><p style="font-size:7.9pt"><b>Table:</b> read only <span class="mono">amount_minor</span>; a trigger fills <span class="mono">amount</span>.</p><p style="font-size:7.9pt"><b>Event:</b> still both; no amount goes to the DLT.</p><p style="font-size:7.9pt"><b>Finance:</b> switches to <span class="mono">SUM(amount_minor)</span>.</p><div class="okk" style="margin-top:auto;font-family:var(--body);font-size:7.4pt">⇄ <span class="mono">amount</span> kept up to date</div></div>
+      <div class="box b-orange" style="display:flex;flex-direction:column;gap:1mm"><p style="margin:0"><span class="num">4</span><b style="font-family:var(--head);font-size:10pt">Drop</b></p><p style="font-size:7.9pt"><b>Table:</b> drop <span class="mono">amount</span> and the trigger.</p><p style="font-size:7.9pt"><b>Event:</b> <span class="mono">amountMinor</span> only.</p><p style="font-size:7.9pt"><b>Finance:</b> already moved in step 3.</p><div class="okk" style="margin-top:auto;font-family:var(--body);font-size:7.4pt">⇄ nothing uses the old any more</div></div>
+    </div>
+    <div class="sp2"></div>
+    <div class="grid2" style="grid-template-columns:1.1fr 1fr;align-items:start">
+      <div>
+        <div class="label">The proof: the rollback matrix, run for real</div>
+        <table class="m"><tr><th style="text-align:left">old → new</th><th>1 baseline</th><th>2 deploy ledger</th><th>3 deploy settle&shy;ment</th><th>4 roll back ledger</th><th>5 roll back settle&shy;ment</th><th>result</th></tr>
+        <tr><td class="n">main → split 1</td><td class="p">✓<br>20/20</td><td class="p">✓<br>40/40</td><td class="p">✓<br>60/60</td><td class="p">✓<br>80/80</td><td class="p">✓<br>100/100</td><td class="res">PASS</td></tr>
+        <tr><td class="n">split 1 → split 2</td><td class="p">✓<br>20/20</td><td class="p">✓<br>40/40</td><td class="p">✓<br>60/60</td><td class="p">✓<br>80/80</td><td class="p">✓<br>100/100</td><td class="res">PASS</td></tr>
+        <tr><td class="n">split 2 → split 3</td><td class="p">✓<br>20/20</td><td class="p">✓<br>40/40</td><td class="p">✓<br>60/60</td><td class="p">✓<br>80/80</td><td class="p">✓<br>100/100</td><td class="res">PASS</td></tr>
+        <tr><td class="n">split 3 → split 4</td><td class="p">✓<br>20/20</td><td class="p">✓<br>40/40</td><td class="p">✓<br>60/60</td><td class="p">✓<br>80/80</td><td class="p">✓<br>100/100</td><td class="res">PASS</td></tr>
+        <tr><td class="n">main → PR #482</td><td class="p">✓<br>20/20</td><td class="f">✗<br>20 at £0</td><td class="f">✗<br>20 at £0</td><td class="f">✗<br>20 at £0</td><td class="f">✗<br>20 at £0</td><td class="resf">FAIL</td></tr>
+        </table>
+        <p style="font-size:7.8pt;line-height:1.35;margin:1.4mm 0 0">After every stage: 20 settlements, then six checks. Both services healthy, each booked once, nothing at £0.00, empty DLT, no backlog, reconciliation equals money sent. <b style="color:var(--red)">PR #482 fails at stage 2, before anyone presses rollback.</b></p>
+      </div>
+      <div>
+        <div class="fig"><img src="images/cc-act5-proof.png" alt="A live rollback test, split 2 to split 3, all five stages green"></div>
+        <div class="cap"><b>Act 5, live:</b> split 2 → split 3 deploys and rolls back in five stages; every check green in about 20 seconds.</div>
+      </div>
+    </div>
+    <div class="sp2"></div>
+    <div class="grid2" style="grid-template-columns:.74fr 1.26fr;align-items:start">
+      <div>
+        <div class="fig"><img src="images/lucid-demo-runtime.png" alt="One Java process runs Postgres, Kafka, a builder and a runner; the three services run as child processes"></div>
+        <div class="cap"><b>The demo runtime:</b> one laptop, Java 21 and git, no Docker.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2.4mm">
+        <div class="box b-grey"><h3>The live demo, in five acts</h3>
+          <p>A Java Control Centre starts real Postgres and Kafka, builds each service from git and runs it. The browser shows <b>the PR</b>, <b>the incident</b>, <b>the review</b>, <b>the split</b> and <b>the proof</b>. Every rollback runs the previous commit's code against today's data. Windows and macOS; a recorded run is the fallback.</p></div>
+        <div class="box b-lilac"><h3 style="color:var(--lilac-d)">Next: readers in other repositories</h3>
+          <p>Search related repositories at their deployed versions, and <b>assume any repository it can't reach reads the data</b>. The verdict states its coverage, and the split names each repository's owner and order.</p></div>
+        <div class="box b-deep" style="display:flex;align-items:center;gap:3mm">
+          <div style="flex:1"><h3 style="margin:0 0 .8mm">Every merge is a door. Know which kind before you walk through it.</h3>
+          <div class="code" style="background:#0E1512;font-size:7pt;padding:1.4mm 2.2mm">cp -R .github/skills/one-way-door your-repo/.github/skills/</div></div>
+          <img src="images/deck/door-mascot.png" alt="" style="width:13mm;flex:none">
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer"><span>One-Way Door · condensed proposal v3</span><span>Northwind Payments and its people are invented</span><span>5 / 5</span></div>
+</section>
+
+<script>
+  // Flags anything that runs into the footer zone or past the right margin, and clipped code (read by build.py).
+  window.addEventListener('load', function () {
+    document.fonts.ready.then(function () {
+      var bad = [];
+      document.querySelectorAll('.page').forEach(function (p, i) {
+        var r = p.getBoundingClientRect();
+        var limit = r.bottom - 15.5 * 3.78, right = r.right - 13 * 3.78;
+        p.querySelectorAll('.body *').forEach(function (el) {
+          var b = el.getBoundingClientRect();
+          if (b.width === 0 || b.height === 0) return;
+          var down = b.bottom - limit, over = b.right - right;
+          if (down > 0.5 || over > 0.5) bad.push((i + 1) + ':' + (el.className || el.tagName) + '+' + Math.ceil(Math.max(down, over) / 3.78) + 'mm');
+        });
+        p.querySelectorAll('.code, .err, .okk').forEach(function (el) {
+          if (el.scrollWidth > el.clientWidth + 1) bad.push((i + 1) + ':clipped ' + el.className);
+        });
+      });
+      var u = bad.filter(function (v, k) { return bad.indexOf(v) === k; });
+      document.body.setAttribute('data-overflow', u.length ? u.slice(0, 20).join(' ') : 'none');
+    });
+  });
+</script>
+</body>
+</html>
